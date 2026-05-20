@@ -1,0 +1,44 @@
+{
+  "name": "YKS App — MF AYT",
+  "short_name": "yks-app",
+  "description": "MF AYT odaklı çalışma takip uygulaması. Pomodoro, konular, denemeler, yanlış defteri, AI öğretmen.",
+  "start_url": "/dashboard",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#0a0a0b",
+  "theme_color": "#6366f1",
+  "lang": "tr",
+  "categories": ["education", "productivity"],
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-maskable.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Pomodoro başlat",
+      "url": "/pomodoro",
+      "description": "25 dakikalık çalışma seansı başlat"
+    },
+    {
+      "name": "Konular",
+      "url": "/konular",
+      "description": "MF AYT müfredatı"
+    },
+    {
+      "name": "Soru çöz",
+      "url": "/coz",
+      "description": "Soru fotoğrafıyla AI çözüm"
+    }
+  ]
+}
