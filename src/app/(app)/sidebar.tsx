@@ -72,7 +72,7 @@ export function Sidebar({
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="fixed left-3 top-3 z-30 inline-flex h-9 w-9 items-center justify-center rounded-md border border-border bg-card text-foreground shadow-sm md:hidden"
+        className="fixed left-3 top-3 z-30 inline-flex h-9 w-9 items-center justify-center rounded-md border border-border bg-card text-foreground shadow-sm lg:hidden"
         aria-label="Menüyü aç"
       >
         <Menu size={18} />
@@ -81,15 +81,15 @@ export function Sidebar({
       {/* Mobile backdrop */}
       {open && (
         <div
-          className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm md:hidden"
+          className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm lg:hidden"
           onClick={() => setOpen(false)}
         />
       )}
 
       {/* Sidebar */}
       <aside
-        className={`fixed inset-y-0 left-0 z-50 flex w-64 flex-col border-r border-border bg-card p-4 transition-transform md:static md:translate-x-0 ${
-          open ? "translate-x-0" : "-translate-x-full md:translate-x-0"
+        className={`fixed inset-y-0 left-0 z-50 flex w-64 flex-col border-r border-border bg-card p-4 transition-transform lg:static lg:translate-x-0 ${
+          open ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
         }`}
       >
         <div className="mb-6 flex items-center justify-between px-2">
@@ -101,7 +101,7 @@ export function Sidebar({
           <button
             type="button"
             onClick={() => setOpen(false)}
-            className="rounded-md p-1 text-muted-foreground transition hover:bg-muted hover:text-foreground md:hidden"
+            className="rounded-md p-1 text-muted-foreground transition hover:bg-muted hover:text-foreground lg:hidden"
             aria-label="Menüyü kapat"
           >
             <X size={16} />

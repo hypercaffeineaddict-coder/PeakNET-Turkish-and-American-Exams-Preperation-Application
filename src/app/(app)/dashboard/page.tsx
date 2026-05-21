@@ -131,7 +131,7 @@ export default async function DashboardPage() {
 
         <CountdownBanner />
 
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-3 grid-cols-2 md:grid-cols-4">
           {stats.map(({ label, value, icon: Icon, color }) => (
             <div
               key={label}
@@ -146,7 +146,7 @@ export default async function DashboardPage() {
           ))}
         </div>
 
-        <div className="grid gap-2 sm:grid-cols-3 lg:grid-cols-4">
+        <div className="grid gap-2 grid-cols-3 md:grid-cols-4">
           <QuickLink href="/pomodoro" icon={Clock} label="Pomodoro" />
           <QuickLink href="/konular" icon={ListChecks} label="Konular" />
           <QuickLink href="/coz" icon={CameraIcon} label="Soru çöz" />

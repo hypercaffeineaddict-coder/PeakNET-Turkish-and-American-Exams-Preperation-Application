@@ -26,7 +26,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
       <Sidebar logoutAction={logoutAction} />
 
       <div className="flex flex-1 flex-col min-w-0">
-        <header className="flex h-14 items-center justify-between border-b border-border bg-background/80 px-4 pl-14 backdrop-blur md:pl-6">
+        <header className="flex h-14 items-center justify-between border-b border-border bg-background/80 px-4 pl-14 backdrop-blur lg:pl-6">
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <span className="hidden sm:inline truncate">{user.email}</span>
           </div>
