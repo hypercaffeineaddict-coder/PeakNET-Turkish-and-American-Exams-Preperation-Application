@@ -179,6 +179,75 @@ export async function streamChat(
   });
 }
 
+// Tek-atış JSON üretimi (streaming yok) — yapılandırılmış çıktı için güvenilir.
+export async function generateJson(
+  messages: ChatMessage[],
+  attachments?: Attachment[],
+): Promise<string> {
+  if (!KEY) throw new Error("GEMINI_API_KEY tanımlı değil");
+
+  const systemMessages = messages.filter((m) => m.role === "system");
+  const chatMessages = messages.filter((m) => m.role !== "system");
+  const contents: GeminiContent[] = chatMessages.map((m) => ({
+    role: m.role === "assistant" ? "model" : "user",
+    parts: [{ text: m.content }],
+  }));
+  if (attachments && attachments.length > 0) {
+    const i = contents.findIndex((c) => c.role === "user");
+    if (i !== -1) {
+      contents[i].parts = [
+        ...attachments.map((a) => ({
+          inlineData: { mimeType: a.mimeType, data: a.base64 },
+        })),
+        ...contents[i].parts,
+      ];
+    }
+  }
+
+  const body: Record<string, unknown> = {
+    contents,
+    generationConfig: {
+      temperature: 0.4,
+      responseMimeType: "application/json",
+      maxOutputTokens: 8192,
+    },
+  };
+  if (systemMessages.length > 0) {
+    body.systemInstruction = {
+      parts: [{ text: systemMessages.map((m) => m.content).join("\n\n") }],
+    };
+  }
+
+  const url = `${API_BASE}/models/${MODEL}:generateContent?key=${KEY}`;
+  const res = await fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  });
+  if (!res.ok) {
+    const t = await res.text().catch(() => "");
+    throw new Error(`Gemini error: ${res.status} ${t.slice(0, 200)}`);
+  }
+  const data = (await res.json()) as {
+    candidates?: {
+      content?: { parts?: GeminiPart[] };
+      finishReason?: string;
+    }[];
+    promptFeedback?: { blockReason?: string };
+  };
+  const cand = data.candidates?.[0];
+  const text = (cand?.content?.parts ?? [])
+    .map((p) => p.text ?? "")
+    .join("")
+    .trim();
+  if (!text) {
+    const reason =
+      cand?.finishReason ?? data.promptFeedback?.blockReason ?? "boş yanıt";
+    throw new Error(`Gemini boş yanıt döndü (${reason})`);
+  }
+  return text;
+}
+
 function tryEmit(
   jsonStr: string,
   controller: ReadableStreamDefaultController<Uint8Array>,

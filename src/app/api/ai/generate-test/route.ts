@@ -1,6 +1,6 @@
 import { NextRequest } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import { streamChat } from "@/lib/ai";
+import { generateJson } from "@/lib/ai";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -47,21 +47,10 @@ SADECE şu JSON'u dön (markdown veya ekstra metin yok):
 
   let acc = "";
   try {
-    const stream = await streamChat(
-      [
-        { role: "system", content: system },
-        { role: "user", content: userPrompt },
-      ],
-      undefined,
-      { json: true },
-    );
-    const reader = stream.getReader();
-    const decoder = new TextDecoder();
-    while (true) {
-      const { value, done } = await reader.read();
-      if (done) break;
-      acc += decoder.decode(value, { stream: true });
-    }
+    acc = await generateJson([
+      { role: "system", content: system },
+      { role: "user", content: userPrompt },
+    ]);
   } catch (err) {
     return new Response(`AI hatası: ${String(err)}`, { status: 502 });
   }

@@ -37,4 +37,25 @@ export async function streamChat(
   return ollama.streamChat(messages, opts);
 }
 
+// Tek-atış JSON üretimi (tarama/test soruları için)
+export async function generateJson(
+  messages: import("./ollama").ChatMessage[],
+  attachments?: import("./gemini").Attachment[],
+): Promise<string> {
+  if (gemini.isConfigured()) {
+    return gemini.generateJson(messages, attachments);
+  }
+  // Ollama fallback: stream'i topla
+  const stream = await ollama.streamChat(messages, { json: true });
+  const reader = stream.getReader();
+  const decoder = new TextDecoder();
+  let acc = "";
+  while (true) {
+    const { value, done } = await reader.read();
+    if (done) break;
+    acc += decoder.decode(value, { stream: true });
+  }
+  return acc;
+}
+
 export { aiHealth as ollamaHealth };
