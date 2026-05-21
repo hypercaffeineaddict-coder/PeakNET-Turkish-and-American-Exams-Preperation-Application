@@ -3,7 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { streamChat } from "@/lib/ai";
 
 export const runtime = "nodejs";
-export const maxDuration = 120;
+export const maxDuration = 60;
 
 type Question = {
   stem: string;
@@ -47,10 +47,14 @@ SADECE şu JSON'u dön (markdown veya ekstra metin yok):
 
   let acc = "";
   try {
-    const stream = await streamChat([
-      { role: "system", content: system },
-      { role: "user", content: userPrompt },
-    ]);
+    const stream = await streamChat(
+      [
+        { role: "system", content: system },
+        { role: "user", content: userPrompt },
+      ],
+      undefined,
+      { json: true },
+    );
     const reader = stream.getReader();
     const decoder = new TextDecoder();
     while (true) {
@@ -59,26 +63,15 @@ SADECE şu JSON'u dön (markdown veya ekstra metin yok):
       acc += decoder.decode(value, { stream: true });
     }
   } catch (err) {
-    return new Response(`Ollama hatası: ${String(err)}`, { status: 502 });
+    return new Response(`AI hatası: ${String(err)}`, { status: 502 });
   }
 
-  // JSON parse
-  const match = acc.match(/\{[\s\S]*"questions"[\s\S]*\}/);
-  if (!match) {
+  const parsed = parseQuestions(acc);
+  if (!parsed) {
     return new Response(
-      `Format hatası — AI çıktısı parse edilemedi.\n\n${acc.slice(0, 500)}`,
+      `Soru üretilemedi (boş/format). AI çıktısı: ${acc.slice(0, 300) || "(boş)"}`,
       { status: 500 },
     );
-  }
-  let parsed: { questions: Question[] };
-  try {
-    parsed = JSON.parse(match[0]);
-  } catch {
-    return new Response("JSON parse hatası", { status: 500 });
-  }
-
-  if (!parsed.questions || parsed.questions.length === 0) {
-    return new Response("Soru üretilemedi", { status: 500 });
   }
 
   // topic_resources'a kaydet
@@ -99,4 +92,24 @@ SADECE şu JSON'u dön (markdown veya ekstra metin yok):
   if (error) return new Response(`Kayıt hatası: ${error.message}`, { status: 500 });
 
   return Response.json({ ok: true, resourceId: inserted.id, count: parsed.questions.length });
+}
+
+function parseQuestions(raw: string): { questions: Question[] } | null {
+  const tryParse = (s: string) => {
+    try {
+      const obj = JSON.parse(s);
+      if (obj && Array.isArray(obj.questions) && obj.questions.length > 0) {
+        return obj as { questions: Question[] };
+      }
+    } catch {}
+    return null;
+  };
+  const trimmed = raw.trim();
+  return (
+    tryParse(trimmed) ??
+    (() => {
+      const m = trimmed.match(/\{[\s\S]*"questions"[\s\S]*\}/);
+      return m ? tryParse(m[0]) : null;
+    })()
+  );
 }

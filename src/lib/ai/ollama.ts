@@ -31,7 +31,10 @@ export async function ollamaHealth(): Promise<{
   }
 }
 
-export async function streamChat(messages: ChatMessage[]): Promise<ReadableStream<Uint8Array>> {
+export async function streamChat(
+  messages: ChatMessage[],
+  opts?: { json?: boolean },
+): Promise<ReadableStream<Uint8Array>> {
   const res = await fetch(`${BASE}/api/chat`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -40,6 +43,7 @@ export async function streamChat(messages: ChatMessage[]): Promise<ReadableStrea
       messages,
       stream: true,
       options: { temperature: 0.4 },
+      ...(opts?.json ? { format: "json" } : {}),
     }),
   });
 

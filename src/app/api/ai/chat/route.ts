@@ -4,7 +4,7 @@ import { streamChat, type ChatMessage, type Attachment } from "@/lib/ai";
 import { consumeAIQuota } from "@/lib/ai/rate-limit";
 
 export const runtime = "nodejs";
-export const maxDuration = 120;
+export const maxDuration = 60;
 
 // Inline-edilebilir maksimum dosya boyutu (Gemini ~20MB limit ama büyük olunca yavaş)
 const MAX_INLINE_BYTES = 15 * 1024 * 1024;

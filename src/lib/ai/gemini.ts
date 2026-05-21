@@ -66,7 +66,13 @@ export type Attachment = {
   filename?: string;
 };
 
-function toGeminiPayload(messages: ChatMessage[], attachments?: Attachment[]) {
+export type ChatOptions = { json?: boolean };
+
+function toGeminiPayload(
+  messages: ChatMessage[],
+  attachments?: Attachment[],
+  opts?: ChatOptions,
+) {
   const systemMessages = messages.filter((m) => m.role === "system");
   const chatMessages = messages.filter((m) => m.role !== "system");
 
@@ -89,10 +95,15 @@ function toGeminiPayload(messages: ChatMessage[], attachments?: Attachment[]) {
     }
   }
 
-  const body: Record<string, unknown> = {
-    contents,
-    generationConfig: { temperature: 0.4 },
-  };
+  const generationConfig: Record<string, unknown> = { temperature: 0.4 };
+  if (opts?.json) {
+    // JSON modu: geçerli JSON garantisi + thinking kapalı (hız + güvenilirlik)
+    generationConfig.responseMimeType = "application/json";
+    generationConfig.thinkingConfig = { thinkingBudget: 0 };
+    generationConfig.maxOutputTokens = 8192;
+  }
+
+  const body: Record<string, unknown> = { contents, generationConfig };
 
   if (systemMessages.length > 0) {
     body.systemInstruction = {
@@ -106,6 +117,7 @@ function toGeminiPayload(messages: ChatMessage[], attachments?: Attachment[]) {
 export async function streamChat(
   messages: ChatMessage[],
   attachments?: Attachment[],
+  opts?: ChatOptions,
 ): Promise<ReadableStream<Uint8Array>> {
   if (!KEY) throw new Error("GEMINI_API_KEY tanımlı değil");
 
@@ -113,7 +125,7 @@ export async function streamChat(
   const res = await fetch(url, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(toGeminiPayload(messages, attachments)),
+    body: JSON.stringify(toGeminiPayload(messages, attachments, opts)),
   });
 
   if (!res.ok || !res.body) {

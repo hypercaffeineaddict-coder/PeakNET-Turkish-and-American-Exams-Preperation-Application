@@ -28,12 +28,13 @@ export async function aiHealth(): Promise<AIHealth> {
 export async function streamChat(
   messages: import("./ollama").ChatMessage[],
   attachments?: import("./gemini").Attachment[],
+  opts?: import("./gemini").ChatOptions,
 ): Promise<ReadableStream<Uint8Array>> {
   if (gemini.isConfigured()) {
-    return gemini.streamChat(messages, attachments);
+    return gemini.streamChat(messages, attachments, opts);
   }
   // Ollama PDF desteklemiyor; attachment varsa yine de mesajları gönder
-  return ollama.streamChat(messages);
+  return ollama.streamChat(messages, opts);
 }
 
 export { aiHealth as ollamaHealth };
