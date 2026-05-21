@@ -19,6 +19,7 @@ import {
   Settings,
   ScanLine,
   Trophy,
+  Calculator,
 } from "lucide-react";
 import { FocusPlayer } from "@/components/focus-player";
 
@@ -30,6 +31,7 @@ const navItems = [
   { href: "/yanlislar", label: "Yanlış defteri", icon: BookOpen },
   { href: "/coz", label: "Soru çözücü", icon: Camera },
   { href: "/tarama", label: "Tarama testi", icon: ScanLine },
+  { href: "/araclar", label: "YKS Araçları", icon: Calculator },
   { href: "/istatistikler", label: "İstatistikler", icon: BarChart3 },
   { href: "/basarimlar", label: "Başarımlar", icon: Trophy },
   { href: "/asistan", label: "AI Asistan", icon: Sparkles },
