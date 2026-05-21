@@ -11,11 +11,47 @@ import {
   Sparkles as SparklesIcon,
   Languages as LanguagesIcon,
   Camera as CameraIcon,
+  ScanLine as ScanLineIcon,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { MotivationCard } from "@/components/motivation-card";
 import { aiHealth } from "@/lib/ai";
 import { DailyPlanCard } from "./daily-plan";
+import { YKS_DATES, daysUntil } from "@/data/exam-date";
+
+function CountdownBanner() {
+  const tytDays = daysUntil(YKS_DATES.TYT);
+  const aytDays = daysUntil(YKS_DATES.AYT);
+  if (tytDays < 0 && aytDays < 0) return null;
+
+  const primary = tytDays >= 0 ? tytDays : aytDays;
+  const label = tytDays >= 0 ? "TYT" : "AYT";
+
+  return (
+    <div className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-orange-500/30 bg-gradient-to-r from-orange-500/10 via-card to-card p-5">
+      <div>
+        <div className="text-xs font-medium uppercase tracking-wider text-orange-500">
+          YKS&apos;ye kalan
+        </div>
+        <div className="mt-1 flex items-baseline gap-2">
+          <span className="text-4xl font-bold tabular-nums">{primary}</span>
+          <span className="text-lg text-muted-foreground">gün</span>
+          <span className="ml-1 text-sm text-muted-foreground">
+            ({label} · {YKS_DATES[label as "TYT" | "AYT"].toLocaleDateString("tr-TR", { day: "numeric", month: "long", year: "numeric" })})
+          </span>
+        </div>
+      </div>
+      <div className="text-right text-sm text-muted-foreground">
+        <div>
+          TYT: <span className="font-semibold text-foreground">{tytDays >= 0 ? `${tytDays} gün` : "geçti"}</span>
+        </div>
+        <div>
+          AYT: <span className="font-semibold text-foreground">{aytDays >= 0 ? `${aytDays} gün` : "geçti"}</span>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 const gradeLabel = (g?: number | null) => {
   if (!g) return "—";
@@ -93,6 +129,8 @@ export default async function DashboardPage() {
           </p>
         </div>
 
+        <CountdownBanner />
+
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           {stats.map(({ label, value, icon: Icon, color }) => (
             <div
@@ -108,13 +146,15 @@ export default async function DashboardPage() {
           ))}
         </div>
 
-        <div className="grid gap-2 sm:grid-cols-3 lg:grid-cols-6">
+        <div className="grid gap-2 sm:grid-cols-3 lg:grid-cols-4">
           <QuickLink href="/pomodoro" icon={Clock} label="Pomodoro" />
           <QuickLink href="/konular" icon={ListChecks} label="Konular" />
           <QuickLink href="/coz" icon={CameraIcon} label="Soru çöz" />
+          <QuickLink href="/tarama" icon={ScanLineIcon} label="Tarama testi" />
           <QuickLink href="/denemeler" icon={FlaskConical} label="Denemeler" />
           <QuickLink href="/yanlislar" icon={BookOpen} label="Yanlışlar" />
           <QuickLink href="/asistan" icon={SparklesIcon} label="Asistan" />
+          <QuickLink href="/istatistikler" icon={TrendingUp} label="İstatistik" />
         </div>
 
         <div className="rounded-2xl border border-border bg-card p-6">
