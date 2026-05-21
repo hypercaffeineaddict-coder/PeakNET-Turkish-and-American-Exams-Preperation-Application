@@ -13,6 +13,7 @@ import {
 import { toast } from "sonner";
 import { updateProfile } from "./actions";
 import { universities } from "@/data/universities";
+import { departments } from "@/data/departments";
 
 const grades = [
   { value: 9, label: "9. sınıf" },
@@ -25,7 +26,6 @@ const grades = [
 const tracks = [
   { value: "MF", label: "Sayısal (MF)" },
   { value: "TM", label: "Eşit Ağırlık (TM)" },
-  { value: "EA", label: "EA" },
   { value: "Sozel", label: "Sözel" },
   { value: "Dil", label: "Dil" },
 ];
@@ -182,9 +182,16 @@ export function ProfileForm({
             <span className="text-muted-foreground">Bölüm</span>
             <input
               name="target_department"
+              list="department-list"
+              placeholder="yazmaya başla, listeden seç"
               defaultValue={profile.target_department}
               className="mt-1 w-full rounded-md border border-border bg-background px-3 py-2 outline-none focus:border-primary"
             />
+            <datalist id="department-list">
+              {departments.map((d) => (
+                <option key={d} value={d} />
+              ))}
+            </datalist>
           </label>
         </div>
       </section>

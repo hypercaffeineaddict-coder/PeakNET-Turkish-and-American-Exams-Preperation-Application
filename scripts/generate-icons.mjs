@@ -28,7 +28,7 @@ function makeSvg(size, maskable = false) {
   <text x="${cx}" y="${cy}" font-family="system-ui, -apple-system, Segoe UI, Roboto, sans-serif"
         font-weight="800" font-size="${fontSize}"
         text-anchor="middle" dominant-baseline="central"
-        fill="white" letter-spacing="-2">Y</text>
+        fill="white" letter-spacing="-2">P</text>
 </svg>`;
 }
 

@@ -1,7 +1,7 @@
 {
-  "name": "YKS App — MF AYT",
-  "short_name": "yks-app",
-  "description": "MF AYT odaklı çalışma takip uygulaması. Pomodoro, konular, denemeler, yanlış defteri, AI öğretmen.",
+  "name": "PeakNET — YKS çalışma platformu",
+  "short_name": "PeakNET",
+  "description": "YKS için akıllı çalışma platformu. Pomodoro, konular, denemeler, yanlış defteri, AI öğretmen.",
   "start_url": "/dashboard",
   "scope": "/",
   "display": "standalone",

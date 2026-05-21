@@ -84,9 +84,8 @@ export function Sidebar({
       >
         <div className="mb-6 flex items-center justify-between px-2">
           <Link href="/dashboard" className="flex items-center gap-2">
-            <span className="text-lg font-semibold tracking-tight">yks-app</span>
-            <span className="rounded-md bg-primary/10 px-1.5 py-0.5 text-xs font-medium text-primary">
-              MF
+            <span className="text-lg font-semibold tracking-tight">
+              Peak<span className="text-primary">NET</span>
             </span>
           </Link>
           <button

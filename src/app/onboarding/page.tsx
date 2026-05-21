@@ -13,6 +13,7 @@ import { saveOnboarding } from "./actions";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { MotivationCard } from "@/components/motivation-card";
 import { universities } from "@/data/universities";
+import { departments } from "@/data/departments";
 
 const grades = [
   { value: 9, label: "9. sınıf" },
@@ -25,7 +26,6 @@ const grades = [
 const tracks = [
   { value: "MF", label: "Sayısal (MF)", hint: "Mat·Fiz·Kim·Biy" },
   { value: "TM", label: "Eşit Ağırlık (TM)", hint: "Mat·Edebiyat·Tarih·Coğrafya" },
-  { value: "EA", label: "EA", hint: "Eski adlandırma" },
   { value: "Sozel", label: "Sözel", hint: "Edebiyat·Tarih·Coğrafya·Felsefe" },
   { value: "Dil", label: "Dil", hint: "İngilizce ağırlıklı" },
 ];
@@ -205,10 +205,16 @@ export default async function OnboardingPage({
                   <input
                     name="target_department"
                     type="text"
-                    placeholder="örn. Bilgisayar Mühendisliği"
+                    list="department-list"
+                    placeholder="yazmaya başla, listeden seç"
                     defaultValue={profile?.target_department ?? ""}
                     className="mt-1 w-full rounded-md border border-border bg-background px-3 py-2 outline-none focus:border-primary"
                   />
+                  <datalist id="department-list">
+                    {departments.map((d) => (
+                      <option key={d} value={d} />
+                    ))}
+                  </datalist>
                 </label>
               </div>
             </section>

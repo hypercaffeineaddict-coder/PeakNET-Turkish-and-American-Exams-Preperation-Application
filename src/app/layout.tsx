@@ -6,13 +6,14 @@ import { ThemeProvider } from "@/components/theme-provider";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "YKS App — MF AYT",
-  description: "MF AYT odaklı çalışma takip uygulaması",
+  title: "PeakNET — YKS çalışma platformu",
+  description:
+    "YKS için akıllı çalışma platformu: konu takibi, AI öğretmen, Pomodoro, deneme analizi, yanlış defteri.",
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
-    title: "yks-app",
+    title: "PeakNET",
   },
   icons: {
     icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
