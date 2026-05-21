@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
+import { awardXp, XP } from "@/lib/gamification";
 
 export async function recordSession(formData: FormData) {
   const supabase = await createClient();
@@ -33,6 +34,9 @@ export async function recordSession(formData: FormData) {
 
   // streak'i güncelle (idempotent — aynı gün tekrar tetiklense de fark etmez)
   await supabase.rpc("touch_streak");
+
+  // XP ödülü (pomodoro başına)
+  await awardXp((pomodoros || 1) * XP.pomodoro, "pomodoro");
 
   revalidatePath("/pomodoro");
   revalidatePath("/dashboard");

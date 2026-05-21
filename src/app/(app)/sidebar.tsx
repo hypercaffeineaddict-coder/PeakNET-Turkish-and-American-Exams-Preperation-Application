@@ -18,6 +18,7 @@ import {
   X,
   Settings,
   ScanLine,
+  Trophy,
 } from "lucide-react";
 import { FocusPlayer } from "@/components/focus-player";
 
@@ -30,6 +31,7 @@ const navItems = [
   { href: "/coz", label: "Soru çözücü", icon: Camera },
   { href: "/tarama", label: "Tarama testi", icon: ScanLine },
   { href: "/istatistikler", label: "İstatistikler", icon: BarChart3 },
+  { href: "/basarimlar", label: "Başarımlar", icon: Trophy },
   { href: "/asistan", label: "AI Asistan", icon: Sparkles },
   { href: "/diller", label: "Diller", icon: Languages },
   { href: "/ayarlar", label: "Ayarlar", icon: Settings },

@@ -1,5 +1,6 @@
 import { NextRequest } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { awardXp, XP } from "@/lib/gamification";
 
 export const runtime = "nodejs";
 
@@ -86,11 +87,16 @@ export async function POST(req: NextRequest) {
     }
   }
 
+  // XP ödülü: doğru başına + bitirme bonusu
+  const xpGained = score * XP.testCorrect + XP.testComplete;
+  await awardXp(xpGained, "test_complete");
+
   return Response.json({
     ok: true,
     score,
     total: questions.length,
     wrongCount: wrongQuestions.length,
     mistakesAdded,
+    xpGained,
   });
 }

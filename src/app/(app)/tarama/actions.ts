@@ -1,6 +1,7 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
+import { awardXp, XP } from "@/lib/gamification";
 
 type WrongItem = {
   stem: string;
@@ -13,13 +14,19 @@ type WrongItem = {
 export async function saveTaramaWrongs(
   subjectName: string,
   wrongs: WrongItem[],
-): Promise<{ added: number; error?: string }> {
+  correctCount = 0,
+): Promise<{ added: number; xpGained: number; error?: string }> {
   const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) return { added: 0, error: "Oturum yok" };
-  if (wrongs.length === 0) return { added: 0 };
+  if (!user) return { added: 0, xpGained: 0, error: "Oturum yok" };
+
+  // XP: doğru başına + bitirme bonusu (yanlış olmasa bile ver)
+  const xpGained = correctCount * XP.testCorrect + XP.testComplete;
+  await awardXp(xpGained, "tarama_complete");
+
+  if (wrongs.length === 0) return { added: 0, xpGained };
 
   const rows = wrongs.map((w) => ({
     user_id: user.id,
@@ -35,6 +42,6 @@ export async function saveTaramaWrongs(
   }));
 
   const { error } = await supabase.from("mistakes").insert(rows);
-  if (error) return { added: 0, error: error.message };
-  return { added: rows.length };
+  if (error) return { added: 0, xpGained, error: error.message };
+  return { added: rows.length, xpGained };
 }

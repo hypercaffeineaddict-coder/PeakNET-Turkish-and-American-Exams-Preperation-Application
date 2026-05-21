@@ -3,6 +3,7 @@
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
+import { awardXp, XP } from "@/lib/gamification";
 
 export async function createMistake(formData: FormData) {
   const supabase = await createClient();
@@ -94,6 +95,8 @@ export async function reviewMistake(formData: FormData) {
     })
     .eq("id", id)
     .eq("user_id", user.id);
+
+  await awardXp(XP.mistakeReview, "mistake_review");
 
   revalidatePath("/yanlislar");
 }

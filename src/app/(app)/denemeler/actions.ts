@@ -3,6 +3,7 @@
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
+import { awardXp, XP } from "@/lib/gamification";
 
 type Totals = Record<
   string,
@@ -64,6 +65,8 @@ export async function createExam(formData: FormData) {
   if (error) {
     redirect(`/denemeler/yeni?error=${encodeURIComponent(error.message)}`);
   }
+
+  await awardXp(XP.examAdded, "exam_added");
 
   revalidatePath("/denemeler");
   redirect("/denemeler");

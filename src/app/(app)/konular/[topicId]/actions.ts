@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
+import { awardXp, XP } from "@/lib/gamification";
 
 export async function updateProgress(formData: FormData) {
   const supabase = await createClient();
@@ -14,6 +15,14 @@ export async function updateProgress(formData: FormData) {
   const status = String(formData.get("status"));
   const confidence = Number(formData.get("confidence")) || 0;
 
+  // Önceki durumu al (yeni 'done' için XP, tekrar tetiklemede verme)
+  const { data: prev } = await supabase
+    .from("topic_progress")
+    .select("status")
+    .eq("user_id", user.id)
+    .eq("topic_id", topicId)
+    .maybeSingle();
+
   await supabase.from("topic_progress").upsert({
     user_id: user.id,
     topic_id: topicId,
@@ -21,6 +30,10 @@ export async function updateProgress(formData: FormData) {
     confidence,
     updated_at: new Date().toISOString(),
   });
+
+  if (status === "done" && prev?.status !== "done") {
+    await awardXp(XP.topicDone, "topic_done");
+  }
 
   revalidatePath(`/konular/${topicId}`);
   revalidatePath("/konular");

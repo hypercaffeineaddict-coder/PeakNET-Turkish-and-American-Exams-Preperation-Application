@@ -84,7 +84,7 @@ export function TaramaClient({
   async function submit() {
     if (!questions) return;
     setSubmitted(true);
-    // yanlışları kaydet
+    const correctCount = questions.filter((q, i) => answers[i] === q.answer).length;
     const wrongs = questions
       .map((q, i) => ({ q, i }))
       .filter(({ q, i }) => answers[i] && answers[i] !== q.answer)
@@ -95,12 +95,13 @@ export function TaramaClient({
         correctAnswer: `${q.answer}) ${q.options[q.answer] ?? ""}`,
         explanation: q.explanation,
       }));
-    if (wrongs.length > 0) {
-      const res = await saveTaramaWrongs(subjectName, wrongs);
-      if (res.added > 0) {
-        setSavedWrongs(true);
-        toast.success(`${res.added} yanlış, yanlış defterine eklendi`);
-      }
+    const res = await saveTaramaWrongs(subjectName, wrongs, correctCount);
+    if (res.added > 0) {
+      setSavedWrongs(true);
+      toast.success(`${res.added} yanlış, yanlış defterine eklendi`);
+    }
+    if (res.xpGained > 0) {
+      toast.success(`+${res.xpGained} XP kazandın! 🎉`);
     }
   }
 
