@@ -20,12 +20,14 @@ import {
   ScanLine,
   Trophy,
   Calculator,
+  GraduationCap,
 } from "lucide-react";
 import { FocusPlayer } from "@/components/focus-player";
 
 const navItems = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/konular", label: "Konular", icon: ListChecks },
+  { href: "/ustalik", label: "Ustalık", icon: GraduationCap },
   { href: "/pomodoro", label: "Pomodoro", icon: Clock },
   { href: "/denemeler", label: "Denemeler", icon: FlaskConical },
   { href: "/yanlislar", label: "Yanlış defteri", icon: BookOpen },
