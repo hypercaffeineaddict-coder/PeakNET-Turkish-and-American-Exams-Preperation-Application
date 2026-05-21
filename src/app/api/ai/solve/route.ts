@@ -1,6 +1,6 @@
 import { NextRequest } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import { streamChat, type Attachment } from "@/lib/ai";
+import { streamChat, friendlyAIError, type Attachment } from "@/lib/ai";
 import { consumeAIQuota } from "@/lib/ai/rate-limit";
 
 export const runtime = "nodejs";
@@ -111,13 +111,6 @@ Eğer görselde okuyamadığın bir şey varsa veya soru anlaşılmıyorsa, hang
       },
     });
   } catch (err) {
-    const msg = String(err);
-    let userMsgErr = `AI hatası: ${msg}.`;
-    if (msg.includes("503") || msg.toLowerCase().includes("overloaded")) {
-      userMsgErr = "AI modeli şu an çok yoğun (503). Birkaç saniye bekleyip tekrar dene.";
-    } else if (msg.includes("429")) {
-      userMsgErr = "İstek limitin doldu (429). Birkaç dakika bekle.";
-    }
-    return new Response(userMsgErr, { status: 502 });
+    return new Response(friendlyAIError(err), { status: 502 });
   }
 }

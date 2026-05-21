@@ -1,6 +1,7 @@
 import { NextRequest } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import { generateJson } from "@/lib/ai";
+import { generateJson, friendlyAIError } from "@/lib/ai";
+import { consumeAIQuota } from "@/lib/ai/rate-limit";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -31,6 +32,14 @@ export async function POST(req: NextRequest) {
     .single();
   if (!topic) return new Response("Topic not found", { status: 404 });
 
+  const quota = await consumeAIQuota();
+  if (!quota.allowed) {
+    return new Response(
+      `Günlük AI kotanı doldurdun (${quota.count}/${quota.limit}). Yarın yenilenecek.`,
+      { status: 429 },
+    );
+  }
+
   const system = `Sen MF AYT'ye hazırlanan Türk lise öğrencisi için ÖSYM tarzı çoktan seçmeli soru üreten bir öğretmensin. Sadece istenen JSON formatını döndür, başka hiçbir şey yazma.`;
 
   const userPrompt = `${topic.subjects?.name} - ${topic.name} konusundan ${Math.max(3, Math.min(10, count))} adet ÖSYM tarzı 5 şıklı çoktan seçmeli soru üret.
@@ -52,7 +61,7 @@ SADECE şu JSON'u dön (markdown veya ekstra metin yok):
       { role: "user", content: userPrompt },
     ]);
   } catch (err) {
-    return new Response(`AI hatası: ${String(err)}`, { status: 502 });
+    return new Response(friendlyAIError(err), { status: 502 });
   }
 
   const parsed = parseQuestions(acc);

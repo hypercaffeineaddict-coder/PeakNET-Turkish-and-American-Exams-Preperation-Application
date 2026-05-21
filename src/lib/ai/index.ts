@@ -59,3 +59,22 @@ export async function generateJson(
 }
 
 export { aiHealth as ollamaHealth };
+
+// Ham AI hatasını kullanıcı dostu mesaja çevirir (tüm AI rotalarında ortak).
+export function friendlyAIError(err: unknown): string {
+  const msg = String(err);
+  const lower = msg.toLowerCase();
+  if (msg.includes("503") || lower.includes("overloaded")) {
+    return "AI modeli şu an çok yoğun (503). Birkaç saniye bekleyip tekrar dene.";
+  }
+  if (msg.includes("429")) {
+    return "İstek limitin doldu (429). Birkaç dakika bekle.";
+  }
+  if (lower.includes("api key") || msg.includes("401") || msg.includes("403")) {
+    return "AI API key sorunu. .env.local'da GEMINI_API_KEY'i kontrol et.";
+  }
+  if (lower.includes("fetch failed") || lower.includes("econnrefused")) {
+    return "AI sunucusuna ulaşılamadı. Ollama yerel çalışıyorsa `ollama serve` aç; Gemini için internet kontrol et.";
+  }
+  return `AI hatası: ${msg}`;
+}

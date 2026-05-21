@@ -1,6 +1,6 @@
 import { NextRequest } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import { streamChat, type ChatMessage, type Attachment } from "@/lib/ai";
+import { streamChat, friendlyAIError, type ChatMessage, type Attachment } from "@/lib/ai";
 import { consumeAIQuota } from "@/lib/ai/rate-limit";
 
 export const runtime = "nodejs";
@@ -82,17 +82,6 @@ export async function POST(req: NextRequest) {
       },
     });
   } catch (err) {
-    const msg = String(err);
-    let userMsg = `AI hatası: ${msg}.`;
-    if (msg.includes("503") || msg.toLowerCase().includes("overloaded")) {
-      userMsg = "AI modeli şu an çok yoğun (503). Birkaç saniye bekleyip tekrar dene.";
-    } else if (msg.includes("429")) {
-      userMsg = "İstek limitin doldu (429). Birkaç dakika bekle.";
-    } else if (msg.toLowerCase().includes("api key") || msg.includes("401") || msg.includes("403")) {
-      userMsg = "AI API key sorunu. .env.local'da GEMINI_API_KEY'i kontrol et.";
-    } else if (msg.toLowerCase().includes("fetch failed") || msg.toLowerCase().includes("econnrefused")) {
-      userMsg = "AI sunucusuna ulaşılamadı. Ollama yerel çalışıyorsa `ollama serve` aç; Gemini için internet kontrol et.";
-    }
-    return new Response(userMsg, { status: 502 });
+    return new Response(friendlyAIError(err), { status: 502 });
   }
 }

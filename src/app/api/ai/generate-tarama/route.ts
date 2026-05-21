@@ -1,6 +1,6 @@
 import { NextRequest } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import { generateJson } from "@/lib/ai";
+import { generateJson, friendlyAIError } from "@/lib/ai";
 import { consumeAIQuota } from "@/lib/ai/rate-limit";
 
 export const runtime = "nodejs";
@@ -68,7 +68,7 @@ SADECE şu JSON'u dön (markdown yok):
       { role: "user", content: userPrompt },
     ]);
   } catch (err) {
-    return new Response(`AI hatası: ${String(err)}`, { status: 502 });
+    return new Response(friendlyAIError(err), { status: 502 });
   }
 
   const parsed = parseQuestions(acc);
