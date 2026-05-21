@@ -21,11 +21,13 @@ import {
   Trophy,
   Calculator,
   GraduationCap,
+  CalendarDays,
 } from "lucide-react";
 import { FocusPlayer } from "@/components/focus-player";
 
 const navItems = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/panel", label: "Panel", icon: CalendarDays },
   { href: "/konular", label: "Konular", icon: ListChecks },
   { href: "/ustalik", label: "Ustalık", icon: GraduationCap },
   { href: "/pomodoro", label: "Pomodoro", icon: Clock },
