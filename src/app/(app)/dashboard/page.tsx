@@ -12,6 +12,8 @@ import {
   Languages as LanguagesIcon,
   Camera as CameraIcon,
   ScanLine as ScanLineIcon,
+  CalendarDays,
+  Calculator,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { MotivationCard } from "@/components/motivation-card";
@@ -147,10 +149,13 @@ export default async function DashboardPage() {
         </div>
 
         <div className="grid gap-2 grid-cols-3 md:grid-cols-4">
-          <QuickLink href="/pomodoro" icon={Clock} label="Pomodoro" />
+          <QuickLink href="/panel" icon={CalendarDays} label="Panel" />
           <QuickLink href="/konular" icon={ListChecks} label="Konular" />
+          <QuickLink href="/ustalik" icon={GraduationCap} label="Ustalık" />
+          <QuickLink href="/pomodoro" icon={Clock} label="Pomodoro" />
           <QuickLink href="/coz" icon={CameraIcon} label="Soru çöz" />
           <QuickLink href="/tarama" icon={ScanLineIcon} label="Tarama testi" />
+          <QuickLink href="/araclar" icon={Calculator} label="YKS Araçları" />
           <QuickLink href="/denemeler" icon={FlaskConical} label="Denemeler" />
           <QuickLink href="/yanlislar" icon={BookOpen} label="Yanlışlar" />
           <QuickLink href="/asistan" icon={SparklesIcon} label="Asistan" />
