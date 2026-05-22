@@ -135,6 +135,19 @@ export function Sidebar({
         <form action={logoutAction}>
           <button
             type="submit"
+            onClick={() => {
+              // Cikista kimlikli sayfa cache'ini temizle (paylasilan cihaz gizliligi)
+              if (typeof caches !== "undefined") {
+                caches
+                  .keys()
+                  .then((keys) =>
+                    keys
+                      .filter((k) => k.includes("-pages"))
+                      .forEach((k) => caches.delete(k)),
+                  )
+                  .catch(() => {});
+              }
+            }}
             className="flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm text-muted-foreground transition hover:bg-muted hover:text-foreground"
           >
             <LogOut size={16} />
