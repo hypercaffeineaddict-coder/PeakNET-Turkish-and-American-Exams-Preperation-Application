@@ -3,7 +3,7 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 
-const TRACKS = ["MF", "TM", "EA", "Sozel", "Dil"] as const;
+const TRACKS = ["MF", "TM", "Sozel", "Dil"] as const;
 
 export async function saveOnboarding(formData: FormData) {
   const supabase = await createClient();
