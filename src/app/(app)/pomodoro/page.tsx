@@ -54,8 +54,12 @@ export default async function PomodoroPage({
   // TYT herkese; AYT derslerini lise bölümüne (track) göre filtrele
   const track = profile?.high_school_track ?? null;
   const subjects = ((subjectsRaw ?? []) as Array<{
+    id: string;
+    name: string;
+    color: string | null;
     exam_type: string;
     tracks: string[] | null;
+    topics: { id: string; name: string; display_order: number }[];
   }>).filter(
     (s) =>
       s.exam_type !== "AYT" || !track || !s.tracks?.length || s.tracks.includes(track),
