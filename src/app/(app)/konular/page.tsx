@@ -52,6 +52,7 @@ type SubjectRow = {
   color: string | null;
   question_count: number | null;
   display_order: number;
+  tracks: string[] | null;
   topics: TopicRow[];
 };
 
@@ -84,11 +85,24 @@ export default async function KonularPage({
     .select("topic_id, status, confidence")
     .eq("user_id", user.id);
 
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("high_school_track")
+    .eq("id", user.id)
+    .single();
+
   const progressMap = new Map(
     (progressRows ?? []).map((p) => [p.topic_id, p]),
   );
 
-  const subjects: SubjectRow[] = (subjectsRaw ?? []) as SubjectRow[];
+  // AYT derslerini öğrencinin lise bölümüne (track) göre filtrele.
+  // TYT/diğer sınavlar herkese açık; tracks boş olan ders de herkese görünür.
+  const track = profile?.high_school_track ?? null;
+  const allSubjects: SubjectRow[] = (subjectsRaw ?? []) as SubjectRow[];
+  const subjects: SubjectRow[] =
+    activeTab === "AYT" && track
+      ? allSubjects.filter((s) => !s.tracks?.length || s.tracks.includes(track))
+      : allSubjects;
 
   // Filtre + arama uygula
   const filteredSubjects = subjects.map((s) => {
@@ -137,8 +151,8 @@ export default async function KonularPage({
     return qs ? `/konular?${qs}` : "/konular";
   };
 
-  const otherSekmePlaceholder =
-    activeTab !== "AYT" && filteredSubjects.length === 0;
+  // Bu sekme/track için hiç ders yoksa "yakında" göster (arama sonucu boşluğu hariç)
+  const noCurriculum = subjects.length === 0;
 
   return (
     <div className="mx-auto max-w-6xl space-y-6">
@@ -232,7 +246,7 @@ export default async function KonularPage({
         </div>
       </div>
 
-      {otherSekmePlaceholder ? (
+      {noCurriculum ? (
         <div className="rounded-2xl border border-dashed border-border bg-card p-12 text-center">
           <Construction
             size={36}
@@ -242,8 +256,8 @@ export default async function KonularPage({
             {activeTab} müfredatı yakında
           </h2>
           <p className="mt-2 text-sm text-muted-foreground">
-            İlk sürümde MF AYT odaklıyız. {activeTab} müfredatını ekleyene kadar
-            AYT sekmesinden devam edebilirsin.
+            Bu sınav türü için müfredat henüz eklenmedi. TYT ve AYT
+            sekmelerinden devam edebilirsin.
           </p>
         </div>
       ) : (

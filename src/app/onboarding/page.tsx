@@ -5,13 +5,13 @@ import {
   Target,
   Clock,
   Sparkles,
-  BookOpenCheck,
   Trophy,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { saveOnboarding } from "./actions";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { MotivationCard } from "@/components/motivation-card";
+import { TrackSubjects } from "./track-subjects";
 import { universities } from "@/data/universities";
 import { departments } from "@/data/departments";
 
@@ -23,26 +23,12 @@ const grades = [
   { value: 13, label: "Mezun" },
 ];
 
-const tracks = [
-  { value: "MF", label: "Sayısal (MF)", hint: "Mat·Fiz·Kim·Biy" },
-  { value: "TM", label: "Eşit Ağırlık (TM)", hint: "Mat·Edebiyat·Tarih·Coğrafya" },
-  { value: "Sozel", label: "Sözel", hint: "Edebiyat·Tarih·Coğrafya·Felsefe" },
-  { value: "Dil", label: "Dil", hint: "İngilizce ağırlıklı" },
-];
-
 const goals = [
   { value: 30, label: "30 dk" },
   { value: 60, label: "1 sa" },
   { value: 120, label: "2 sa" },
   { value: 180, label: "3 sa" },
   { value: 300, label: "5 sa" },
-];
-
-const subjects = [
-  { id: "matematik", name: "Matematik" },
-  { id: "fizik", name: "Fizik" },
-  { id: "kimya", name: "Kimya" },
-  { id: "biyoloji", name: "Biyoloji" },
 ];
 
 export default async function OnboardingPage({
@@ -150,32 +136,12 @@ export default async function OnboardingPage({
               </label>
             </section>
 
-            {/* Lise bölümü */}
-            <section className="rounded-2xl border border-border bg-card p-6">
-              <header className="mb-4 flex items-center gap-2 text-sm font-semibold">
-                <BookOpenCheck size={16} className="text-primary" />
-                Lise bölümün
-              </header>
-              <div className="grid gap-2 sm:grid-cols-2">
-                {tracks.map((t) => (
-                  <label
-                    key={t.value}
-                    className="cursor-pointer rounded-xl border border-border bg-background p-3 transition has-[:checked]:border-primary has-[:checked]:bg-primary/5"
-                  >
-                    <input
-                      type="radio"
-                      name="high_school_track"
-                      value={t.value}
-                      required
-                      className="hidden"
-                      defaultChecked={profile?.high_school_track === t.value}
-                    />
-                    <div className="text-sm font-medium">{t.label}</div>
-                    <div className="text-xs text-muted-foreground">{t.hint}</div>
-                  </label>
-                ))}
-              </div>
-            </section>
+            {/* Lise bölümü + güçlü/zayıf dersler (track'e göre dinamik) */}
+            <TrackSubjects
+              defaultTrack={profile?.high_school_track ?? null}
+              defaultStrong={profile?.strong_subjects ?? []}
+              defaultWeak={profile?.weak_subjects ?? []}
+            />
 
             {/* Hedef + üniversite autocomplete */}
             <section className="rounded-2xl border border-border bg-card p-6">
@@ -246,60 +212,6 @@ export default async function OnboardingPage({
               <p className="mt-3 text-xs text-muted-foreground">
                 Streak ateşini söndürmemek için günde en az 25 dk yeterli.
               </p>
-            </section>
-
-            {/* Güçlü / zayıf */}
-            <section className="rounded-2xl border border-border bg-card p-6">
-              <header className="mb-4 flex items-center gap-2 text-sm font-semibold">
-                <Sparkles size={16} className="text-primary" />
-                Dersler — kendini nasıl görüyorsun?
-              </header>
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div>
-                  <div className="mb-2 text-xs font-medium uppercase tracking-wider text-emerald-500">
-                    Güçlü olduğun
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    {subjects.map((s) => (
-                      <label
-                        key={s.id}
-                        className="cursor-pointer rounded-full border border-border bg-background px-3 py-1.5 text-sm transition has-[:checked]:border-emerald-500 has-[:checked]:bg-emerald-500/10 has-[:checked]:text-emerald-500"
-                      >
-                        <input
-                          type="checkbox"
-                          name="strong"
-                          value={s.id}
-                          defaultChecked={profile?.strong_subjects?.includes(s.id)}
-                          className="hidden"
-                        />
-                        {s.name}
-                      </label>
-                    ))}
-                  </div>
-                </div>
-                <div>
-                  <div className="mb-2 text-xs font-medium uppercase tracking-wider text-rose-500">
-                    Geliştirmen gereken
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    {subjects.map((s) => (
-                      <label
-                        key={s.id}
-                        className="cursor-pointer rounded-full border border-border bg-background px-3 py-1.5 text-sm transition has-[:checked]:border-rose-500 has-[:checked]:bg-rose-500/10 has-[:checked]:text-rose-500"
-                      >
-                        <input
-                          type="checkbox"
-                          name="weak"
-                          value={s.id}
-                          defaultChecked={profile?.weak_subjects?.includes(s.id)}
-                          className="hidden"
-                        />
-                        {s.name}
-                      </label>
-                    ))}
-                  </div>
-                </div>
-              </div>
             </section>
 
             {error && (

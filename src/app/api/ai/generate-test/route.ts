@@ -40,7 +40,7 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const system = `Sen MF AYT'ye hazırlanan Türk lise öğrencisi için ÖSYM tarzı çoktan seçmeli soru üreten bir öğretmensin. Sadece istenen JSON formatını döndür, başka hiçbir şey yazma.`;
+  const system = `Sen YKS'ye hazırlanan Türk lise öğrencisi için ÖSYM tarzı çoktan seçmeli soru üreten bir öğretmensin. Sadece istenen JSON formatını döndür, başka hiçbir şey yazma.`;
 
   const userPrompt = `${topic.subjects?.name} - ${topic.name} konusundan ${Math.max(3, Math.min(10, count))} adet ÖSYM tarzı 5 şıklı çoktan seçmeli soru üret.
 

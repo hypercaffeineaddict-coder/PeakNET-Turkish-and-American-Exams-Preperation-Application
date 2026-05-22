@@ -44,6 +44,7 @@ type SubjectRow = {
   color: string | null;
   question_count: number | null;
   display_order: number;
+  tracks: string[] | null;
   topics: TopicRow[];
 };
 
@@ -64,7 +65,7 @@ export default async function UstalikPage({
   } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  const [{ data: subjectsRaw }, { data: progressRows }, { data: mistakeRows }, { data: sessionRows }] =
+  const [{ data: subjectsRaw }, { data: progressRows }, { data: mistakeRows }, { data: sessionRows }, { data: profile }] =
     await Promise.all([
       supabase
         .from("subjects")
@@ -85,6 +86,11 @@ export default async function UstalikPage({
         .select("topic_id, duration_seconds")
         .eq("user_id", user.id)
         .not("topic_id", "is", null),
+      supabase
+        .from("profiles")
+        .select("high_school_track")
+        .eq("id", user.id)
+        .single(),
     ]);
 
   const progressMap = new Map(
@@ -109,7 +115,13 @@ export default async function UstalikPage({
     );
   }
 
-  const subjects: SubjectRow[] = (subjectsRaw ?? []) as SubjectRow[];
+  // AYT derslerini lise bölümüne (track) göre filtrele; TYT herkese açık.
+  const track = profile?.high_school_track ?? null;
+  const allSubjects: SubjectRow[] = (subjectsRaw ?? []) as SubjectRow[];
+  const subjects: SubjectRow[] =
+    activeTab === "AYT" && track
+      ? allSubjects.filter((s) => !s.tracks?.length || s.tracks.includes(track))
+      : allSubjects;
 
   const masteryFor = (t: TopicRow): MasteryInfo => {
     const p = progressMap.get(t.id);

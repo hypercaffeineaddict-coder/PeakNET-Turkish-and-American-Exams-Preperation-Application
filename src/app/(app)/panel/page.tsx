@@ -32,6 +32,8 @@ type SubjectRow = {
   id: string;
   name: string;
   color: string | null;
+  exam_type: string;
+  tracks: string[] | null;
   topics: TopicRow[];
 };
 
@@ -87,7 +89,7 @@ export default async function PanelPage() {
       .from("mistakes")
       .select("topic_id, repetitions, created_at")
       .eq("user_id", user.id),
-    supabase.from("subjects").select("*, topics(*)").eq("exam_type", "AYT").order("display_order"),
+    supabase.from("subjects").select("*, topics(*)").in("exam_type", ["TYT", "AYT"]).order("display_order"),
     supabase.from("topic_progress").select("topic_id, status, confidence").eq("user_id", user.id),
   ]);
 
@@ -119,7 +121,15 @@ export default async function PanelPage() {
   ).length;
 
   // --- Mastery (zayıf konu / ders + plan) ---
-  const subjects: SubjectRow[] = (subjectsRaw ?? []) as SubjectRow[];
+  // TYT herkese; AYT derslerini lise bölümüne (track) göre filtrele.
+  const track = profile?.high_school_track ?? null;
+  const subjects: SubjectRow[] = ((subjectsRaw ?? []) as SubjectRow[]).filter(
+    (s) =>
+      s.exam_type !== "AYT" ||
+      !track ||
+      !s.tracks?.length ||
+      s.tracks.includes(track),
+  );
   const progressMap = new Map((progressRows ?? []).map((p) => [p.topic_id, p]));
 
   const mistakeMap = new Map<string, number>();
