@@ -20,6 +20,12 @@ export default async function YeniDenemePage({
   } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("high_school_track")
+    .eq("id", user.id)
+    .single();
+
   return (
     <div className="mx-auto max-w-3xl space-y-6">
       <div>
@@ -42,6 +48,7 @@ export default async function YeniDenemePage({
       <NetForm
         action={createExam}
         defaultType={examType}
+        track={profile?.high_school_track ?? null}
         error={error ?? null}
       />
     </div>

@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { awardXp, XP } from "@/lib/gamification";
+import { examSubjects } from "@/data/exam-subjects";
 
 type Totals = Record<
   string,
@@ -12,24 +13,6 @@ type Totals = Record<
 
 function net(d: number, y: number) {
   return Math.max(0, d - y / 4);
-}
-
-const AYT_SUBJECTS = [
-  { id: "matematik", name: "Matematik", total: 40 },
-  { id: "fizik", name: "Fizik", total: 14 },
-  { id: "kimya", name: "Kimya", total: 13 },
-  { id: "biyoloji", name: "Biyoloji", total: 13 },
-];
-
-const TYT_SUBJECTS = [
-  { id: "turkce", name: "Türkçe", total: 40 },
-  { id: "matematik", name: "Matematik", total: 40 },
-  { id: "sosyal", name: "Sosyal Bilimler", total: 20 },
-  { id: "fen", name: "Fen Bilimleri", total: 20 },
-];
-
-function subjectsForExam(type: string) {
-  return type === "TYT" ? TYT_SUBJECTS : AYT_SUBJECTS;
 }
 
 export async function createExam(formData: FormData) {
@@ -46,7 +29,13 @@ export async function createExam(formData: FormData) {
     redirect(`/denemeler/yeni?error=${encodeURIComponent("Ad ve tarih gerekli")}`);
   }
 
-  const subs = subjectsForExam(examType);
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("high_school_track")
+    .eq("id", user.id)
+    .single();
+
+  const subs = examSubjects(examType, profile?.high_school_track ?? null);
   const totals: Totals = {};
   for (const s of subs) {
     const d = Math.max(0, Number(formData.get(`${s.id}_d`)) || 0);

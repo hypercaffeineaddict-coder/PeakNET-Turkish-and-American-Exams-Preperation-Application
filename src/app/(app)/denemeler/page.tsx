@@ -3,29 +3,10 @@ import { redirect } from "next/navigation";
 import { FlaskConical, Plus, Trash2, TrendingUp } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { deleteExam } from "./actions";
+import { SUBJECT_DISPLAY } from "@/data/exam-subjects";
 
 type SubjectTotal = { d: number; y: number; b: number; net: number };
 type Totals = Record<string, SubjectTotal>;
-
-const SUBJECT_COLOR: Record<string, string> = {
-  matematik: "#3b82f6",
-  fizik: "#ef4444",
-  kimya: "#10b981",
-  biyoloji: "#a855f7",
-  turkce: "#f59e0b",
-  sosyal: "#06b6d4",
-  fen: "#84cc16",
-};
-
-const SUBJECT_NAME: Record<string, string> = {
-  matematik: "Mat",
-  fizik: "Fiz",
-  kimya: "Kim",
-  biyoloji: "Biy",
-  turkce: "Trk",
-  sosyal: "Sos",
-  fen: "Fen",
-};
 
 export default async function DenemelerPage() {
   const supabase = await createClient();
@@ -163,11 +144,11 @@ export default async function DenemelerPage() {
                           <span
                             className="rounded-md px-1.5 py-0.5 font-medium"
                             style={{
-                              backgroundColor: `${SUBJECT_COLOR[sid]}20`,
-                              color: SUBJECT_COLOR[sid],
+                              backgroundColor: `${SUBJECT_DISPLAY[sid]?.color ?? "#888"}20`,
+                              color: SUBJECT_DISPLAY[sid]?.color ?? "#888",
                             }}
                           >
-                            {SUBJECT_NAME[sid] ?? sid}
+                            {SUBJECT_DISPLAY[sid]?.short ?? sid}
                           </span>
                           <span className="text-base font-semibold">
                             {t.net.toFixed(2)}

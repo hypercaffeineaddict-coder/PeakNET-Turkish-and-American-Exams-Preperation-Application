@@ -1,28 +1,17 @@
 "use client";
 
 import { useState } from "react";
-
-const AYT_SUBJECTS = [
-  { id: "matematik", name: "Matematik", total: 40, color: "#3b82f6" },
-  { id: "fizik", name: "Fizik", total: 14, color: "#ef4444" },
-  { id: "kimya", name: "Kimya", total: 13, color: "#10b981" },
-  { id: "biyoloji", name: "Biyoloji", total: 13, color: "#a855f7" },
-];
-
-const TYT_SUBJECTS = [
-  { id: "turkce", name: "Türkçe", total: 40, color: "#f59e0b" },
-  { id: "matematik", name: "Matematik", total: 40, color: "#3b82f6" },
-  { id: "sosyal", name: "Sosyal Bilimler", total: 20, color: "#06b6d4" },
-  { id: "fen", name: "Fen Bilimleri", total: 20, color: "#84cc16" },
-];
+import { examSubjects } from "@/data/exam-subjects";
 
 export function NetForm({
   action,
   defaultType,
+  track,
   error,
 }: {
   action: (fd: FormData) => void;
   defaultType: "TYT" | "AYT" | "YDT";
+  track: string | null;
   error: string | null;
 }) {
   const [examType, setExamType] = useState<"TYT" | "AYT" | "YDT">(defaultType);
@@ -30,8 +19,7 @@ export function NetForm({
     {},
   );
 
-  const subjects =
-    examType === "TYT" ? TYT_SUBJECTS : examType === "AYT" ? AYT_SUBJECTS : [];
+  const subjects = examSubjects(examType, track);
 
   const today = new Date().toISOString().slice(0, 10);
 
@@ -87,9 +75,10 @@ export function NetForm({
         </div>
       </section>
 
-      {examType === "YDT" ? (
+      {subjects.length === 0 ? (
         <div className="rounded-2xl border border-dashed border-border bg-card p-8 text-center text-sm text-muted-foreground">
-          YDT deneme şablonu yakında. Şimdilik TYT veya AYT seçebilirsin.
+          Bu sınav türü için ders listesi yok. Lise bölümüne göre TYT, AYT veya
+          YDT seç.
         </div>
       ) : (
         <section className="rounded-2xl border border-border bg-card p-5">
@@ -184,7 +173,7 @@ export function NetForm({
       <div className="flex justify-end">
         <button
           type="submit"
-          disabled={examType === "YDT"}
+          disabled={subjects.length === 0}
           className="rounded-md bg-primary px-6 py-2.5 font-medium text-primary-foreground transition hover:opacity-90 disabled:opacity-50"
         >
           Denemeyi kaydet
