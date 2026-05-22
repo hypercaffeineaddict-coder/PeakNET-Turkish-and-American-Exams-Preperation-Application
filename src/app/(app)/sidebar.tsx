@@ -22,6 +22,7 @@ import {
   Calculator,
   GraduationCap,
   CalendarDays,
+  ClipboardList,
 } from "lucide-react";
 import { FocusPlayer } from "@/components/focus-player";
 
@@ -30,6 +31,7 @@ const navItems = [
   { href: "/panel", label: "Panel", icon: CalendarDays },
   { href: "/konular", label: "Konular", icon: ListChecks },
   { href: "/ustalik", label: "Ustalık", icon: GraduationCap },
+  { href: "/program", label: "Program", icon: ClipboardList },
   { href: "/pomodoro", label: "Pomodoro", icon: Clock },
   { href: "/denemeler", label: "Denemeler", icon: FlaskConical },
   { href: "/yanlislar", label: "Yanlış defteri", icon: BookOpen },
