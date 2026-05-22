@@ -14,6 +14,7 @@ import { toast } from "sonner";
 import { updateProfile } from "./actions";
 import { universities } from "@/data/universities";
 import { departments } from "@/data/departments";
+import { selfSubjects } from "@/data/exam-subjects";
 
 const grades = [
   { value: 9, label: "9. sınıf" },
@@ -31,12 +32,6 @@ const tracks = [
 ];
 
 const goals = [30, 60, 120, 180, 300];
-const subjects = [
-  { id: "matematik", name: "Matematik" },
-  { id: "fizik", name: "Fizik" },
-  { id: "kimya", name: "Kimya" },
-  { id: "biyoloji", name: "Biyoloji" },
-];
 
 type Profile = {
   display_name: string;
@@ -60,6 +55,8 @@ export function ProfileForm({
   const [pending, startTransition] = useTransition();
   const [savedAt, setSavedAt] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [track, setTrack] = useState<string>(profile.high_school_track ?? "MF");
+  const subjects = selfSubjects(track);
 
   return (
     <form
@@ -149,7 +146,8 @@ export function ProfileForm({
                   name="high_school_track"
                   value={t.value}
                   className="hidden"
-                  defaultChecked={profile.high_school_track === t.value}
+                  checked={track === t.value}
+                  onChange={() => setTrack(t.value)}
                 />
                 {t.label}
               </label>

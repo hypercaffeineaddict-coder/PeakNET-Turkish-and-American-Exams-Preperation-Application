@@ -207,7 +207,8 @@ export default async function UstalikPage({
             {activeTab} müfredatı yakında
           </h2>
           <p className="mt-2 text-sm text-muted-foreground">
-            İlk sürümde MF AYT odaklıyız. AYT sekmesinden devam edebilirsin.
+            Bu sınav türü için müfredat henüz eklenmedi. TYT ve AYT
+            sekmelerinden devam edebilirsin.
           </p>
         </div>
       ) : (

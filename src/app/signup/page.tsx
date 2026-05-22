@@ -17,7 +17,7 @@ export default async function SignupPage({
       <div className="w-full max-w-sm rounded-2xl border border-border bg-card p-8 shadow-sm">
         <h1 className="text-2xl font-semibold tracking-tight">Kayıt Ol</h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          MF AYT yolculuğunu kayıt altına al.
+          YKS yolculuğunu kayıt altına al.
         </p>
 
         <form action={signupAction} className="mt-6 flex flex-col gap-3">

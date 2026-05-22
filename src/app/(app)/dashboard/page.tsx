@@ -124,7 +124,7 @@ export default async function DashboardPage() {
                 · {profile.target_university}
               </>
             ) : (
-              "MF AYT yolculuğunda bugün de iyi bir gün olsun."
+              "YKS yolculuğunda bugün de iyi bir gün olsun."
             )}
           </p>
         </div>

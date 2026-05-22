@@ -2,8 +2,7 @@
 
 import { useState } from "react";
 import { BookOpenCheck, Sparkles } from "lucide-react";
-
-type Subj = { id: string; name: string };
+import { selfSubjects } from "@/data/exam-subjects";
 
 const TRACKS: { value: string; label: string; hint: string }[] = [
   { value: "MF", label: "Sayısal (MF)", hint: "Mat·Fiz·Kim·Biy" },
@@ -11,36 +10,6 @@ const TRACKS: { value: string; label: string; hint: string }[] = [
   { value: "Sozel", label: "Sözel", hint: "Edebiyat·Tarih·Coğrafya·Felsefe" },
   { value: "Dil", label: "Dil", hint: "İngilizce ağırlıklı" },
 ];
-
-// Track'e göre kendini değerlendireceğin dersler (TYT Türkçe herkeste ortak)
-const TRACK_SUBJECTS: Record<string, Subj[]> = {
-  MF: [
-    { id: "matematik", name: "Matematik" },
-    { id: "fizik", name: "Fizik" },
-    { id: "kimya", name: "Kimya" },
-    { id: "biyoloji", name: "Biyoloji" },
-    { id: "turkce", name: "Türkçe" },
-  ],
-  TM: [
-    { id: "matematik", name: "Matematik" },
-    { id: "edebiyat", name: "Edebiyat" },
-    { id: "tarih", name: "Tarih" },
-    { id: "cografya", name: "Coğrafya" },
-    { id: "turkce", name: "Türkçe" },
-  ],
-  Sozel: [
-    { id: "edebiyat", name: "Edebiyat" },
-    { id: "tarih", name: "Tarih" },
-    { id: "cografya", name: "Coğrafya" },
-    { id: "felsefe", name: "Felsefe" },
-    { id: "din", name: "Din Kültürü" },
-    { id: "turkce", name: "Türkçe" },
-  ],
-  Dil: [
-    { id: "ingilizce", name: "Yabancı Dil" },
-    { id: "turkce", name: "Türkçe" },
-  ],
-};
 
 export function TrackSubjects({
   defaultTrack,
@@ -52,7 +21,7 @@ export function TrackSubjects({
   defaultWeak: string[];
 }) {
   const [track, setTrack] = useState<string>(defaultTrack ?? "MF");
-  const subjects = TRACK_SUBJECTS[track] ?? TRACK_SUBJECTS.MF;
+  const subjects = selfSubjects(track);
 
   return (
     <>

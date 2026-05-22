@@ -17,7 +17,7 @@ export default async function LoginPage({
       <div className="w-full max-w-sm rounded-2xl border border-border bg-card p-8 shadow-sm">
         <h1 className="text-2xl font-semibold tracking-tight">Giriş Yap</h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          MF AYT çalışma panoluna devam et.
+          YKS çalışma panona devam et.
         </p>
 
         <form action={loginAction} className="mt-6 flex flex-col gap-3">

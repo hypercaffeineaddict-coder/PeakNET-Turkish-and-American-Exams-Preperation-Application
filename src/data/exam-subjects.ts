@@ -50,6 +50,41 @@ export function examSubjects(
   return AYT_BY_TRACK[track ?? "MF"] ?? AYT_BY_TRACK.MF;
 }
 
+// Onboarding/profil "güçlü/zayıf ders" öz-değerlendirmesi için ders listesi
+// (lise bölümüne göre; TYT Türkçe herkeste ortak).
+export const SELF_SUBJECTS_BY_TRACK: Record<string, { id: string; name: string }[]> = {
+  MF: [
+    { id: "matematik", name: "Matematik" },
+    { id: "fizik", name: "Fizik" },
+    { id: "kimya", name: "Kimya" },
+    { id: "biyoloji", name: "Biyoloji" },
+    { id: "turkce", name: "Türkçe" },
+  ],
+  TM: [
+    { id: "matematik", name: "Matematik" },
+    { id: "edebiyat", name: "Edebiyat" },
+    { id: "tarih", name: "Tarih" },
+    { id: "cografya", name: "Coğrafya" },
+    { id: "turkce", name: "Türkçe" },
+  ],
+  Sozel: [
+    { id: "edebiyat", name: "Edebiyat" },
+    { id: "tarih", name: "Tarih" },
+    { id: "cografya", name: "Coğrafya" },
+    { id: "felsefe", name: "Felsefe" },
+    { id: "din", name: "Din Kültürü" },
+    { id: "turkce", name: "Türkçe" },
+  ],
+  Dil: [
+    { id: "ingilizce", name: "Yabancı Dil" },
+    { id: "turkce", name: "Türkçe" },
+  ],
+};
+
+export function selfSubjects(track: string | null) {
+  return SELF_SUBJECTS_BY_TRACK[track ?? "MF"] ?? SELF_SUBJECTS_BY_TRACK.MF;
+}
+
 // Deneme listesinde kısa etiket + renk için (id -> {short, color})
 export const SUBJECT_DISPLAY: Record<string, { short: string; color: string }> = {
   matematik: { short: "Mat", color: "#3b82f6" },

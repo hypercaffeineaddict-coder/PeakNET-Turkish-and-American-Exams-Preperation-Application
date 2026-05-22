@@ -21,8 +21,8 @@ const features = [
   },
   {
     icon: ListChecks,
-    title: "MF AYT müfredatı",
-    body: "Mat, Fizik, Kimya, Biyoloji — 68 konu, sınıf seviyesi ve öncelik etiketli.",
+    title: "Tüm YKS müfredatı",
+    body: "TYT + AYT tüm alanlar (Sayısal/TM/Sözel) — konu konu, sınıf seviyesi ve öncelik etiketli.",
     color: "text-emerald-500",
   },
   {
@@ -39,8 +39,8 @@ const features = [
   },
   {
     icon: Sparkles,
-    title: "Yerel AI asistan",
-    body: "Ollama ile cihazında çalışır — konu anlat, soru çöz, notlarınla konuş.",
+    title: "AI asistan",
+    body: "Konu anlat, soru fotoğrafını çöz, notlarınla konuş, test üret.",
     color: "text-violet-500",
   },
   {
@@ -96,7 +96,7 @@ export default async function LandingPage() {
           <div className="space-y-6">
             <span className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1 text-xs text-muted-foreground">
               <Flame size={12} className="text-orange-500" />
-              MF AYT odaklı çalışma sistemi
+              Tüm YKS alanları için çalışma sistemi
             </span>
             <h1 className="text-4xl font-semibold leading-[1.1] tracking-tight sm:text-5xl lg:text-6xl">
               YKS yolculuğunda <br />
@@ -105,8 +105,8 @@ export default async function LandingPage() {
               </span>
             </h1>
             <p className="max-w-xl text-base text-muted-foreground sm:text-lg">
-              MF müfredatını konu konu takip et, denemelerini analiz et, yanlışlarını
-              defterle, yerel AI asistanına sor. Streak'in seni terk etmesin.
+              Müfredatını konu konu takip et, denemelerini analiz et, yanlışlarını
+              defterle, AI asistanına sor. Streak&apos;in seni terk etmesin.
             </p>
             <div className="flex flex-wrap gap-3 pt-2">
               <Link
@@ -128,12 +128,12 @@ export default async function LandingPage() {
             <MotivationCard />
             <div className="grid grid-cols-2 gap-3">
               <div className="rounded-xl border border-border bg-card p-4">
-                <div className="text-2xl font-semibold">68</div>
-                <div className="text-xs text-muted-foreground">MF AYT konusu</div>
+                <div className="text-2xl font-semibold">150+</div>
+                <div className="text-xs text-muted-foreground">YKS konusu</div>
               </div>
               <div className="rounded-xl border border-border bg-card p-4">
                 <div className="text-2xl font-semibold">4</div>
-                <div className="text-xs text-muted-foreground">Temel ders</div>
+                <div className="text-xs text-muted-foreground">Puan türü (MF/TM/Sözel/Dil)</div>
               </div>
               <div className="rounded-xl border border-border bg-card p-4">
                 <div className="flex items-center gap-1 text-2xl font-semibold text-orange-500">
@@ -144,7 +144,7 @@ export default async function LandingPage() {
               </div>
               <div className="rounded-xl border border-border bg-card p-4">
                 <div className="text-2xl font-semibold">∞</div>
-                <div className="text-xs text-muted-foreground">Yerel AI sorgu</div>
+                <div className="text-xs text-muted-foreground">AI sorgu</div>
               </div>
             </div>
           </div>
