@@ -19,6 +19,7 @@ import { createClient } from "@/lib/supabase/server";
 import { MotivationCard } from "@/components/motivation-card";
 import { aiHealth } from "@/lib/ai";
 import { DailyPlanCard } from "./daily-plan";
+import { DailyQuests } from "./daily-quests";
 import { YKS_DATES, daysUntil } from "@/data/exam-date";
 
 function CountdownBanner() {
@@ -199,6 +200,7 @@ export default async function DashboardPage() {
       </div>
 
       <aside className="space-y-4 lg:sticky lg:top-6 lg:self-start">
+        <DailyQuests />
         <MotivationCard />
         <Link
           href="/diller"
