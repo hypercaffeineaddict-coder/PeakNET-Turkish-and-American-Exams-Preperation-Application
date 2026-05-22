@@ -11,14 +11,29 @@ export default async function CozPage() {
   } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  const [{ data: subjects }, health] = await Promise.all([
+  const [{ data: subjectsRaw }, { data: profile }, health] = await Promise.all([
     supabase
       .from("subjects")
-      .select("id, name, topics(id, name, display_order)")
-      .eq("exam_type", "AYT")
+      .select("id, name, exam_type, tracks, topics(id, name, display_order)")
+      .in("exam_type", ["TYT", "AYT"])
       .order("display_order"),
+    supabase
+      .from("profiles")
+      .select("high_school_track")
+      .eq("id", user.id)
+      .single(),
     aiHealth(),
   ]);
+
+  // TYT herkese; AYT derslerini lise bölümüne (track) göre filtrele
+  const track = profile?.high_school_track ?? null;
+  const subjects = ((subjectsRaw ?? []) as Array<{
+    exam_type: string;
+    tracks: string[] | null;
+  }>).filter(
+    (s) =>
+      s.exam_type !== "AYT" || !track || !s.tracks?.length || s.tracks.includes(track),
+  );
 
   const supportsImages = health.ok && health.supportsAttachments;
 

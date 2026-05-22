@@ -17,10 +17,10 @@ export default async function PomodoroPage({
   if (!user) redirect("/login");
 
   // Konu listesi (topic selector için)
-  const { data: subjects } = await supabase
+  const { data: subjectsRaw } = await supabase
     .from("subjects")
-    .select("id, name, color, topics(id, name, display_order)")
-    .eq("exam_type", "AYT")
+    .select("id, name, color, exam_type, tracks, topics(id, name, display_order)")
+    .in("exam_type", ["TYT", "AYT"])
     .order("display_order");
 
   // Bugünkü seanslar
@@ -45,11 +45,21 @@ export default async function PomodoroPage({
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("daily_goal_minutes")
+    .select("daily_goal_minutes, high_school_track")
     .eq("id", user.id)
     .single();
   const goal = profile?.daily_goal_minutes ?? 60;
   const progressPct = Math.min(100, Math.round((totalMinutes / goal) * 100));
+
+  // TYT herkese; AYT derslerini lise bölümüne (track) göre filtrele
+  const track = profile?.high_school_track ?? null;
+  const subjects = ((subjectsRaw ?? []) as Array<{
+    exam_type: string;
+    tracks: string[] | null;
+  }>).filter(
+    (s) =>
+      s.exam_type !== "AYT" || !track || !s.tracks?.length || s.tracks.includes(track),
+  );
 
   const initialTopic = topic ?? "";
   // Initial topic için subject çıkar
