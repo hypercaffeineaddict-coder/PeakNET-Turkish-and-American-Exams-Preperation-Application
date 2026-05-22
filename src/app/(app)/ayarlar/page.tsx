@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { ProfileForm } from "./profile-form";
 import { PasswordForm } from "./password-form";
 import { DeleteAccountForm } from "./delete-form";
+import { OfflineSettings } from "./offline-settings";
 
 export default async function AyarlarPage({
   searchParams,
@@ -51,6 +52,8 @@ export default async function AyarlarPage({
       />
 
       <PasswordForm />
+
+      <OfflineSettings />
 
       <DeleteAccountForm email={user.email ?? ""} initialError={danger_error} />
     </div>
