@@ -42,6 +42,7 @@ export default async function IstatistiklerPage() {
     { data: mistakes },
     { data: exams },
     { data: streak },
+    { data: profile },
   ] = await Promise.all([
     supabase
       .from("study_sessions")
@@ -60,8 +61,8 @@ export default async function IstatistiklerPage() {
       .gte("started_at", monthAgo.toISOString()),
     supabase
       .from("subjects")
-      .select("id, name, color, topics(id)")
-      .eq("exam_type", "AYT")
+      .select("id, name, color, exam_type, tracks, topics(id)")
+      .in("exam_type", ["TYT", "AYT"])
       .order("display_order"),
     supabase
       .from("topic_progress")
@@ -82,7 +83,27 @@ export default async function IstatistiklerPage() {
       .select("current_streak, longest_streak")
       .eq("user_id", user.id)
       .single(),
+    supabase
+      .from("profiles")
+      .select("high_school_track")
+      .eq("id", user.id)
+      .single(),
   ]);
+
+  // TYT herkese; AYT derslerini lise bölümüne (track) göre filtrele
+  const track = profile?.high_school_track ?? null;
+  type SubjRow = {
+    id: string;
+    name: string;
+    color: string | null;
+    exam_type: string;
+    tracks: string[] | null;
+    topics: { id: string }[];
+  };
+  const relevantSubjects = ((subjects ?? []) as SubjRow[]).filter(
+    (s) =>
+      s.exam_type !== "AYT" || !track || !s.tracks?.length || s.tracks.includes(track),
+  );
 
   // Haftalık özet
   const weekSeconds = (sessionsWeek ?? []).reduce(
@@ -118,7 +139,7 @@ export default async function IstatistiklerPage() {
       (subjectTimeMap.get(s.subject_id) ?? 0) + s.duration_seconds,
     );
   }
-  const subjectTimeData = (subjects ?? []).map((s) => ({
+  const subjectTimeData = relevantSubjects.map((s) => ({
     id: s.id,
     name: s.name,
     color: s.color,
@@ -130,7 +151,7 @@ export default async function IstatistiklerPage() {
   const progressByTopic = new Map(
     (progress ?? []).map((p) => [p.topic_id, p.status]),
   );
-  const topicStatusData = (subjects ?? []).map((s) => {
+  const topicStatusData = relevantSubjects.map((s) => {
     const topicIds = (s.topics ?? []).map((t: { id: string }) => t.id);
     let done = 0,
       inProgress = 0;

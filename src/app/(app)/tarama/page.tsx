@@ -11,14 +11,29 @@ export default async function TaramaPage() {
   } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  const [{ data: subjects }, health] = await Promise.all([
+  const [{ data: subjectsRaw }, { data: profile }, health] = await Promise.all([
     supabase
       .from("subjects")
-      .select("id, name, exam_type, color, question_count")
+      .select("id, name, exam_type, color, question_count, tracks")
       .order("exam_type")
       .order("display_order"),
+    supabase
+      .from("profiles")
+      .select("high_school_track")
+      .eq("id", user.id)
+      .single(),
     aiHealth(),
   ]);
+
+  // TYT herkese; AYT derslerini lise bölümüne (track) göre filtrele
+  const track = profile?.high_school_track ?? null;
+  const subjects = ((subjectsRaw ?? []) as Array<{
+    exam_type: string;
+    tracks: string[] | null;
+  }>).filter(
+    (s) =>
+      s.exam_type !== "AYT" || !track || !s.tracks?.length || s.tracks.includes(track),
+  );
 
   return (
     <div className="mx-auto max-w-4xl space-y-6">
