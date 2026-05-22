@@ -8,7 +8,7 @@ export function SwRegister() {
     if (process.env.NODE_ENV !== "production") return;
     if (typeof window === "undefined" || !("serviceWorker" in navigator)) return;
 
-    const onLoad = () => {
+    const register = () => {
       navigator.serviceWorker
         .register("/sw.js", { scope: "/" })
         .then((reg) => {
@@ -28,8 +28,13 @@ export function SwRegister() {
         });
     };
 
-    window.addEventListener("load", onLoad);
-    return () => window.removeEventListener("load", onLoad);
+    // useEffect, "load" olayindan SONRA calistigi icin readyState kontrolu sart
+    if (document.readyState === "complete") {
+      register();
+    } else {
+      window.addEventListener("load", register, { once: true });
+      return () => window.removeEventListener("load", register);
+    }
   }, []);
 
   return null;
