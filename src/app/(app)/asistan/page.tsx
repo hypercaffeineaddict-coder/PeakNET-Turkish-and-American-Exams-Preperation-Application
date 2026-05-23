@@ -39,13 +39,9 @@ export default async function AsistanPage() {
         <div className="flex items-start gap-3 rounded-2xl border border-amber-500/30 bg-amber-500/5 p-4 text-sm">
           <AlertTriangle size={18} className="mt-0.5 shrink-0 text-amber-500" />
           <div>
-            <div className="font-medium text-amber-500">Ollama bağlantısı yok</div>
+            <div className="font-medium text-amber-500">AI bağlantısı yok</div>
             <p className="mt-1 text-muted-foreground">
-              Terminalde{" "}
-              <code className="rounded bg-muted px-1 py-0.5 text-xs">
-                ollama serve
-              </code>{" "}
-              komutunu çalıştır.
+              {health.error ?? "AI yapılandırması eksik. GEMINI_API_KEY'i kontrol et."}
             </p>
           </div>
         </div>

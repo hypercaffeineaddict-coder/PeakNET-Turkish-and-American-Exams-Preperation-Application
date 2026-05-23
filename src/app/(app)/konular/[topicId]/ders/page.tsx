@@ -72,19 +72,11 @@ export default async function DersPage({
         <div className="flex items-start gap-3 rounded-2xl border border-amber-500/30 bg-amber-500/5 p-4 text-sm">
           <AlertTriangle size={18} className="mt-0.5 shrink-0 text-amber-500" />
           <div>
-            <div className="font-medium text-amber-500">Ollama bağlantısı yok</div>
+            <div className="font-medium text-amber-500">AI bağlantısı yok</div>
             <p className="mt-1 text-muted-foreground">
-              Yerel modeli kullanmak için terminalde{" "}
-              <code className="rounded bg-muted px-1 py-0.5 text-xs">ollama serve</code>{" "}
-              komutunu çalıştır ve model pull et:{" "}
-              <code className="rounded bg-muted px-1 py-0.5 text-xs">
-                ollama pull qwen2.5:7b
-              </code>
-              . Sonra sayfayı yenile.
+              AI dersi için yapılandırma gerekiyor.{" "}
+              {health.error ?? "GEMINI_API_KEY'i kontrol et."} Sonra sayfayı yenile.
             </p>
-            {health.error && (
-              <p className="mt-1 text-xs text-muted-foreground/70">{health.error}</p>
-            )}
           </div>
         </div>
       )}
@@ -93,15 +85,10 @@ export default async function DersPage({
         <div className="flex items-start gap-3 rounded-2xl border border-amber-500/30 bg-amber-500/5 p-4 text-sm">
           <AlertTriangle size={18} className="mt-0.5 shrink-0 text-amber-500" />
           <div>
-            <div className="font-medium text-amber-500">Model bulunamadı</div>
+            <div className="font-medium text-amber-500">AI modeli hazır değil</div>
             <p className="mt-1 text-muted-foreground">
-              Ollama çalışıyor ama beklenen chat modeli yüklü değil. Şunu çalıştır:{" "}
-              <code className="rounded bg-muted px-1 py-0.5 text-xs">
-                ollama pull qwen2.5:7b
-              </code>
-            </p>
-            <p className="mt-1 text-xs text-muted-foreground/70">
-              Yüklü modeller: {health.models.join(", ") || "—"}
+              AI sağlayıcısı bağlı ama sohbet modeli kullanılamıyor.
+              {health.error ? ` ${health.error}` : ""}
             </p>
           </div>
         </div>

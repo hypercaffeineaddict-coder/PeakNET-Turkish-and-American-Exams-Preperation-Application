@@ -246,9 +246,8 @@ export function DersChat({
         <div className="rounded-xl border border-border bg-card p-4">
           {!supportsAttachments ? (
             <p className="text-sm text-amber-500">
-              Şu anki AI sağlayıcısı (Ollama) PDF gönderimini desteklemiyor.
-              Gemini için <code className="rounded bg-muted px-1">GEMINI_API_KEY</code>{" "}
-              ekle.
+              Şu anki AI sağlayıcısı PDF gönderimini desteklemiyor. PDF&apos;li ders
+              için Gemini gerekir (<code className="rounded bg-muted px-1">GEMINI_API_KEY</code>).
             </p>
           ) : pdfs.length === 0 ? (
             <p className="text-sm text-muted-foreground">
@@ -318,7 +317,7 @@ export function DersChat({
       <div className="space-y-4 rounded-2xl border border-border bg-card p-4 min-h-[400px]">
         {messages.length === 0 && (
           <div className="flex h-full min-h-[300px] items-center justify-center text-sm text-muted-foreground">
-            {aiReady ? "AI bağlanıyor..." : "Önce Ollama'yı başlat."}
+            {aiReady ? "AI bağlanıyor..." : "AI şu an kullanılamıyor."}
           </div>
         )}
         {messages.map((m, i) => (

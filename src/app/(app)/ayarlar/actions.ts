@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 
-const TRACKS = ["MF", "TM", "EA", "Sozel", "Dil"] as const;
+const TRACKS = ["MF", "TM", "Sozel", "Dil"] as const;
 
 export async function updateProfile(formData: FormData): Promise<{ ok?: boolean; error?: string }> {
   const supabase = await createClient();
