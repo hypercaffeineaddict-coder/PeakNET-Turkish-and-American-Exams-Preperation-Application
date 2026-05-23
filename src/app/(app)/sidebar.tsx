@@ -27,6 +27,7 @@ import {
   Timer,
   Wand2,
   Music,
+  Share2,
 } from "lucide-react";
 import { FocusPlayer } from "@/components/focus-player";
 
@@ -50,6 +51,7 @@ const navItems = [
   { href: "/asistan", label: "AI Asistan", icon: Sparkles },
   { href: "/diller", label: "Diller", icon: Languages },
   { href: "/muzik", label: "Müzik", icon: Music },
+  { href: "/paylas", label: "Paylaş", icon: Share2 },
   { href: "/ayarlar", label: "Ayarlar", icon: Settings },
 ];
 
