@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import { Camera, Loader2, ImagePlus, User as UserIcon, Check } from "lucide-react";
 import { toast } from "sonner";
 import { createClient } from "@/lib/supabase/client";
@@ -23,6 +24,7 @@ export function ProfileMedia({
   displayName: string;
 }) {
   const supabase = createClient();
+  const router = useRouter();
   const [avatar, setAvatar] = useState(initialAvatar);
   const [banner, setBanner] = useState(initialBanner);
   const [bio, setBio] = useState(initialBio);
@@ -49,7 +51,12 @@ export function ProfileMedia({
         .from("avatars")
         .upload(path, file, { upsert: true, cacheControl: "3600" });
       if (error) {
-        toast.error(`Yükleme hatası: ${error.message}`);
+        const missing = /bucket not found|does not exist/i.test(error.message);
+        toast.error(
+          missing
+            ? "Görsel depolaması henüz hazır değil (0012 migration'ı çalıştırılmalı)."
+            : `Yükleme hatası: ${error.message}`,
+        );
         return;
       }
       // Eski dosyaları temizle (storage birikmesin)
@@ -74,6 +81,7 @@ export function ProfileMedia({
       if (kind === "avatar") setAvatar(url);
       else setBanner(url);
       toast.success(kind === "avatar" ? "Profil resmi güncellendi." : "Banner güncellendi.");
+      router.refresh(); // header'daki avatar anında güncellensin
     } catch (e) {
       toast.error(`Hata: ${String(e)}`);
     } finally {
