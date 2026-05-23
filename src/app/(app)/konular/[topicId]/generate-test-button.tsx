@@ -69,7 +69,7 @@ export function GenerateTestButton({
         </button>
         {!aiReady && (
           <span className="text-[11px] text-muted-foreground">
-            Ollama bağlı değil
+            AI bağlı değil
           </span>
         )}
       </div>
