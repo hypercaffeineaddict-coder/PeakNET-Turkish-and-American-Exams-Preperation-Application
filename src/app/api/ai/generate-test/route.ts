@@ -89,7 +89,12 @@ SADECE şu JSON'u dön (markdown veya ekstra metin yok):
 
   if (error) return new Response(`Kayıt hatası: ${error.message}`, { status: 500 });
 
-  return Response.json({ ok: true, resourceId: inserted.id, count: parsed.questions.length });
+  return Response.json({
+    ok: true,
+    resourceId: inserted.id,
+    count: parsed.questions.length,
+    questions: parsed.questions,
+  });
 }
 
 function parseQuestions(raw: string): { questions: Question[] } | null {
