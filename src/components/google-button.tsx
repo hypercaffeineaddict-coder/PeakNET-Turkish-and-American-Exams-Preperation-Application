@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
+import { toast } from "sonner";
 import { createClient } from "@/lib/supabase/client";
 
 export function GoogleButton({ label = "Google ile devam et" }: { label?: string }) {
@@ -17,8 +18,12 @@ export function GoogleButton({ label = "Google ile devam et" }: { label?: string
       });
       if (error) {
         setBusy(false);
-        // hata: kullanıcı tekrar deneyebilir
-        alert(`Google girişi başlatılamadı: ${error.message}`);
+        const notEnabled = /not enabled|unsupported provider/i.test(error.message);
+        toast.error(
+          notEnabled
+            ? "Google ile giriş şu an aktif değil. E-posta ile giriş yapabilirsin."
+            : `Google girişi başlatılamadı: ${error.message}`,
+        );
       }
       // başarılıysa Google'a yönleniyoruz; busy kalsın
     } catch {
