@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/server";
 import { logoutAction } from "../login/actions";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Sidebar } from "./sidebar";
+import { InstallPrompt } from "@/components/install-prompt";
 import { levelForXp } from "@/lib/gamification";
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
@@ -69,6 +70,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
 
         <main className="flex-1 p-4 sm:p-6">{children}</main>
       </div>
+      <InstallPrompt />
     </div>
   );
 }
