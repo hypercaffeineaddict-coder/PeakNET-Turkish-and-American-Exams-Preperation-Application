@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { useRouter } from "next/navigation";
 import {
   Sparkles,
   Loader2,
@@ -42,7 +41,6 @@ export function KartlarClient({
   subjects: Subject[];
   aiReady: boolean;
 }) {
-  const router = useRouter();
   const [queue, setQueue] = useState<Card[]>(due);
   const [idx, setIdx] = useState(0);
   const [flipped, setFlipped] = useState(false);
@@ -89,8 +87,9 @@ export function KartlarClient({
         toast.error(text || "Üretim başarısız");
       } else {
         const data = JSON.parse(text);
-        toast.success(`${data.added} kart üretildi.`);
-        router.refresh();
+        toast.success(`${data.added} kart üretildi. Tekrar moduna ekleniyor…`);
+        // Yeni kartlar tekrar kuyruğuna düşsün diye tam yenile (oturum state'i sıfırlanır)
+        setTimeout(() => window.location.reload(), 700);
       }
     } catch {
       toast.error("Bağlantı hatası");

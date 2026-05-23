@@ -34,11 +34,14 @@ export function DenemeSimClient({ aiReady }: { aiReady: boolean }) {
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [timeLeft, setTimeLeft] = useState(0);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const finishedRef = useRef(false);
 
   const subjectName = (id: string) =>
     subjects.find((s) => s.id === id)?.name ?? id;
 
   const finish = useCallback(async () => {
+    if (finishedRef.current) return; // çift kayıt koruması (süre bitişi + Bitir)
+    finishedRef.current = true;
     if (timerRef.current) clearInterval(timerRef.current);
     // Skor hesapla — ders bazlı d/y/b/net
     const totals: Record<string, { d: number; y: number; b: number; net: number }> = {};
@@ -102,6 +105,7 @@ export function DenemeSimClient({ aiReady }: { aiReady: boolean }) {
       setQuestions(data.questions);
       setSubjects(data.subjects);
       setAnswers({});
+      finishedRef.current = false;
       setTimeLeft(data.questions.length * SECONDS_PER_Q);
       setPhase("running");
     } catch {

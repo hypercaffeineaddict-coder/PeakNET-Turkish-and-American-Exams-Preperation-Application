@@ -51,7 +51,8 @@ export async function reviewCard(id: string, quality: number) {
     .eq("user_id", user.id);
 
   if (error) return { error: error.message };
-  revalidatePath("/kartlar");
+  // Not: revalidatePath cagrilmiyor — tekrar kuyrugunu client oturum boyunca
+  // yonetir; DB guncellendi, sonraki ziyarette taze veri gelir.
   return { ok: true };
 }
 
