@@ -20,7 +20,7 @@ export default async function PomodoroPage({
   // Konu listesi (topic selector için)
   const { data: subjectsRaw } = await supabase
     .from("subjects")
-    .select("id, name, color, exam_type, tracks, topics(id, name, display_order)")
+    .select("*, topics(id, name, display_order)")
     .in("exam_type", ["TYT", "AYT"])
     .order("display_order");
 

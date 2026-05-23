@@ -15,7 +15,7 @@ export default async function CozPage() {
   const [{ data: subjectsRaw }, { data: profile }, health] = await Promise.all([
     supabase
       .from("subjects")
-      .select("id, name, exam_type, tracks, topics(id, name, display_order)")
+      .select("*, topics(id, name, display_order)")
       .in("exam_type", ["TYT", "AYT"])
       .order("display_order"),
     supabase

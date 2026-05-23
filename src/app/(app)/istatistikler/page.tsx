@@ -62,7 +62,7 @@ export default async function IstatistiklerPage() {
       .gte("started_at", monthAgo.toISOString()),
     supabase
       .from("subjects")
-      .select("id, name, color, exam_type, tracks, topics(id)")
+      .select("*, topics(id)")
       .in("exam_type", ["TYT", "AYT"])
       .order("display_order"),
     supabase

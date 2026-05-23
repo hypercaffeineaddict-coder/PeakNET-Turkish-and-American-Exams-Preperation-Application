@@ -15,7 +15,7 @@ export default async function TaramaPage() {
   const [{ data: subjectsRaw }, { data: profile }, health] = await Promise.all([
     supabase
       .from("subjects")
-      .select("id, name, exam_type, color, question_count, tracks")
+      .select("*")
       .order("exam_type")
       .order("display_order"),
     supabase
