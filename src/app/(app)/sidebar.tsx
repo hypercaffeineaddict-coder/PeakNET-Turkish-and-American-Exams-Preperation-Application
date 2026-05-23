@@ -26,6 +26,7 @@ import {
   Layers,
   Timer,
   Wand2,
+  Music,
 } from "lucide-react";
 import { FocusPlayer } from "@/components/focus-player";
 
@@ -48,6 +49,7 @@ const navItems = [
   { href: "/basarimlar", label: "Başarımlar", icon: Trophy },
   { href: "/asistan", label: "AI Asistan", icon: Sparkles },
   { href: "/diller", label: "Diller", icon: Languages },
+  { href: "/muzik", label: "Müzik", icon: Music },
   { href: "/ayarlar", label: "Ayarlar", icon: Settings },
 ];
 
