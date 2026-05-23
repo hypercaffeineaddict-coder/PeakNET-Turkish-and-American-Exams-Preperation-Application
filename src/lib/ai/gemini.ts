@@ -95,11 +95,16 @@ function toGeminiPayload(
     }
   }
 
-  const generationConfig: Record<string, unknown> = { temperature: 0.4 };
+  // thinking kapalı: 2.5-flash karmaşık promptlarda tüm çıktı bütçesini düşünmeye
+  // harcayıp yanıtı boş bırakabiliyor (chat'te "..." sorunu). Kapatınca tüm token
+  // görünür yanıta gider. maxOutputTokens ile de yeterli alan bırakılır.
+  const generationConfig: Record<string, unknown> = {
+    temperature: 0.4,
+    thinkingConfig: { thinkingBudget: 0 },
+    maxOutputTokens: 2048,
+  };
   if (opts?.json) {
-    // JSON modu: geçerli JSON garantisi + thinking kapalı (hız + güvenilirlik)
     generationConfig.responseMimeType = "application/json";
-    generationConfig.thinkingConfig = { thinkingBudget: 0 };
     generationConfig.maxOutputTokens = 8192;
   }
 
@@ -209,6 +214,7 @@ export async function generateJson(
     generationConfig: {
       temperature: 0.4,
       responseMimeType: "application/json",
+      thinkingConfig: { thinkingBudget: 0 },
       maxOutputTokens: 8192,
     },
   };
