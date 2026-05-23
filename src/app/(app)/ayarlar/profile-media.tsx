@@ -43,13 +43,24 @@ export function ProfileMedia({
     setBusy(kind);
     try {
       const ext = (file.name.split(".").pop() || "png").toLowerCase();
-      const path = `${userId}/${kind}-${Date.now()}.${ext}`;
+      const fileName = `${kind}-${Date.now()}.${ext}`;
+      const path = `${userId}/${fileName}`;
       const { error } = await supabase.storage
         .from("avatars")
         .upload(path, file, { upsert: true, cacheControl: "3600" });
       if (error) {
         toast.error(`Yükleme hatası: ${error.message}`);
         return;
+      }
+      // Eski dosyaları temizle (storage birikmesin)
+      try {
+        const { data: list } = await supabase.storage.from("avatars").list(userId);
+        const old = (list ?? [])
+          .filter((f) => f.name.startsWith(`${kind}-`) && f.name !== fileName)
+          .map((f) => `${userId}/${f.name}`);
+        if (old.length) await supabase.storage.from("avatars").remove(old);
+      } catch {
+        // temizlik kritik değil
       }
       const { data } = supabase.storage.from("avatars").getPublicUrl(path);
       const url = data.publicUrl;

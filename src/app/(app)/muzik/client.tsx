@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import {
   beginSpotifyAuth,
   exchangeCode,
+  consumeState,
   isConnected,
   disconnectSpotify,
   getAccessToken,
@@ -38,11 +39,21 @@ export function MuzikClient({ configured }: { configured: boolean }) {
     (async () => {
       const url = new URL(window.location.href);
       const code = url.searchParams.get("code");
+      const state = url.searchParams.get("state");
       if (code) {
+        const cleanUrl = () => {
+          url.searchParams.delete("code");
+          url.searchParams.delete("state");
+          window.history.replaceState({}, "", url.pathname);
+        };
+        if (!consumeState(state)) {
+          cleanUrl();
+          toast.error("Güvenlik doğrulaması başarısız (state). Tekrar dene.");
+          setConnected(isConnected());
+          return;
+        }
         const ok = await exchangeCode(code);
-        url.searchParams.delete("code");
-        url.searchParams.delete("state");
-        window.history.replaceState({}, "", url.pathname);
+        cleanUrl();
         if (ok) {
           setConnected(true);
           toast.success("Spotify bağlandı!");

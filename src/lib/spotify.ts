@@ -12,6 +12,7 @@ export const SPOTIFY_SCOPES = [
 
 const TOKEN_KEY = "spotify_token";
 const VERIFIER_KEY = "spotify_verifier";
+const STATE_KEY = "spotify_state";
 
 type TokenData = { access_token: string; refresh_token?: string; expires_at: number };
 
@@ -42,6 +43,8 @@ export async function beginSpotifyAuth() {
   const challenge = base64url(
     await crypto.subtle.digest("SHA-256", new TextEncoder().encode(verifier)),
   );
+  const state = randomString(16);
+  localStorage.setItem(STATE_KEY, state);
   const params = new URLSearchParams({
     client_id: SPOTIFY_CLIENT_ID,
     response_type: "code",
@@ -49,8 +52,16 @@ export async function beginSpotifyAuth() {
     scope: SPOTIFY_SCOPES,
     code_challenge_method: "S256",
     code_challenge: challenge,
+    state,
   });
   window.location.href = `https://accounts.spotify.com/authorize?${params}`;
+}
+
+// Dönüşte state doğrula (CSRF). Tek kullanımlık — okunca silinir.
+export function consumeState(returned: string | null): boolean {
+  const saved = localStorage.getItem(STATE_KEY);
+  localStorage.removeItem(STATE_KEY);
+  return !!saved && saved === returned;
 }
 
 export async function exchangeCode(code: string): Promise<boolean> {
