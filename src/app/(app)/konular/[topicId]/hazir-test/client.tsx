@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { CheckCircle2, XCircle } from "lucide-react";
+import { celebrate } from "@/lib/celebrate";
 
 export type BuiltinQuestion = {
   stem: string;
@@ -112,7 +113,10 @@ export function BuiltinTestClient({ questions }: { questions: BuiltinQuestion[] 
 
       <button
         type="button"
-        onClick={() => setSubmitted(true)}
+        onClick={() => {
+          setSubmitted(true);
+          celebrate();
+        }}
         className="w-full rounded-md bg-primary px-6 py-3 font-medium text-primary-foreground transition hover:opacity-90"
       >
         Bitir ve sonucu gör ({answered}/{questions.length})

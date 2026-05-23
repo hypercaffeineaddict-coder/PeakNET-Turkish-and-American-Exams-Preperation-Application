@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { saveTaramaWrongs } from "./actions";
+import { celebrate } from "@/lib/celebrate";
 
 type Subject = {
   id: string;
@@ -84,6 +85,7 @@ export function TaramaClient({
   async function submit() {
     if (!questions) return;
     setSubmitted(true);
+    celebrate();
     const correctCount = questions.filter((q, i) => answers[i] === q.answer).length;
     const wrongs = questions
       .map((q, i) => ({ q, i }))

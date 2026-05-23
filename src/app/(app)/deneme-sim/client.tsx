@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { saveMockExam } from "./actions";
+import { celebrate } from "@/lib/celebrate";
 
 type Question = {
   stem: string;
@@ -58,6 +59,7 @@ export function DenemeSimClient({ aiReady }: { aiReady: boolean }) {
       t.net = Math.max(0, Math.round((t.d - t.y / 4) * 100) / 100);
     }
     setPhase("result");
+    celebrate("big");
     const res = await saveMockExam(examType, totals);
     if (res?.ok) {
       toast.success("Deneme sonucu denemelerine kaydedildi.");
