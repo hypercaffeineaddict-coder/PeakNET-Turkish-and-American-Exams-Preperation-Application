@@ -35,9 +35,10 @@ export async function updateSession(request: NextRequest) {
   const url = request.nextUrl.clone();
   const isPublic = PUBLIC_PATHS.includes(path);
   const isOnboarding = path.startsWith("/onboarding");
+  const isAuthCallback = path.startsWith("/auth"); // OAuth dönüş yolu (oturum henüz yok)
 
   // Oturum yok ve public değil → login'e
-  if (!user && !isPublic) {
+  if (!user && !isPublic && !isAuthCallback) {
     url.pathname = "/login";
     return NextResponse.redirect(url);
   }

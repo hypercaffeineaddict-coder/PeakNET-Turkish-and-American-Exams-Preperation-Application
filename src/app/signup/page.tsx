@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { signupAction } from "../login/actions";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { GoogleButton } from "@/components/google-button";
 
 export default async function SignupPage({
   searchParams,
@@ -20,7 +21,15 @@ export default async function SignupPage({
           YKS yolculuğunu kayıt altına al.
         </p>
 
-        <form action={signupAction} className="mt-6 flex flex-col gap-3">
+        <div className="mt-6">
+          <GoogleButton label="Google ile kayıt ol" />
+        </div>
+        <div className="my-4 flex items-center gap-3 text-xs text-muted-foreground">
+          <span className="h-px flex-1 bg-border" /> veya{" "}
+          <span className="h-px flex-1 bg-border" />
+        </div>
+
+        <form action={signupAction} className="flex flex-col gap-3">
           <label className="text-sm">
             <span className="text-muted-foreground">İsim</span>
             <input

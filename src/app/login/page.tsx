@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { loginAction } from "./actions";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { GoogleButton } from "@/components/google-button";
 
 export default async function LoginPage({
   searchParams,
@@ -20,7 +21,15 @@ export default async function LoginPage({
           YKS çalışma panona devam et.
         </p>
 
-        <form action={loginAction} className="mt-6 flex flex-col gap-3">
+        <div className="mt-6">
+          <GoogleButton label="Google ile giriş yap" />
+        </div>
+        <div className="my-4 flex items-center gap-3 text-xs text-muted-foreground">
+          <span className="h-px flex-1 bg-border" /> veya{" "}
+          <span className="h-px flex-1 bg-border" />
+        </div>
+
+        <form action={loginAction} className="flex flex-col gap-3">
           <label className="text-sm">
             <span className="text-muted-foreground">E-posta</span>
             <input
