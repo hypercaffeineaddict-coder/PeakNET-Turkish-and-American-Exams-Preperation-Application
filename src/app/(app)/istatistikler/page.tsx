@@ -8,6 +8,7 @@ import {
   AlertCircle,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
+import { subjectForTrack } from "@/data/exam-subjects";
 import { Heatmap } from "./heatmap";
 import { SubjectTimePie } from "./subject-pie";
 import { TopicStatusBars } from "./topic-status";
@@ -101,8 +102,7 @@ export default async function IstatistiklerPage() {
     topics: { id: string }[];
   };
   const relevantSubjects = ((subjects ?? []) as SubjRow[]).filter(
-    (s) =>
-      s.exam_type !== "AYT" || !track || !s.tracks?.length || s.tracks.includes(track),
+    (s) => subjectForTrack(s.exam_type, s.tracks, track),
   );
 
   // Haftalık özet

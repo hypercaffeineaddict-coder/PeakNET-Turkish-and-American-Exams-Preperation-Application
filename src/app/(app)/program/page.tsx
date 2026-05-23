@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { computeMastery } from "@/lib/mastery";
+import { subjectForTrack } from "@/data/exam-subjects";
 import { YKS_DATES, daysUntil } from "@/data/exam-date";
 
 export const metadata = { title: "Program · PeakNET" };
@@ -70,7 +71,7 @@ export default async function ProgramPage() {
   const goal = profile?.daily_goal_minutes ?? 60;
 
   const subjects = ((subjectsRaw ?? []) as SubjectRow[]).filter(
-    (s) => s.exam_type !== "AYT" || !track || !s.tracks?.length || s.tracks.includes(track),
+    (s) => subjectForTrack(s.exam_type, s.tracks, track),
   );
 
   const progressMap = new Map((progressRows ?? []).map((p) => [p.topic_id, p]));

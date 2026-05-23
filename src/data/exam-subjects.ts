@@ -85,6 +85,16 @@ export function selfSubjects(track: string | null) {
   return SELF_SUBJECTS_BY_TRACK[track ?? "MF"] ?? SELF_SUBJECTS_BY_TRACK.MF;
 }
 
+// Bir ders bu lise bölümüne (track) görünür mü?
+// TYT/diğer sınavlar herkese; AYT track'e göre; tracks boşsa herkese.
+export function subjectForTrack(
+  examType: string,
+  tracks: string[] | null | undefined,
+  track: string | null,
+): boolean {
+  return examType !== "AYT" || !track || !tracks?.length || tracks.includes(track);
+}
+
 // Deneme listesinde kısa etiket + renk için (id -> {short, color})
 export const SUBJECT_DISPLAY: Record<string, { short: string; color: string }> = {
   matematik: { short: "Mat", color: "#3b82f6" },

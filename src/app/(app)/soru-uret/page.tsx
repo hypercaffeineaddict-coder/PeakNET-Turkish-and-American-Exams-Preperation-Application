@@ -2,6 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Wand2, ScanLine, Layers, Timer } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
+import { subjectForTrack } from "@/data/exam-subjects";
 import { aiHealth } from "@/lib/ai";
 import { SoruUretClient } from "./client";
 
@@ -34,7 +35,7 @@ export default async function SoruUretPage() {
 
   const track = profile?.high_school_track ?? null;
   const subjects = ((subjectsRaw ?? []) as SubjectRow[])
-    .filter((s) => s.exam_type !== "AYT" || !track || !s.tracks?.length || s.tracks.includes(track))
+    .filter((s) => subjectForTrack(s.exam_type, s.tracks, track))
     .map((s) => ({
       id: s.id,
       name: s.name,

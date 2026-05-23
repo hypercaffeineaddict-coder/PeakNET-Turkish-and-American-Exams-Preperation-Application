@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { Clock, Flame } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
+import { subjectForTrack } from "@/data/exam-subjects";
 import { PomodoroTimer } from "./timer";
 
 export default async function PomodoroPage({
@@ -61,8 +62,7 @@ export default async function PomodoroPage({
     tracks: string[] | null;
     topics: { id: string; name: string; display_order: number }[];
   }>).filter(
-    (s) =>
-      s.exam_type !== "AYT" || !track || !s.tracks?.length || s.tracks.includes(track),
+    (s) => subjectForTrack(s.exam_type, s.tracks, track),
   );
 
   const initialTopic = topic ?? "";

@@ -10,6 +10,7 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
+import { subjectForTrack } from "@/data/exam-subjects";
 
 const examTabs = [
   { id: "AYT", label: "AYT", desc: "Alan Yeterlilik" },
@@ -99,10 +100,9 @@ export default async function KonularPage({
   // TYT/diğer sınavlar herkese açık; tracks boş olan ders de herkese görünür.
   const track = profile?.high_school_track ?? null;
   const allSubjects: SubjectRow[] = (subjectsRaw ?? []) as SubjectRow[];
-  const subjects: SubjectRow[] =
-    activeTab === "AYT" && track
-      ? allSubjects.filter((s) => !s.tracks?.length || s.tracks.includes(track))
-      : allSubjects;
+  const subjects: SubjectRow[] = allSubjects.filter((s) =>
+    subjectForTrack(activeTab, s.tracks, track),
+  );
 
   // Filtre + arama uygula
   const filteredSubjects = subjects.map((s) => {

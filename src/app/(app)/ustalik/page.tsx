@@ -7,6 +7,7 @@ import {
   Construction,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
+import { subjectForTrack } from "@/data/exam-subjects";
 import {
   computeMastery,
   MASTERY_LABELS,
@@ -118,10 +119,9 @@ export default async function UstalikPage({
   // AYT derslerini lise bölümüne (track) göre filtrele; TYT herkese açık.
   const track = profile?.high_school_track ?? null;
   const allSubjects: SubjectRow[] = (subjectsRaw ?? []) as SubjectRow[];
-  const subjects: SubjectRow[] =
-    activeTab === "AYT" && track
-      ? allSubjects.filter((s) => !s.tracks?.length || s.tracks.includes(track))
-      : allSubjects;
+  const subjects: SubjectRow[] = allSubjects.filter((s) =>
+    subjectForTrack(activeTab, s.tracks, track),
+  );
 
   const masteryFor = (t: TopicRow): MasteryInfo => {
     const p = progressMap.get(t.id);

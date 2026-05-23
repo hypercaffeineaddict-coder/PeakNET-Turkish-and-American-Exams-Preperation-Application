@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { Layers } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
+import { subjectForTrack } from "@/data/exam-subjects";
 import { aiHealth } from "@/lib/ai";
 import { KartlarClient } from "./client";
 
@@ -41,7 +42,7 @@ export default async function KartlarPage() {
 
   const track = profile?.high_school_track ?? null;
   const subjects = ((subjectsRaw ?? []) as SubjectRow[]).filter(
-    (s) => s.exam_type !== "AYT" || !track || !s.tracks?.length || s.tracks.includes(track),
+    (s) => subjectForTrack(s.exam_type, s.tracks, track),
   );
 
   const allCards = cards ?? [];

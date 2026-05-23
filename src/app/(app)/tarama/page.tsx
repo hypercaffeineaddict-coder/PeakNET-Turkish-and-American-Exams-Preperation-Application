@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { ScanLine, AlertTriangle } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
+import { subjectForTrack } from "@/data/exam-subjects";
 import { aiHealth } from "@/lib/ai";
 import { TaramaClient } from "./client";
 
@@ -31,8 +32,7 @@ export default async function TaramaPage() {
     exam_type: string;
     tracks: string[] | null;
   }>).filter(
-    (s) =>
-      s.exam_type !== "AYT" || !track || !s.tracks?.length || s.tracks.includes(track),
+    (s) => subjectForTrack(s.exam_type, s.tracks, track),
   );
 
   return (

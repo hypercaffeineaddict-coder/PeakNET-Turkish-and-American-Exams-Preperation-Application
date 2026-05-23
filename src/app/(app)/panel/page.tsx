@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { computeMastery } from "@/lib/mastery";
+import { subjectForTrack } from "@/data/exam-subjects";
 
 export const metadata = { title: "Panel · PeakNET" };
 
@@ -124,11 +125,7 @@ export default async function PanelPage() {
   // TYT herkese; AYT derslerini lise bölümüne (track) göre filtrele.
   const track = profile?.high_school_track ?? null;
   const subjects: SubjectRow[] = ((subjectsRaw ?? []) as SubjectRow[]).filter(
-    (s) =>
-      s.exam_type !== "AYT" ||
-      !track ||
-      !s.tracks?.length ||
-      s.tracks.includes(track),
+    (s) => subjectForTrack(s.exam_type, s.tracks, track),
   );
   const progressMap = new Map((progressRows ?? []).map((p) => [p.topic_id, p]));
 

@@ -25,18 +25,6 @@ export async function aiHealth(): Promise<AIHealth> {
   return { ...h, provider: "ollama", supportsAttachments: false };
 }
 
-export async function streamChat(
-  messages: import("./ollama").ChatMessage[],
-  attachments?: import("./gemini").Attachment[],
-  opts?: import("./gemini").ChatOptions,
-): Promise<ReadableStream<Uint8Array>> {
-  if (gemini.isConfigured()) {
-    return gemini.streamChat(messages, attachments, opts);
-  }
-  // Ollama PDF desteklemiyor; attachment varsa yine de mesajları gönder
-  return ollama.streamChat(messages, opts);
-}
-
 // Tek-atış JSON üretimi (tarama/test soruları için)
 export async function generateJson(
   messages: import("./ollama").ChatMessage[],
