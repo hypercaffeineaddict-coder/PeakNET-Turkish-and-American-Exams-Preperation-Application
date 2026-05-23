@@ -58,6 +58,27 @@ export async function generateJson(
   return acc;
 }
 
+// Tek-atış düz metin üretimi (chat/solve — güvenilir non-streaming)
+export async function generateText(
+  messages: import("./ollama").ChatMessage[],
+  attachments?: import("./gemini").Attachment[],
+): Promise<string> {
+  if (gemini.isConfigured()) {
+    return gemini.generateText(messages, attachments);
+  }
+  // Ollama fallback: stream'i topla
+  const stream = await ollama.streamChat(messages, {});
+  const reader = stream.getReader();
+  const decoder = new TextDecoder();
+  let acc = "";
+  while (true) {
+    const { value, done } = await reader.read();
+    if (done) break;
+    acc += decoder.decode(value, { stream: true });
+  }
+  return acc;
+}
+
 export { aiHealth as ollamaHealth };
 
 // Ham AI hatasını kullanıcı dostu mesaja çevirir (tüm AI rotalarında ortak).

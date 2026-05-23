@@ -95,16 +95,10 @@ function toGeminiPayload(
     }
   }
 
-  // thinking kapalı: 2.5-flash karmaşık promptlarda tüm çıktı bütçesini düşünmeye
-  // harcayıp yanıtı boş bırakabiliyor (chat'te "..." sorunu). Kapatınca tüm token
-  // görünür yanıta gider. maxOutputTokens ile de yeterli alan bırakılır.
-  const generationConfig: Record<string, unknown> = {
-    temperature: 0.4,
-    thinkingConfig: { thinkingBudget: 0 },
-    maxOutputTokens: 2048,
-  };
+  const generationConfig: Record<string, unknown> = { temperature: 0.4 };
   if (opts?.json) {
     generationConfig.responseMimeType = "application/json";
+    generationConfig.thinkingConfig = { thinkingBudget: 0 };
     generationConfig.maxOutputTokens = 8192;
   }
 
@@ -214,7 +208,6 @@ export async function generateJson(
     generationConfig: {
       temperature: 0.4,
       responseMimeType: "application/json",
-      thinkingConfig: { thinkingBudget: 0 },
       maxOutputTokens: 8192,
     },
   };
@@ -239,6 +232,69 @@ export async function generateJson(
       content?: { parts?: GeminiPart[] };
       finishReason?: string;
     }[];
+    promptFeedback?: { blockReason?: string };
+  };
+  const cand = data.candidates?.[0];
+  const text = (cand?.content?.parts ?? [])
+    .map((p) => p.text ?? "")
+    .join("")
+    .trim();
+  if (!text) {
+    const reason =
+      cand?.finishReason ?? data.promptFeedback?.blockReason ?? "boş yanıt";
+    throw new Error(`Gemini boş yanıt döndü (${reason})`);
+  }
+  return text;
+}
+
+// Non-streaming düz metin üretimi (chat/solve için — streaming 2.5-flash'ta
+// uzun yanıtlarda boş dönebiliyordu; bu güvenilir yol).
+export async function generateText(
+  messages: ChatMessage[],
+  attachments?: Attachment[],
+): Promise<string> {
+  if (!KEY) throw new Error("GEMINI_API_KEY tanımlı değil");
+
+  const systemMessages = messages.filter((m) => m.role === "system");
+  const chatMessages = messages.filter((m) => m.role !== "system");
+  const contents: GeminiContent[] = chatMessages.map((m) => ({
+    role: m.role === "assistant" ? "model" : "user",
+    parts: [{ text: m.content }],
+  }));
+  if (attachments && attachments.length > 0) {
+    const i = contents.findIndex((c) => c.role === "user");
+    if (i !== -1) {
+      contents[i].parts = [
+        ...attachments.map((a) => ({
+          inlineData: { mimeType: a.mimeType, data: a.base64 },
+        })),
+        ...contents[i].parts,
+      ];
+    }
+  }
+
+  const body: Record<string, unknown> = {
+    contents,
+    generationConfig: { temperature: 0.5, maxOutputTokens: 4096 },
+  };
+  if (systemMessages.length > 0) {
+    body.systemInstruction = {
+      parts: [{ text: systemMessages.map((m) => m.content).join("\n\n") }],
+    };
+  }
+
+  const url = `${API_BASE}/models/${MODEL}:generateContent?key=${KEY}`;
+  const res = await fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  });
+  if (!res.ok) {
+    const t = await res.text().catch(() => "");
+    throw new Error(`Gemini error: ${res.status} ${t.slice(0, 200)}`);
+  }
+  const data = (await res.json()) as {
+    candidates?: { content?: { parts?: GeminiPart[] }; finishReason?: string }[];
     promptFeedback?: { blockReason?: string };
   };
   const cand = data.candidates?.[0];

@@ -1,6 +1,6 @@
 import { NextRequest } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import { streamChat, friendlyAIError, type Attachment } from "@/lib/ai";
+import { generateText, friendlyAIError, type Attachment } from "@/lib/ai";
 import { consumeAIQuota } from "@/lib/ai/rate-limit";
 
 export const runtime = "nodejs";
@@ -96,19 +96,15 @@ Eğer görselde okuyamadığın bir şey varsa veya soru anlaşılmıyorsa, hang
     : "Bu YKS sorusunu adım adım çözer misin?";
 
   try {
-    const stream = await streamChat(
+    const text = await generateText(
       [
         { role: "system", content: system },
         { role: "user", content: userMsg },
       ],
       [attachment],
     );
-    return new Response(stream, {
-      headers: {
-        "Content-Type": "text/plain; charset=utf-8",
-        "Cache-Control": "no-cache, no-transform",
-        "X-Accel-Buffering": "no",
-      },
+    return new Response(text, {
+      headers: { "Content-Type": "text/plain; charset=utf-8" },
     });
   } catch (err) {
     return new Response(friendlyAIError(err), { status: 502 });

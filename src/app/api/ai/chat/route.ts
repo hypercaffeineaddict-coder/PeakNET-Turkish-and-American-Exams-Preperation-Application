@@ -1,6 +1,6 @@
 import { NextRequest } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import { streamChat, friendlyAIError, type ChatMessage, type Attachment } from "@/lib/ai";
+import { generateText, friendlyAIError, type ChatMessage, type Attachment } from "@/lib/ai";
 import { consumeAIQuota } from "@/lib/ai/rate-limit";
 
 export const runtime = "nodejs";
@@ -73,13 +73,12 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const stream = await streamChat(body.messages, attachments.length > 0 ? attachments : undefined);
-    return new Response(stream, {
-      headers: {
-        "Content-Type": "text/plain; charset=utf-8",
-        "Cache-Control": "no-cache, no-transform",
-        "X-Accel-Buffering": "no",
-      },
+    const text = await generateText(
+      body.messages,
+      attachments.length > 0 ? attachments : undefined,
+    );
+    return new Response(text, {
+      headers: { "Content-Type": "text/plain; charset=utf-8" },
     });
   } catch (err) {
     return new Response(friendlyAIError(err), { status: 502 });

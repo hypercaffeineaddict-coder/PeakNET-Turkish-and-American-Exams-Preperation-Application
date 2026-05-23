@@ -143,7 +143,7 @@ export function AsistanChat({
             }
           }}
           placeholder={
-            aiReady ? "Mesaj yaz..." : "Ollama bağlandığında aktifleşir"
+            aiReady ? "Mesaj yaz..." : "AI bağlandığında aktifleşir"
           }
           disabled={!aiReady || streaming}
           rows={2}
