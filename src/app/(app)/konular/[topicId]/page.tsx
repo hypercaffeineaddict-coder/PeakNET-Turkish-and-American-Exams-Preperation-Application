@@ -14,11 +14,13 @@ import {
   Search,
   ExternalLink,
   Check,
+  Target,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { updateProgress, importRecommendation } from "./actions";
 import { ResourceForm } from "./resource-form";
 import { ResourcesList, type Resource } from "./resources-list";
+import { GenerateTestButton } from "./generate-test-button";
 import { kindMeta, type ResourceKind } from "@/lib/resources";
 import { recommendationsFor, youtubeSearchUrl } from "@/data/recommendations";
 import { aiHealth as ollamaHealth } from "@/lib/ai";
@@ -197,8 +199,8 @@ export default async function TopicDetailPage({
               AI ile bu konuyu öğren
             </h2>
             <p className="mt-2 text-sm text-muted-foreground">
-              Yerel Ollama modelin {topic.name.toLowerCase()} konusunu sana
-              baştan anlatır, sen takıldıkça soru sorarsın.
+              AI, {topic.name.toLowerCase()} konusunu sana baştan anlatır, sen
+              takıldıkça soru sorarsın.
             </p>
             <div className="mt-4 grid gap-3 sm:grid-cols-3">
               <Link
@@ -221,6 +223,33 @@ export default async function TopicDetailPage({
               </Link>
             </div>
 
+          </section>
+
+          {/* Sorular / AI test */}
+          <section className="rounded-2xl border border-border bg-card p-6">
+            <h2 className="flex items-center gap-2 text-sm font-semibold">
+              <Target size={16} className="text-primary" />
+              Sorular
+            </h2>
+            <p className="mt-2 text-sm text-muted-foreground">
+              Bu konudan AI ile ÖSYM tarzı çoktan seçmeli test üret. Üretilen
+              testler aşağıda <strong>Kaynaklarım → Test</strong> sekmesinde
+              görünür; tıklayıp çözebilirsin.
+            </p>
+            <div className="mt-4">
+              <GenerateTestButton
+                topicId={topicId}
+                aiReady={health.ok && health.hasChatModel}
+              />
+            </div>
+            {counts.test > 0 && (
+              <Link
+                href={`/konular/${topicId}?kaynak=test`}
+                className="mt-4 inline-flex items-center gap-1.5 text-xs font-medium text-primary hover:underline"
+              >
+                <Target size={13} /> {counts.test} test hazır — çözmek için aç →
+              </Link>
+            )}
           </section>
 
           {/* Kaynaklarım */}

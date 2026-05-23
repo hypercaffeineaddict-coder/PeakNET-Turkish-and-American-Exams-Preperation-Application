@@ -25,6 +25,7 @@ import {
   ClipboardList,
   Layers,
   Timer,
+  Wand2,
 } from "lucide-react";
 import { FocusPlayer } from "@/components/focus-player";
 
@@ -41,6 +42,7 @@ const navItems = [
   { href: "/kartlar", label: "Tekrar kartları", icon: Layers },
   { href: "/coz", label: "Soru çözücü", icon: Camera },
   { href: "/tarama", label: "Tarama testi", icon: ScanLine },
+  { href: "/soru-uret", label: "Soru Üret", icon: Wand2 },
   { href: "/araclar", label: "YKS Araçları", icon: Calculator },
   { href: "/istatistikler", label: "İstatistikler", icon: BarChart3 },
   { href: "/basarimlar", label: "Başarımlar", icon: Trophy },
