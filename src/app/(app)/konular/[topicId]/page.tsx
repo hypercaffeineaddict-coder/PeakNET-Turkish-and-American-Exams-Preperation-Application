@@ -68,21 +68,28 @@ export default async function TopicDetailPage({
     .single();
   if (!topic) notFound();
 
-  const [{ data: progress }, { data: resources }, health] = await Promise.all([
-    supabase
-      .from("topic_progress")
-      .select("*")
-      .eq("user_id", user.id)
-      .eq("topic_id", topicId)
-      .maybeSingle(),
-    supabase
-      .from("topic_resources")
-      .select("*")
-      .eq("user_id", user.id)
-      .eq("topic_id", topicId)
-      .order("created_at", { ascending: false }),
-    ollamaHealth(),
-  ]);
+  const [{ data: progress }, { data: resources }, { data: builtin }, health] =
+    await Promise.all([
+      supabase
+        .from("topic_progress")
+        .select("*")
+        .eq("user_id", user.id)
+        .eq("topic_id", topicId)
+        .maybeSingle(),
+      supabase
+        .from("topic_resources")
+        .select("*")
+        .eq("user_id", user.id)
+        .eq("topic_id", topicId)
+        .order("created_at", { ascending: false }),
+      // Hazır (built-in) test var mı? (tablo yoksa sessizce null döner)
+      supabase
+        .from("builtin_questions")
+        .select("topic_id")
+        .eq("topic_id", topicId)
+        .maybeSingle(),
+      ollamaHealth(),
+    ]);
 
   const currentStatus = progress?.status ?? "not_started";
   const currentConfidence = progress?.confidence ?? 0;
@@ -236,6 +243,23 @@ export default async function TopicDetailPage({
               testler aşağıda <strong>Kaynaklarım → Test</strong> sekmesinde
               görünür; tıklayıp çözebilirsin.
             </p>
+            {builtin && (
+              <Link
+                href={`/konular/${topicId}/hazir-test`}
+                className="mt-4 flex items-center justify-between rounded-xl border border-primary/30 bg-primary/5 px-4 py-3 transition hover:bg-primary/10"
+              >
+                <div className="flex items-center gap-2.5">
+                  <Target size={16} className="text-primary" />
+                  <div>
+                    <div className="text-sm font-semibold">Hazır test çöz</div>
+                    <div className="text-xs text-muted-foreground">
+                      PeakNET hazır soruları — anında çöz, AI üretmeyi bekleme
+                    </div>
+                  </div>
+                </div>
+                <span className="text-primary">→</span>
+              </Link>
+            )}
             <div className="mt-4">
               <GenerateTestButton
                 topicId={topicId}
