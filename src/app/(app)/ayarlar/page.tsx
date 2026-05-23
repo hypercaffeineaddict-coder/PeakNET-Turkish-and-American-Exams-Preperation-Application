@@ -5,6 +5,7 @@ import { ProfileForm } from "./profile-form";
 import { PasswordForm } from "./password-form";
 import { DeleteAccountForm } from "./delete-form";
 import { OfflineSettings } from "./offline-settings";
+import { ProfileMedia } from "./profile-media";
 
 export default async function AyarlarPage({
   searchParams,
@@ -35,6 +36,14 @@ export default async function AyarlarPage({
           Profil bilgilerini güncelle, şifreni değiştir veya hesabını sil.
         </p>
       </header>
+
+      <ProfileMedia
+        userId={user.id}
+        initialAvatar={profile?.avatar_url ?? null}
+        initialBanner={profile?.banner_url ?? null}
+        initialBio={profile?.bio ?? ""}
+        displayName={profile?.display_name ?? ""}
+      />
 
       <ProfileForm
         profile={{

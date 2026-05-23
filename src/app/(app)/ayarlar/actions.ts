@@ -42,6 +42,30 @@ export async function updateProfile(formData: FormData): Promise<{ ok?: boolean;
   return { ok: true };
 }
 
+export async function updateProfileMedia(data: {
+  avatar_url?: string | null;
+  banner_url?: string | null;
+  bio?: string;
+}): Promise<{ ok?: boolean; error?: string }> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { error: "Oturum yok" };
+
+  const patch: Record<string, unknown> = {};
+  if (data.avatar_url !== undefined) patch.avatar_url = data.avatar_url;
+  if (data.banner_url !== undefined) patch.banner_url = data.banner_url;
+  if (data.bio !== undefined) patch.bio = data.bio.slice(0, 280);
+  if (Object.keys(patch).length === 0) return { ok: true };
+
+  const { error } = await supabase.from("profiles").update(patch).eq("id", user.id);
+  if (error) return { error: error.message };
+  revalidatePath("/ayarlar");
+  revalidatePath("/dashboard");
+  return { ok: true };
+}
+
 export async function changePassword(
   formData: FormData,
 ): Promise<{ ok?: boolean; error?: string }> {

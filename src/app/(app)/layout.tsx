@@ -16,7 +16,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
 
   const [{ data: streak }, { data: profile }] = await Promise.all([
     supabase.from("streaks").select("current_streak").eq("user_id", user.id).single(),
-    supabase.from("profiles").select("total_xp").eq("id", user.id).single(),
+    supabase.from("profiles").select("total_xp, avatar_url, display_name").eq("id", user.id).single(),
   ]);
 
   const lv = levelForXp(profile?.total_xp ?? 0);
@@ -48,6 +48,22 @@ export default async function AppLayout({ children }: { children: React.ReactNod
               {streak?.current_streak ?? 0}
             </Link>
             <ThemeToggle />
+            <Link
+              href="/ayarlar"
+              title="Profil"
+              className="ml-1 inline-flex h-8 w-8 items-center justify-center overflow-hidden rounded-full border border-border bg-muted text-xs font-semibold text-muted-foreground transition hover:border-primary/50"
+            >
+              {profile?.avatar_url ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={profile.avatar_url}
+                  alt="Profil"
+                  className="h-full w-full object-cover"
+                />
+              ) : (
+                (profile?.display_name ?? user.email ?? "?").slice(0, 1).toUpperCase()
+              )}
+            </Link>
           </div>
         </header>
 
