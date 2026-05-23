@@ -24,6 +24,7 @@ import {
   CalendarDays,
   ClipboardList,
   Layers,
+  Timer,
 } from "lucide-react";
 import { FocusPlayer } from "@/components/focus-player";
 
@@ -35,6 +36,7 @@ const navItems = [
   { href: "/program", label: "Program", icon: ClipboardList },
   { href: "/pomodoro", label: "Pomodoro", icon: Clock },
   { href: "/denemeler", label: "Denemeler", icon: FlaskConical },
+  { href: "/deneme-sim", label: "Deneme Sim.", icon: Timer },
   { href: "/yanlislar", label: "Yanlış defteri", icon: BookOpen },
   { href: "/kartlar", label: "Tekrar kartları", icon: Layers },
   { href: "/coz", label: "Soru çözücü", icon: Camera },
