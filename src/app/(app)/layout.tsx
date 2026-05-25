@@ -7,7 +7,8 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import { Sidebar } from "./sidebar";
 import { MobileNav } from "./mobile-nav";
 import { InstallPrompt } from "@/components/install-prompt";
-import { levelForXp, effectiveStreak } from "@/lib/gamification";
+import { levelForXp, effectiveStreak, studiedToday } from "@/lib/gamification";
+import { StreakNudge } from "@/components/streak-nudge";
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createClient();
@@ -23,6 +24,8 @@ export default async function AppLayout({ children }: { children: React.ReactNod
 
   const lv = levelForXp(profile?.total_xp ?? 0);
   const streakCount = effectiveStreak(streak);
+  // Streak canlı ama bugün çalışılmamışsa uygulama-içi hatırlatma göster.
+  const streakAtRisk = streakCount > 0 && !studiedToday(streak);
 
   return (
     <div className="flex min-h-screen">
@@ -79,6 +82,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
       </div>
       <MobileNav />
       <InstallPrompt />
+      <StreakNudge atRisk={streakAtRisk} streakCount={streakCount} />
     </div>
   );
 }

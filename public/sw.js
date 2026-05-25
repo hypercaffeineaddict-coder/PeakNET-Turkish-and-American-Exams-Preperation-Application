@@ -2,7 +2,7 @@
 // Statik varlıklar cache-first, sayfalar network-first (offline'da cache),
 // API/Supabase/Gemini her zaman network (cache'lenmez).
 
-const VERSION = "peaknet-v1";
+const VERSION = "peaknet-v2";
 const STATIC_CACHE = `${VERSION}-static`;
 const PAGE_CACHE = `${VERSION}-pages`;
 const OFFLINE_URL = "/offline.html";
@@ -106,3 +106,41 @@ async function staleWhileRevalidate(request) {
     .catch(() => hit);
   return hit || fetchPromise;
 }
+
+// ---------- Web Push (hatırlatma bildirimleri) ----------
+self.addEventListener("push", (event) => {
+  let data = {};
+  try {
+    data = event.data ? event.data.json() : {};
+  } catch {
+    data = { body: event.data ? event.data.text() : "" };
+  }
+  const title = data.title || "PeakNET";
+  const options = {
+    body: data.body || "",
+    icon: "/icon.svg",
+    badge: "/icon.svg",
+    tag: data.tag || "peaknet",
+    data: { url: data.url || "/dashboard" },
+  };
+  event.waitUntil(self.registration.showNotification(title, options));
+});
+
+self.addEventListener("notificationclick", (event) => {
+  event.notification.close();
+  const target =
+    (event.notification.data && event.notification.data.url) || "/dashboard";
+  event.waitUntil(
+    self.clients
+      .matchAll({ type: "window", includeUncontrolled: true })
+      .then((clients) => {
+        for (const c of clients) {
+          if ("focus" in c) {
+            c.navigate(target);
+            return c.focus();
+          }
+        }
+        return self.clients.openWindow(target);
+      }),
+  );
+});

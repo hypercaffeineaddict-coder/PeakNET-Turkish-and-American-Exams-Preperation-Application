@@ -1,5 +1,5 @@
 -- ============================================================
--- PeakNET — BEKLEYEN TÜM MIGRATION'LAR (0007 → 0013)
+-- PeakNET — BEKLEYEN TÜM MIGRATION'LAR (0007 → 0014)
 -- Supabase SQL Editor'a TAMAMINI yapıştır, bir kez 'Run' de.
 -- Hepsi idempotent (tekrar çalıştırmak güvenli).
 -- ============================================================
@@ -330,4 +330,33 @@ insert into public.topics (id, subject_id, name, grade, priority, display_order)
   ('ydt_durum_ifade',   'ydt_ingilizce', 'Verilen Durumda Söylenecek İfade',       0,  'low',   17)
 on conflict (id) do update set subject_id = excluded.subject_id, name = excluded.name,
   grade = excluded.grade, priority = excluded.priority, display_order = excluded.display_order;
+
+
+-- ===================== migrations/0014_push_subscriptions.sql =====================
+-- ============================================================
+-- 0014: Web Push abonelikleri (hatırlatma bildirimleri).
+-- ============================================================
+create table if not exists public.push_subscriptions (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references auth.users(id) on delete cascade,
+  endpoint text not null unique,
+  p256dh text not null,
+  auth text not null,
+  user_agent text,
+  created_at timestamptz default now(),
+  last_notified_at timestamptz
+);
+
+create index if not exists push_subscriptions_user_idx
+  on public.push_subscriptions (user_id);
+
+alter table public.push_subscriptions enable row level security;
+
+do $$
+begin
+  if not exists (select 1 from pg_policies where tablename = 'push_subscriptions' and policyname = 'own push subs') then
+    create policy "own push subs" on public.push_subscriptions for all
+      using (auth.uid() = user_id) with check (auth.uid() = user_id);
+  end if;
+end $$;
 

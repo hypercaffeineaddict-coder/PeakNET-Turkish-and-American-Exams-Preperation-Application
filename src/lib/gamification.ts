@@ -47,6 +47,20 @@ export function effectiveStreak(
   return diffDays <= 1 ? cur : 0;
 }
 
+// Bugün çalışıldı mı? (streak hatırlatması için)
+export function studiedToday(
+  streak?: { last_study_date?: string | null } | null,
+): boolean {
+  const last = streak?.last_study_date;
+  if (!last) return false;
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const lastDate = new Date(`${last}T00:00:00`);
+  if (Number.isNaN(lastDate.getTime())) return false;
+  lastDate.setHours(0, 0, 0, 0);
+  return Math.round((today.getTime() - lastDate.getTime()) / 86400000) === 0;
+}
+
 // XP ödülleri (sabit)
 export const XP = {
   pomodoro: 15, // her tamamlanan pomodoro

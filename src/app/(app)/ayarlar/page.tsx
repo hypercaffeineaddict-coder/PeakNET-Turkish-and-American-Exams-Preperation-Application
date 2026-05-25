@@ -6,6 +6,7 @@ import { PasswordForm } from "./password-form";
 import { DeleteAccountForm } from "./delete-form";
 import { OfflineSettings } from "./offline-settings";
 import { ProfileMedia } from "./profile-media";
+import { NotificationSettings } from "@/components/notification-settings";
 
 export default async function AyarlarPage({
   searchParams,
@@ -61,6 +62,8 @@ export default async function AyarlarPage({
       />
 
       <PasswordForm />
+
+      <NotificationSettings />
 
       <OfflineSettings />
 
