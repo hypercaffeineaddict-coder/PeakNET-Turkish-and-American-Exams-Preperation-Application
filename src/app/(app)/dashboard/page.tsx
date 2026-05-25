@@ -23,7 +23,7 @@ import { aiHealth } from "@/lib/ai";
 import { DailyPlanCard } from "./daily-plan";
 import { DailyQuests } from "./daily-quests";
 import { YKS_DATES, daysUntil } from "@/data/exam-date";
-import { levelForXp } from "@/lib/gamification";
+import { levelForXp, effectiveStreak } from "@/lib/gamification";
 
 function SummitStrip({ totalXp }: { totalXp: number }) {
   const tytDays = daysUntil(YKS_DATES.TYT);
@@ -108,6 +108,8 @@ export default async function DashboardPage() {
       aiHealth(),
     ]);
 
+  const streakCount = effectiveStreak(streak);
+
   const secondaryStats = [
     {
       label: "En uzun seri",
@@ -170,12 +172,12 @@ export default async function DashboardPage() {
               </span>
               <Flame
                 size={20}
-                className={`text-orange-500 ${(streak?.current_streak ?? 0) > 0 ? "animate-ember" : ""}`}
+                className={`text-orange-500 ${streakCount > 0 ? "animate-ember" : ""}`}
               />
             </div>
             <div className="mt-2 flex items-baseline gap-1.5">
               <span className="font-display text-4xl font-bold tabular-nums text-orange-500">
-                {streak?.current_streak ?? 0}
+                {streakCount}
               </span>
               <span className="text-sm text-muted-foreground">gün</span>
             </div>

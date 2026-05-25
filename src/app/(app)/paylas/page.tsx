@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { Share2 } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
-import { levelForXp } from "@/lib/gamification";
+import { levelForXp, effectiveStreak } from "@/lib/gamification";
 import { YKS_DATES, daysUntil } from "@/data/exam-date";
 import { PaylasClient } from "./client";
 
@@ -23,7 +23,7 @@ export default async function PaylasPage() {
 
   const [{ data: streak }, { data: profile }, { data: sessions }, { data: exams }] =
     await Promise.all([
-      supabase.from("streaks").select("current_streak, longest_streak").eq("user_id", user.id).single(),
+      supabase.from("streaks").select("current_streak, longest_streak, last_study_date").eq("user_id", user.id).single(),
       supabase.from("profiles").select("display_name, total_xp").eq("id", user.id).single(),
       supabase
         .from("study_sessions")
@@ -67,7 +67,7 @@ export default async function PaylasPage() {
       <PaylasClient
         name={profile?.display_name ?? "Öğrenci"}
         weekMinutes={weekMinutes}
-        streak={streak?.current_streak ?? 0}
+        streak={effectiveStreak(streak)}
         longest={streak?.longest_streak ?? 0}
         level={lv.level}
         net={lastNet}

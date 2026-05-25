@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { Trophy, Zap, Medal, Crown } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
-import { levelForXp, BADGES, type BadgeStats } from "@/lib/gamification";
+import { levelForXp, effectiveStreak, BADGES, type BadgeStats } from "@/lib/gamification";
 
 type Totals = Record<string, { net?: number }>;
 type LeaderRow = {
@@ -29,7 +29,7 @@ export default async function BasarimlarPage() {
     { data: leaderboard },
   ] = await Promise.all([
     supabase.from("profiles").select("total_xp, display_name").eq("id", user.id).single(),
-    supabase.from("streaks").select("current_streak, longest_streak").eq("user_id", user.id).single(),
+    supabase.from("streaks").select("current_streak, longest_streak, last_study_date").eq("user_id", user.id).single(),
     supabase.from("study_sessions").select("duration_seconds").eq("user_id", user.id),
     supabase.from("topic_progress").select("status").eq("user_id", user.id),
     supabase.from("exams").select("totals").eq("user_id", user.id),
@@ -61,7 +61,7 @@ export default async function BasarimlarPage() {
   const stats: BadgeStats = {
     totalXp,
     level: lv.level,
-    currentStreak: streak?.current_streak ?? 0,
+    currentStreak: effectiveStreak(streak),
     longestStreak: streak?.longest_streak ?? 0,
     totalSessions,
     totalMinutes,

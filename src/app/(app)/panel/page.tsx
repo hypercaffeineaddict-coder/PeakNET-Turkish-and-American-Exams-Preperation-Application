@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { computeMastery } from "@/lib/mastery";
+import { effectiveStreak } from "@/lib/gamification";
 import { subjectForTrack } from "@/data/exam-subjects";
 
 export const metadata = { title: "Panel · PeakNET" };
@@ -319,7 +320,7 @@ export default async function PanelPage() {
         </p>
 
         <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <SummaryStat icon={Flame} label="Güncel streak" value={`${streak?.current_streak ?? 0} gün`} />
+          <SummaryStat icon={Flame} label="Güncel streak" value={`${effectiveStreak(streak)} gün`} />
           <SummaryStat icon={Clock} label="Haftalık çalışma" value={fmtH(studyMinThis)} />
           <SummaryStat icon={GraduationCap} label="Genel ustalık" value={`%${overallMastery}`} />
           <SummaryStat

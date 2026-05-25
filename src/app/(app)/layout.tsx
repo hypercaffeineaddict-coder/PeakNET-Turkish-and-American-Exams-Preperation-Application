@@ -7,7 +7,7 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import { Sidebar } from "./sidebar";
 import { MobileNav } from "./mobile-nav";
 import { InstallPrompt } from "@/components/install-prompt";
-import { levelForXp } from "@/lib/gamification";
+import { levelForXp, effectiveStreak } from "@/lib/gamification";
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createClient();
@@ -17,11 +17,12 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   if (!user) redirect("/login");
 
   const [{ data: streak }, { data: profile }] = await Promise.all([
-    supabase.from("streaks").select("current_streak").eq("user_id", user.id).single(),
+    supabase.from("streaks").select("current_streak, last_study_date").eq("user_id", user.id).single(),
     supabase.from("profiles").select("*").eq("id", user.id).single(),
   ]);
 
   const lv = levelForXp(profile?.total_xp ?? 0);
+  const streakCount = effectiveStreak(streak);
 
   return (
     <div className="flex min-h-screen">
@@ -48,10 +49,10 @@ export default async function AppLayout({ children }: { children: React.ReactNod
             >
               <Flame
                 size={14}
-                className={(streak?.current_streak ?? 0) > 0 ? "animate-ember" : ""}
+                className={streakCount > 0 ? "animate-ember" : ""}
               />
               <span className="font-display tabular-nums">
-                {streak?.current_streak ?? 0}
+                {streakCount}
               </span>
             </Link>
             <ThemeToggle />

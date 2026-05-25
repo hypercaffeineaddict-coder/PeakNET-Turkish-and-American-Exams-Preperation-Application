@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { subjectForTrack } from "@/data/exam-subjects";
+import { effectiveStreak } from "@/lib/gamification";
 import { Heatmap } from "./heatmap";
 import { SubjectTimePie } from "./subject-pie";
 import { TopicStatusBars } from "./topic-status";
@@ -81,7 +82,7 @@ export default async function IstatistiklerPage() {
       .order("exam_date", { ascending: true }),
     supabase
       .from("streaks")
-      .select("current_streak, longest_streak")
+      .select("current_streak, longest_streak, last_study_date")
       .eq("user_id", user.id)
       .single(),
     supabase
@@ -340,14 +341,14 @@ export default async function IstatistiklerPage() {
             <h2 className="text-base font-semibold">Streak</h2>
             <p className="mt-1 text-sm text-muted-foreground">
               Şu anki seri: <span className="font-semibold text-orange-500">
-                {streak?.current_streak ?? 0} gün
+                {effectiveStreak(streak)} gün
               </span>{" "}
               · En uzun: {streak?.longest_streak ?? 0} gün
             </p>
           </div>
           <div className="flex items-center gap-1.5 font-display text-3xl font-bold tabular-nums text-orange-500">
-            <Flame size={28} className={`fill-orange-500 ${(streak?.current_streak ?? 0) > 0 ? "animate-ember" : ""}`} />
-            {streak?.current_streak ?? 0}
+            <Flame size={28} className={`fill-orange-500 ${effectiveStreak(streak) > 0 ? "animate-ember" : ""}`} />
+            {effectiveStreak(streak)}
           </div>
         </div>
       </section>

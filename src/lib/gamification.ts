@@ -26,6 +26,27 @@ export function levelForXp(totalXp: number): {
   };
 }
 
+// Streak okuma-zamanı düzeltmesi.
+// `touch_streak` RPC streak'i YALNIZCA çalışılınca günceller; çalışılmayan
+// günlerde depolanan current_streak bayat kalır (ör. 2 gün çalışmasan da 1
+// görünür). Gerçek streak'i son çalışma gününe göre hesapla: bugün veya dün
+// çalışılmışsa canlı, 2+ gün geçmişse kopmuş (0).
+export function effectiveStreak(
+  streak?: { current_streak?: number | null; last_study_date?: string | null } | null,
+): number {
+  const cur = streak?.current_streak ?? 0;
+  const last = streak?.last_study_date;
+  if (!cur || !last) return 0;
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const lastDate = new Date(`${last}T00:00:00`);
+  if (Number.isNaN(lastDate.getTime())) return cur;
+  lastDate.setHours(0, 0, 0, 0);
+  const diffDays = Math.round((today.getTime() - lastDate.getTime()) / 86400000);
+  // bugün (0) veya dün (1) → canlı; 2+ gün → kopmuş. Negatif (tz) → canlı say.
+  return diffDays <= 1 ? cur : 0;
+}
+
 // XP ödülleri (sabit)
 export const XP = {
   pomodoro: 15, // her tamamlanan pomodoro
