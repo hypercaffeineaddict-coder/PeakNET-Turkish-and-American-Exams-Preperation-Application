@@ -41,11 +41,11 @@ export function PaylasClient({
     if (!ctx) return;
 
     // Arka plan
-    ctx.fillStyle = "#0a0a0b";
+    ctx.fillStyle = "#100e15";
     ctx.fillRect(0, 0, W, H);
     const g1 = ctx.createRadialGradient(180, 160, 0, 180, 160, 700);
-    g1.addColorStop(0, "rgba(99,102,241,0.35)");
-    g1.addColorStop(1, "rgba(99,102,241,0)");
+    g1.addColorStop(0, "rgba(139,124,246,0.38)");
+    g1.addColorStop(1, "rgba(139,124,246,0)");
     ctx.fillStyle = g1;
     ctx.fillRect(0, 0, W, H);
     const g2 = ctx.createRadialGradient(W - 120, H - 200, 0, W - 120, H - 200, 700);
@@ -63,7 +63,7 @@ export function PaylasClient({
     ctx.fillStyle = "#ffffff";
     ctx.fillText("Peak", 80, 110);
     const pw = ctx.measureText("Peak").width;
-    ctx.fillStyle = "#818cf8";
+    ctx.fillStyle = "#a78bfa";
     ctx.fillText("NET", 80 + pw, 110);
 
     // Üst etiket
@@ -82,7 +82,7 @@ export function PaylasClient({
     ctx.textAlign = "center";
     ctx.font = "800 150px ui-sans-serif, system-ui, sans-serif";
     const grad = ctx.createLinearGradient(0, 280, W, 460);
-    grad.addColorStop(0, "#a5b4fc");
+    grad.addColorStop(0, "#a78bfa");
     grad.addColorStop(1, "#fb923c");
     ctx.fillStyle = grad;
     ctx.fillText(fmtHours(weekMinutes), cx, 420);

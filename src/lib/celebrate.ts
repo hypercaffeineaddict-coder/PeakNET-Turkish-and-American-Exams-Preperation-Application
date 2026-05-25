@@ -1,7 +1,7 @@
 // Kutlama animasyonu (canvas-confetti). Client bileşenlerinden çağrılır.
 // Dinamik import: paket yalnızca gerektiğinde yüklenir.
 
-const COLORS = ["#6366f1", "#fb923c", "#10b981", "#a855f7", "#38bdf8"];
+const COLORS = ["#7c6cf5", "#fb923c", "#10b981", "#a855f7", "#38bdf8"];
 
 export async function celebrate(kind: "success" | "big" = "success") {
   if (typeof window === "undefined") return;
