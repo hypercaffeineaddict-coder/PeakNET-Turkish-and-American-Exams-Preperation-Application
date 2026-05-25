@@ -29,6 +29,7 @@ import {
   Music,
   Share2,
   Target,
+  Flag,
 } from "lucide-react";
 import { FocusPlayer } from "@/components/focus-player";
 import { Logo } from "@/components/logo";
@@ -43,6 +44,7 @@ const navGroups: { title: string | null; items: NavItem[] }[] = [
   {
     title: "Çalışma",
     items: [
+      { href: "/hedef", label: "Hedef", icon: Flag },
       { href: "/panel", label: "Panel", icon: CalendarDays },
       { href: "/konular", label: "Konular", icon: ListChecks },
       { href: "/ustalik", label: "Ustalık", icon: GraduationCap },

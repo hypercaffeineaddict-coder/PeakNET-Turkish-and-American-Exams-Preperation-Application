@@ -16,6 +16,7 @@ import {
   Calculator,
   Zap,
   ArrowRight,
+  Flag,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { MotivationCard } from "@/components/motivation-card";
@@ -210,6 +211,7 @@ export default async function DashboardPage() {
             Hızlı erişim
           </h2>
           <div className="grid grid-cols-3 gap-2.5 sm:grid-cols-4 md:grid-cols-6">
+            <QuickLink href="/hedef" icon={Flag} label="Hedef" />
             <QuickLink href="/panel" icon={CalendarDays} label="Panel" />
             <QuickLink href="/konular" icon={ListChecks} label="Konular" />
             <QuickLink href="/ustalik" icon={GraduationCap} label="Ustalık" />
