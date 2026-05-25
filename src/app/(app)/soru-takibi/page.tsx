@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { Target, Trash2, AlertTriangle } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
-import { examSubjects } from "@/data/exam-subjects";
+import { examSubjects, subjectForTrack } from "@/data/exam-subjects";
 import { AddLog } from "./add-log";
 import { deleteQuestionLog } from "./actions";
 
@@ -32,17 +32,43 @@ export default async function SoruTakibiPage() {
     .single();
   const track = profile?.high_school_track ?? null;
 
-  // Ders listesi (TYT + AYT + YDT, ada göre tekille)
-  const subjMap = new Map<string, string>();
-  for (const s of [
-    ...examSubjects("TYT", track),
-    ...examSubjects("AYT", track),
-    ...examSubjects("YDT", track),
-  ]) {
-    if (!subjMap.has(s.name)) subjMap.set(s.name, s.color);
+  // Ders + konu listesi: müfredat (subjects+topics) varsa onu kullan (konu
+  // seçilince ustalığa sayılır); yoksa kaba ders listesine düş.
+  type SRow = {
+    name: string;
+    color: string | null;
+    exam_type: string;
+    tracks: string[] | null;
+    topics: { id: string; name: string; display_order: number }[];
+  };
+  const { data: subjectsRaw } = await supabase
+    .from("subjects")
+    .select("name, color, exam_type, tracks, topics(id, name, display_order)")
+    .in("exam_type", ["TYT", "AYT", "YDT"])
+    .order("display_order");
+
+  const curriculum = new Map<string, { color: string; topics: { id: string; name: string }[] }>();
+  for (const s of ((subjectsRaw ?? []) as SRow[]).filter((s) =>
+    subjectForTrack(s.exam_type, s.tracks, track),
+  )) {
+    const cur = curriculum.get(s.name) ?? { color: s.color ?? "#8b7cf6", topics: [] };
+    for (const t of (s.topics ?? []).slice().sort((a, b) => a.display_order - b.display_order)) {
+      cur.topics.push({ id: t.id, name: t.name });
+    }
+    curriculum.set(s.name, cur);
   }
-  const subjects = Array.from(subjMap, ([name, color]) => ({ name, color }));
-  const colorFor = (n: string) => subjMap.get(n) ?? "#8b7cf6";
+
+  const subjects =
+    curriculum.size > 0
+      ? Array.from(curriculum, ([name, v]) => ({ name, color: v.color, topics: v.topics }))
+      : [
+          ...examSubjects("TYT", track),
+          ...examSubjects("AYT", track),
+          ...examSubjects("YDT", track),
+        ].map((s) => ({ name: s.name, color: s.color, topics: [] as { id: string; name: string }[] }));
+
+  const colorFor = (n: string) =>
+    subjects.find((s) => s.name === n)?.color ?? "#8b7cf6";
 
   const today = new Date();
   today.setHours(0, 0, 0, 0);

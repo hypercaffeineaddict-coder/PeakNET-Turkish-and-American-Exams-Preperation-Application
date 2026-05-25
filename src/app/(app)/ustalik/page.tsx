@@ -67,7 +67,7 @@ export default async function UstalikPage({
   } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  const [{ data: subjectsRaw }, { data: progressRows }, { data: mistakeRows }, { data: sessionRows }, { data: profile }] =
+  const [{ data: subjectsRaw }, { data: progressRows }, { data: mistakeRows }, { data: sessionRows }, { data: profile }, { data: qlogRows }] =
     await Promise.all([
       supabase
         .from("subjects")
@@ -93,7 +93,22 @@ export default async function UstalikPage({
         .select("high_school_track")
         .eq("id", user.id)
         .single(),
+      supabase
+        .from("question_logs")
+        .select("topic_id, correct, wrong")
+        .eq("user_id", user.id)
+        .not("topic_id", "is", null),
     ]);
+
+  // Konu bazlı çözülen soru (ustalığa katkı): topic_id -> {solved, correct}
+  const qByTopic = new Map<string, { solved: number; correct: number }>();
+  for (const q of (qlogRows ?? []) as { topic_id: string | null; correct: number; wrong: number }[]) {
+    if (!q.topic_id) continue;
+    const cur = qByTopic.get(q.topic_id) ?? { solved: 0, correct: 0 };
+    cur.solved += (q.correct ?? 0) + (q.wrong ?? 0);
+    cur.correct += q.correct ?? 0;
+    qByTopic.set(q.topic_id, cur);
+  }
 
   const progressMap = new Map(
     (progressRows ?? []).map((p) => [p.topic_id, p]),
@@ -126,11 +141,14 @@ export default async function UstalikPage({
 
   const masteryFor = (t: TopicRow): MasteryInfo => {
     const p = progressMap.get(t.id);
+    const q = qByTopic.get(t.id);
     return computeMastery({
       status: p?.status,
       confidence: p?.confidence,
       studyMinutes: studyMap.get(t.id),
       openMistakes: mistakeMap.get(t.id),
+      questionsSolved: q?.solved,
+      questionAccuracy: q && q.solved > 0 ? (q.correct / q.solved) * 100 : undefined,
     });
   };
 

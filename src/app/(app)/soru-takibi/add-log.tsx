@@ -6,16 +6,20 @@ import { Plus, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { addQuestionLog } from "./actions";
 
-export function AddLog({ subjects }: { subjects: { name: string; color: string }[] }) {
+type Subject = { name: string; color: string; topics: { id: string; name: string }[] };
+
+export function AddLog({ subjects }: { subjects: Subject[] }) {
   const router = useRouter();
   const today = new Date().toISOString().slice(0, 10);
   const [subject, setSubject] = useState(subjects[0]?.name ?? "");
+  const [topicId, setTopicId] = useState("");
   const [correct, setCorrect] = useState(0);
   const [wrong, setWrong] = useState(0);
   const [blank, setBlank] = useState(0);
   const [date, setDate] = useState(today);
   const [pending, startTransition] = useTransition();
 
+  const topics = subjects.find((s) => s.name === subject)?.topics ?? [];
   const total = correct + wrong + blank;
   const net = Math.max(0, correct - wrong / 4);
 
@@ -26,6 +30,7 @@ export function AddLog({ subjects }: { subjects: { name: string; color: string }
     }
     const fd = new FormData();
     fd.set("subject", subject);
+    if (topicId) fd.set("topic_id", topicId);
     fd.set("correct", String(correct));
     fd.set("wrong", String(wrong));
     fd.set("blank", String(blank));
@@ -47,34 +52,60 @@ export function AddLog({ subjects }: { subjects: { name: string; color: string }
   return (
     <section className="rounded-2xl border border-border bg-card p-5">
       <h2 className="text-sm font-semibold">Çözdüğün soruları ekle</h2>
-      <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-[1.4fr_repeat(3,0.8fr)_1fr]">
-        <label className="text-sm">
-          <span className="text-xs text-muted-foreground">Ders</span>
-          <select
-            value={subject}
-            onChange={(e) => setSubject(e.target.value)}
-            className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary"
-          >
-            {subjects.map((s) => (
-              <option key={s.name} value={s.name}>
-                {s.name}
-              </option>
-            ))}
-          </select>
-        </label>
-        <Num label="Doğru" accent="text-emerald-500" value={correct} onChange={setCorrect} />
-        <Num label="Yanlış" accent="text-rose-500" value={wrong} onChange={setWrong} />
-        <Num label="Boş" accent="text-muted-foreground" value={blank} onChange={setBlank} />
-        <label className="text-sm">
-          <span className="text-xs text-muted-foreground">Tarih</span>
-          <input
-            type="date"
-            value={date}
-            max={today}
-            onChange={(e) => setDate(e.target.value)}
-            className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary"
-          />
-        </label>
+      <div className="mt-4 space-y-3">
+        <div className="grid gap-3 sm:grid-cols-2">
+          <label className="text-sm">
+            <span className="text-xs text-muted-foreground">Ders</span>
+            <select
+              value={subject}
+              onChange={(e) => {
+                setSubject(e.target.value);
+                setTopicId("");
+              }}
+              className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary"
+            >
+              {subjects.map((s) => (
+                <option key={s.name} value={s.name}>
+                  {s.name}
+                </option>
+              ))}
+            </select>
+          </label>
+          {topics.length > 0 && (
+            <label className="text-sm">
+              <span className="text-xs text-muted-foreground">
+                Konu <span className="text-muted-foreground/60">(seçersen ustalığa sayılır)</span>
+              </span>
+              <select
+                value={topicId}
+                onChange={(e) => setTopicId(e.target.value)}
+                className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary"
+              >
+                <option value="">— Konu seçmeden</option>
+                {topics.map((t) => (
+                  <option key={t.id} value={t.id}>
+                    {t.name}
+                  </option>
+                ))}
+              </select>
+            </label>
+          )}
+        </div>
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+          <Num label="Doğru" accent="text-emerald-500" value={correct} onChange={setCorrect} />
+          <Num label="Yanlış" accent="text-rose-500" value={wrong} onChange={setWrong} />
+          <Num label="Boş" accent="text-muted-foreground" value={blank} onChange={setBlank} />
+          <label className="text-sm">
+            <span className="text-xs text-muted-foreground">Tarih</span>
+            <input
+              type="date"
+              value={date}
+              max={today}
+              onChange={(e) => setDate(e.target.value)}
+              className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary"
+            />
+          </label>
+        </div>
       </div>
 
       <div className="mt-4 flex flex-wrap items-center justify-between gap-3">

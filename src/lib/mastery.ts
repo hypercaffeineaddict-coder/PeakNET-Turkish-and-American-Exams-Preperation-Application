@@ -35,6 +35,8 @@ export type MasterySignals = {
   confidence?: number; // 0-5
   studyMinutes?: number;
   openMistakes?: number;
+  questionsSolved?: number; // bu konuda çözülen soru (D+Y)
+  questionAccuracy?: number; // 0-100 isabet oranı
 };
 
 export function computeMastery(s: MasterySignals): MasteryInfo {
@@ -42,9 +44,16 @@ export function computeMastery(s: MasterySignals): MasteryInfo {
   const confidence = Math.max(0, Math.min(5, s.confidence ?? 0));
   const studyMinutes = Math.max(0, s.studyMinutes ?? 0);
   const openMistakes = Math.max(0, s.openMistakes ?? 0);
+  const questionsSolved = Math.max(0, s.questionsSolved ?? 0);
+  const accuracy = Math.max(0, Math.min(100, s.questionAccuracy ?? 0));
 
   // Hiç dokunulmamış konu → seviye 0
-  if (status === "not_started" && confidence === 0 && studyMinutes === 0) {
+  if (
+    status === "not_started" &&
+    confidence === 0 &&
+    studyMinutes === 0 &&
+    questionsSolved === 0
+  ) {
     return level(0, 0);
   }
 
@@ -52,6 +61,8 @@ export function computeMastery(s: MasterySignals): MasteryInfo {
   if (status === "in_progress") score += 5;
   else if (status === "done") score += 15;
   score += Math.min(studyMinutes / 60, 1) * 10; // 0-10
+  // Doğru pratik bonusu: ~40 soruda doygun, isabet oranıyla ölçeklenir (0-15)
+  score += Math.min(questionsSolved / 40, 1) * (accuracy / 100) * 15;
   score -= Math.min(openMistakes * 5, 20); // ceza
   score = Math.max(0, Math.min(100, Math.round(score)));
 
