@@ -26,7 +26,7 @@ export function BuiltinTestClient({ questions }: { questions: BuiltinQuestion[] 
       <div className="space-y-4">
         <section className="rounded-2xl border border-border bg-card p-6 text-center">
           <div className="text-sm text-muted-foreground">Sonuç</div>
-          <div className="mt-1 text-4xl font-bold text-primary">
+          <div className="mt-1 font-display text-5xl font-bold tabular-nums text-primary">
             {correct}/{questions.length}
           </div>
           <div className="text-xs text-muted-foreground">doğru · net {net.toFixed(2)}</div>
@@ -36,7 +36,7 @@ export function BuiltinTestClient({ questions }: { questions: BuiltinQuestion[] 
               setAnswers({});
               setSubmitted(false);
             }}
-            className="mt-4 rounded-md border border-border px-5 py-2 text-sm font-medium transition hover:bg-muted"
+            className="mt-4 rounded-lg border border-border px-5 py-2 text-sm font-medium transition hover:bg-muted"
           >
             Tekrar çöz
           </button>
@@ -98,7 +98,7 @@ export function BuiltinTestClient({ questions }: { questions: BuiltinQuestion[] 
                     key={key}
                     type="button"
                     onClick={() => setAnswers((p) => ({ ...p, [i]: key }))}
-                    className={`flex w-full items-center gap-2 rounded-md border px-3 py-2 text-left text-sm transition ${
+                    className={`flex w-full items-center gap-2 rounded-lg border px-3 py-2 text-left text-sm transition ${
                       sel ? "border-primary bg-primary/10" : "border-border bg-background hover:border-primary/40"
                     }`}
                   >
@@ -117,7 +117,7 @@ export function BuiltinTestClient({ questions }: { questions: BuiltinQuestion[] 
           setSubmitted(true);
           celebrate();
         }}
-        className="w-full rounded-md bg-primary px-6 py-3 font-medium text-primary-foreground transition hover:opacity-90"
+        className="w-full rounded-lg bg-primary px-6 py-3 font-medium text-primary-foreground transition hover:opacity-90"
       >
         Bitir ve sonucu gör ({answered}/{questions.length})
       </button>

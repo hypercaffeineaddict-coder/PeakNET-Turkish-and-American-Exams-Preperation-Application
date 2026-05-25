@@ -161,7 +161,7 @@ export function KartlarClient({
                     type="button"
                     disabled={pending}
                     onClick={() => rate(r.q)}
-                    className={`rounded-md px-2 py-2 text-sm font-medium transition disabled:opacity-50 ${r.cls}`}
+                    className={`rounded-lg px-2 py-2 text-sm font-medium transition disabled:opacity-50 ${r.cls}`}
                   >
                     {r.label}
                   </button>
@@ -192,7 +192,7 @@ export function KartlarClient({
                   setSubjectId(e.target.value);
                   setTopicId("");
                 }}
-                className="mt-1 block w-44 rounded-md border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary"
+                className="mt-1 block w-44 rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary"
               >
                 <option value="">Seç…</option>
                 {subjects.map((s) => (
@@ -206,7 +206,7 @@ export function KartlarClient({
                 value={topicId}
                 onChange={(e) => setTopicId(e.target.value)}
                 disabled={!subjectId}
-                className="mt-1 block w-52 rounded-md border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary disabled:opacity-50"
+                className="mt-1 block w-52 rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary disabled:opacity-50"
               >
                 <option value="">Seç…</option>
                 {topics.map((t) => (
@@ -222,14 +222,14 @@ export function KartlarClient({
                 max={15}
                 value={count}
                 onChange={(e) => setCount(Math.max(4, Math.min(15, Number(e.target.value) || 8)))}
-                className="mt-1 block w-20 rounded-md border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary"
+                className="mt-1 block w-20 rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary"
               />
             </label>
             <button
               type="button"
               onClick={generate}
               disabled={generating || !topicId}
-              className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition hover:opacity-90 disabled:opacity-50"
+              className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition hover:opacity-90 disabled:opacity-50"
             >
               {generating ? <Loader2 size={15} className="animate-spin" /> : <Sparkles size={15} />}
               {generating ? "Üretiliyor…" : "Üret"}
@@ -274,7 +274,7 @@ function Stat({ label, value }: { label: string; value: string }) {
   return (
     <div className="rounded-2xl border border-border bg-card p-4">
       <div className="text-xs text-muted-foreground">{label}</div>
-      <div className="mt-1 text-2xl font-semibold">{value}</div>
+      <div className="mt-1 font-display text-2xl font-bold tabular-nums">{value}</div>
     </div>
   );
 }

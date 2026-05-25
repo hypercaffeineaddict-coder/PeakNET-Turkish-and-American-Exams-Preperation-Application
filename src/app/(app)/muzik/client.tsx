@@ -195,7 +195,7 @@ export function MuzikClient({ configured }: { configured: boolean }) {
         <button
           type="button"
           onClick={() => beginSpotifyAuth()}
-          className="mt-5 inline-flex items-center gap-2 rounded-md bg-[#1DB954] px-5 py-2.5 text-sm font-semibold text-white transition hover:opacity-90"
+          className="mt-5 inline-flex items-center gap-2 rounded-lg bg-[#1DB954] px-5 py-2.5 text-sm font-semibold text-white transition hover:opacity-90"
         >
           <Music2 size={16} /> Spotify ile bağlan
         </button>
@@ -233,14 +233,14 @@ export function MuzikClient({ configured }: { configured: boolean }) {
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && search()}
             placeholder="Şarkı, sanatçı ara…"
-            className="w-full rounded-md border border-border bg-background py-2 pl-9 pr-3 text-sm outline-none focus:border-primary"
+            className="w-full rounded-lg border border-border bg-background py-2 pl-9 pr-3 text-sm outline-none focus:border-primary"
           />
         </div>
         <button
           type="button"
           onClick={search}
           disabled={searching}
-          className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition hover:opacity-90 disabled:opacity-50"
+          className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition hover:opacity-90 disabled:opacity-50"
         >
           {searching ? <Loader2 size={15} className="animate-spin" /> : <Search size={15} />}
           Ara

@@ -273,7 +273,7 @@ export default async function PanelPage() {
                   </div>
                   <div className="space-y-1.5">
                     {topics.length === 0 ? (
-                      <div className="rounded-md bg-muted/30 px-2 py-3 text-center text-[10px] text-muted-foreground">
+                      <div className="rounded-lg bg-muted/30 px-2 py-3 text-center text-[10px] text-muted-foreground">
                         Tekrar / dinlenme
                       </div>
                     ) : (
@@ -281,7 +281,7 @@ export default async function PanelPage() {
                         <Link
                           key={t.id}
                           href={`/konular/${t.id}`}
-                          className="block rounded-md border border-border bg-card px-2 py-1.5 transition hover:border-primary/50"
+                          className="block rounded-lg border border-border bg-card px-2 py-1.5 transition hover:border-primary/50"
                           title={`${t.subjectName} · ustalık ${t.score}`}
                         >
                           <div className="truncate text-[11px] font-medium leading-tight">

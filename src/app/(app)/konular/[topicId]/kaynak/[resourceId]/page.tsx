@@ -106,7 +106,7 @@ export default async function ResourceViewerPage({
             />
             <button
               type="submit"
-              className="inline-flex items-center gap-1.5 rounded-md border border-border bg-card px-3 py-1.5 text-sm transition hover:bg-muted"
+              className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-card px-3 py-1.5 text-sm transition hover:bg-muted"
             >
               <Star
                 size={14}
@@ -122,7 +122,7 @@ export default async function ResourceViewerPage({
               href={resource.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 rounded-md border border-border bg-card px-3 py-1.5 text-sm text-muted-foreground transition hover:bg-muted hover:text-foreground"
+              className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-card px-3 py-1.5 text-sm text-muted-foreground transition hover:bg-muted hover:text-foreground"
               title="Yeni sekmede aç"
             >
               <ExternalLink size={14} />
@@ -268,7 +268,7 @@ export default async function ResourceViewerPage({
             <input type="hidden" name="topic_id" value={topicId} />
             <button
               type="submit"
-              className="w-full rounded-md border border-rose-500/30 bg-rose-500/5 px-3 py-2 text-sm text-rose-500 transition hover:bg-rose-500/10"
+              className="w-full rounded-lg border border-rose-500/30 bg-rose-500/5 px-3 py-2 text-sm text-rose-500 transition hover:bg-rose-500/10"
             >
               Kaynağı sil
             </button>
@@ -319,7 +319,7 @@ function ExternalLinkEmbed({ url, title }: { url: string; title: string }) {
           <img
             src={favicon}
             alt=""
-            className="h-12 w-12 shrink-0 rounded-md border border-border bg-background p-2"
+            className="h-12 w-12 shrink-0 rounded-lg border border-border bg-background p-2"
           />
         )}
         <div className="min-w-0 flex-1">
@@ -333,7 +333,7 @@ function ExternalLinkEmbed({ url, title }: { url: string; title: string }) {
             href={url}
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-4 inline-flex items-center gap-1.5 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition hover:opacity-90"
+            className="mt-4 inline-flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition hover:opacity-90"
           >
             <ExternalLink size={14} />
             Yeni sekmede aç
@@ -346,7 +346,7 @@ function ExternalLinkEmbed({ url, title }: { url: string; title: string }) {
         <summary className="cursor-pointer text-xs text-muted-foreground hover:text-foreground">
           Yine de uygulama içinde göstermeyi dene
         </summary>
-        <div className="mt-3 overflow-hidden rounded-md border border-border">
+        <div className="mt-3 overflow-hidden rounded-lg border border-border">
           <iframe
             src={url}
             title={title}

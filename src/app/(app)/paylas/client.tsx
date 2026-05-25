@@ -208,7 +208,7 @@ export function PaylasClient({
           type="button"
           onClick={share}
           disabled={busy}
-          className="inline-flex flex-1 items-center justify-center gap-2 rounded-md bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground transition hover:opacity-90 disabled:opacity-50"
+          className="inline-flex flex-1 items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground transition hover:opacity-90 disabled:opacity-50"
         >
           {busy ? <Loader2 size={15} className="animate-spin" /> : <Share2 size={15} />}
           Paylaş
@@ -216,7 +216,7 @@ export function PaylasClient({
         <button
           type="button"
           onClick={download}
-          className="inline-flex items-center justify-center gap-2 rounded-md border border-border px-4 py-2.5 text-sm font-medium transition hover:bg-muted"
+          className="inline-flex items-center justify-center gap-2 rounded-lg border border-border px-4 py-2.5 text-sm font-medium transition hover:bg-muted"
         >
           <Download size={15} /> İndir
         </button>

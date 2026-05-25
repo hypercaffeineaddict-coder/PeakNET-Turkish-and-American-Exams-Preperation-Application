@@ -107,7 +107,7 @@ export default async function YanlislarPage({
               <span className="text-muted-foreground">Konu (opsiyonel)</span>
               <select
                 name="topic_id"
-                className="mt-1 w-full rounded-md border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary"
+                className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary"
               >
                 <option value="">— Konu seçme</option>
                 {(topics ?? []).map((t: { id: string; name: string }) => (
@@ -122,7 +122,7 @@ export default async function YanlislarPage({
               <input
                 name="reason"
                 placeholder="Dikkatsizlik / formül bilmeme / yanlış yorum..."
-                className="mt-1 w-full rounded-md border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary"
+                className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary"
               />
             </label>
           </div>
@@ -131,29 +131,29 @@ export default async function YanlislarPage({
             required
             rows={3}
             placeholder="Soru metnini (veya kısa özetini) yaz..."
-            className="w-full resize-y rounded-md border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary"
+            className="w-full resize-y rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary"
           />
           <div className="grid gap-3 sm:grid-cols-2">
             <input
               name="my_answer"
               placeholder="Senin cevabın"
-              className="rounded-md border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary"
+              className="rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary"
             />
             <input
               name="correct_answer"
               placeholder="Doğru cevap"
-              className="rounded-md border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary"
+              className="rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary"
             />
           </div>
           {error && (
-            <p className="rounded-md bg-rose-500/10 px-3 py-2 text-sm text-rose-500">
+            <p className="rounded-lg bg-rose-500/10 px-3 py-2 text-sm text-rose-500">
               {error}
             </p>
           )}
           <div className="flex justify-end">
             <button
               type="submit"
-              className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition hover:opacity-90"
+              className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition hover:opacity-90"
             >
               Defterime ekle
             </button>
@@ -218,7 +218,7 @@ function Stat({
       }`}
     >
       <div className="text-sm text-muted-foreground">{label}</div>
-      <div className={`mt-2 text-2xl font-semibold ${accent ? "text-amber-500" : ""}`}>
+      <div className={`mt-2 font-display text-2xl font-bold tabular-nums ${accent ? "text-amber-500" : ""}`}>
         {value}
       </div>
     </div>
@@ -272,7 +272,7 @@ function MistakeReviewCard({
           <input type="hidden" name="id" value={m.id} />
           <button
             type="submit"
-            className="rounded-md p-1.5 text-muted-foreground transition hover:text-rose-500"
+            className="rounded-lg p-1.5 text-muted-foreground transition hover:text-rose-500"
             title="Sil"
           >
             <Trash2 size={14} />
@@ -287,7 +287,7 @@ function MistakeReviewCard({
             <input type="hidden" name="quality" value={q.value} />
             <button
               type="submit"
-              className={`w-full rounded-md border px-3 py-2 text-sm font-medium transition hover:opacity-90 ${q.color}`}
+              className={`w-full rounded-lg border px-3 py-2 text-sm font-medium transition hover:opacity-90 ${q.color}`}
             >
               {q.label}
             </button>

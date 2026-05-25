@@ -192,7 +192,7 @@ export function AraclarClient() {
               value={hedefRank}
               onChange={(e) => setHedefRank(e.target.value)}
               placeholder="örn. 5000"
-              className="mt-1 w-full rounded-md border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary"
+              className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary"
             />
             {gerekenPuan != null && (
               <div className="mt-4 space-y-2 text-sm">
@@ -213,7 +213,7 @@ export function AraclarClient() {
                   </span>
                 </div>
                 {puanFarki != null && puanFarki <= 0 && (
-                  <p className="flex items-center gap-1.5 rounded-md bg-emerald-500/10 px-3 py-2 text-xs text-emerald-600 dark:text-emerald-400">
+                  <p className="flex items-center gap-1.5 rounded-lg bg-emerald-500/10 px-3 py-2 text-xs text-emerald-600 dark:text-emerald-400">
                     <Trophy size={13} /> Bu tempoyla hedefe ulaşıyorsun!
                   </p>
                 )}
@@ -281,14 +281,14 @@ function NetTable({
                 inputMode="numeric"
                 value={v.d}
                 onChange={(e) => onChange(f.key, "d", e.target.value, f.count)}
-                className="w-16 rounded-md border border-border bg-background px-2 py-1 text-center text-sm outline-none focus:border-primary"
+                className="w-16 rounded-lg border border-border bg-background px-2 py-1 text-center text-sm outline-none focus:border-primary"
                 placeholder="0"
               />
               <input
                 inputMode="numeric"
                 value={v.y}
                 onChange={(e) => onChange(f.key, "y", e.target.value, f.count)}
-                className="w-16 rounded-md border border-border bg-background px-2 py-1 text-center text-sm outline-none focus:border-primary"
+                className="w-16 rounded-lg border border-border bg-background px-2 py-1 text-center text-sm outline-none focus:border-primary"
                 placeholder="0"
               />
               <span className="w-14 text-right text-sm font-semibold tabular-nums">
@@ -315,7 +315,7 @@ function ResultRow({
     <div className="flex items-center justify-between">
       <dt className="text-sm text-muted-foreground">{label}</dt>
       <dd
-        className={`font-semibold tabular-nums ${big ? "text-2xl text-primary" : "text-base"}`}
+        className={`tabular-nums ${big ? "font-display text-2xl font-bold text-primary" : "text-base font-semibold"}`}
       >
         {value}
       </dd>

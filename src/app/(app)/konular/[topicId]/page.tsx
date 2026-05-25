@@ -118,7 +118,7 @@ export default async function TopicDetailPage({
         <div className="mt-2 flex flex-wrap items-baseline gap-3">
           <h1 className="text-3xl font-semibold tracking-tight">{topic.name}</h1>
           <span
-            className="rounded-md px-2 py-0.5 text-xs font-medium"
+            className="rounded-lg px-2 py-0.5 text-xs font-medium"
             style={{
               backgroundColor: `${topic.subjects?.color}20`,
               color: topic.subjects?.color,
@@ -162,7 +162,7 @@ export default async function TopicDetailPage({
               </div>
               <button
                 type="submit"
-                className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition hover:opacity-90"
+                className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition hover:opacity-90"
               >
                 Durumu kaydet
               </button>
@@ -212,19 +212,19 @@ export default async function TopicDetailPage({
             <div className="mt-4 grid gap-3 sm:grid-cols-3">
               <Link
                 href={`/konular/${topicId}/ders`}
-                className="flex items-center justify-center gap-2 rounded-md border border-violet-500/30 bg-violet-500/10 px-4 py-3 text-sm font-medium text-violet-500 transition hover:bg-violet-500/15"
+                className="flex items-center justify-center gap-2 rounded-lg border border-violet-500/30 bg-violet-500/10 px-4 py-3 text-sm font-medium text-violet-500 transition hover:bg-violet-500/15"
               >
                 <Play size={14} /> Dersi başlat
               </Link>
               <Link
                 href={`/konular/${topicId}/ders?mode=free`}
-                className="flex items-center justify-center gap-2 rounded-md border border-border bg-background px-4 py-3 text-sm transition hover:bg-muted"
+                className="flex items-center justify-center gap-2 rounded-lg border border-border bg-background px-4 py-3 text-sm transition hover:bg-muted"
               >
                 <MessageSquare size={14} /> Sohbet et
               </Link>
               <Link
                 href={`/konular/${topicId}/ders?mode=free&voice=1`}
-                className="flex items-center justify-center gap-2 rounded-md border border-border bg-background px-4 py-3 text-sm transition hover:bg-muted"
+                className="flex items-center justify-center gap-2 rounded-lg border border-border bg-background px-4 py-3 text-sm transition hover:bg-muted"
               >
                 <Mic size={14} /> Sesli konuş
               </Link>
@@ -400,7 +400,7 @@ function RecommendationsCard({
         href={ytSearch}
         target="_blank"
         rel="noopener noreferrer"
-        className="mt-3 flex items-center gap-2 rounded-md border border-red-500/30 bg-red-500/5 px-3 py-2 text-xs text-red-500 transition hover:bg-red-500/10"
+        className="mt-3 flex items-center gap-2 rounded-lg border border-red-500/30 bg-red-500/5 px-3 py-2 text-xs text-red-500 transition hover:bg-red-500/10"
       >
         <Search size={14} />
         <span className="flex-1">YouTube'da bu konuyu ara</span>
@@ -414,7 +414,7 @@ function RecommendationsCard({
             return (
               <li
                 key={rec.url}
-                className="rounded-md border border-border bg-background p-2.5"
+                className="rounded-lg border border-border bg-background p-2.5"
               >
                 <div className="flex items-start justify-between gap-2">
                   <a
@@ -439,7 +439,7 @@ function RecommendationsCard({
                       type="submit"
                       disabled={already}
                       title={already ? "Zaten listende" : "Listeme ekle"}
-                      className={`rounded-md p-1 transition ${
+                      className={`rounded-lg p-1 transition ${
                         already
                           ? "text-emerald-500"
                           : "text-muted-foreground hover:bg-muted hover:text-foreground"
@@ -491,7 +491,7 @@ function ConfidencePicker({
           <button
             type="submit"
             aria-label={`Güven seviyesi ${n}`}
-            className={`h-8 w-8 rounded-md border text-sm transition ${
+            className={`h-8 w-8 rounded-lg border text-sm transition ${
               n <= initial
                 ? "border-amber-500 bg-amber-500/10 text-amber-500"
                 : "border-border bg-background text-muted-foreground hover:bg-muted"

@@ -26,7 +26,7 @@ export default function GlobalError({
           Beklenmedik bir hata oluştu. Tekrar deneyebilir veya ana sayfaya dönebilirsin.
         </p>
         {error.message && (
-          <p className="mt-3 rounded-md bg-muted/40 px-3 py-2 text-left text-xs font-mono text-muted-foreground break-words">
+          <p className="mt-3 rounded-lg bg-muted/40 px-3 py-2 text-left text-xs font-mono text-muted-foreground break-words">
             {error.message}
           </p>
         )}
@@ -39,13 +39,13 @@ export default function GlobalError({
           <button
             type="button"
             onClick={reset}
-            className="inline-flex items-center justify-center gap-1.5 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition hover:opacity-90"
+            className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition hover:opacity-90"
           >
             <RefreshCw size={14} /> Tekrar dene
           </button>
           <Link
             href="/dashboard"
-            className="inline-flex items-center justify-center gap-1.5 rounded-md border border-border bg-card px-4 py-2 text-sm transition hover:bg-muted"
+            className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-border bg-card px-4 py-2 text-sm transition hover:bg-muted"
           >
             <Home size={14} /> Dashboard
           </Link>

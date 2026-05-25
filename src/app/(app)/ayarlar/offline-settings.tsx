@@ -144,7 +144,7 @@ export function OfflineSettings() {
           type="button"
           onClick={prepareOffline}
           disabled={busy}
-          className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition hover:opacity-90 disabled:opacity-50"
+          className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition hover:opacity-90 disabled:opacity-50"
         >
           {busy ? (
             <Loader2 size={15} className="animate-spin" />
@@ -157,7 +157,7 @@ export function OfflineSettings() {
           type="button"
           onClick={clearCache}
           disabled={busy}
-          className="inline-flex items-center gap-2 rounded-md border border-border px-4 py-2 text-sm font-medium text-muted-foreground transition hover:bg-muted hover:text-foreground disabled:opacity-50"
+          className="inline-flex items-center gap-2 rounded-lg border border-border px-4 py-2 text-sm font-medium text-muted-foreground transition hover:bg-muted hover:text-foreground disabled:opacity-50"
         >
           <Trash2 size={15} />
           Önbelleği temizle

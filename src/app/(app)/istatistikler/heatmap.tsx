@@ -48,12 +48,12 @@ export function Heatmap({
 
   function color(m: number): string {
     if (m < 0) return "transparent";
-    if (m === 0) return "rgba(99,102,241,0.07)";
-    if (m < 15) return "rgba(99,102,241,0.25)";
-    if (m < 45) return "rgba(99,102,241,0.45)";
-    if (m < 90) return "rgba(99,102,241,0.65)";
-    if (m < 180) return "rgba(99,102,241,0.82)";
-    return "rgba(99,102,241,1)";
+    if (m === 0) return "oklch(0.62 0.21 285 / 0.10)";
+    if (m < 15) return "oklch(0.62 0.21 285 / 0.30)";
+    if (m < 45) return "oklch(0.62 0.21 285 / 0.50)";
+    if (m < 90) return "oklch(0.62 0.21 285 / 0.70)";
+    if (m < 180) return "oklch(0.62 0.21 285 / 0.86)";
+    return "oklch(0.66 0.22 285)";
   }
 
   const months: { x: number; label: string }[] = [];

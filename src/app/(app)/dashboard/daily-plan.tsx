@@ -60,7 +60,7 @@ export function DailyPlanCard({ aiReady }: { aiReady: boolean }) {
           type="button"
           onClick={generate}
           disabled={pending || !aiReady}
-          className="inline-flex items-center gap-1.5 rounded-md border border-border bg-card px-3 py-1.5 text-xs transition hover:bg-muted disabled:opacity-50"
+          className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-card px-3 py-1.5 text-xs transition hover:bg-muted disabled:opacity-50"
         >
           {pending ? (
             <Loader2 size={12} className="animate-spin" />
@@ -80,7 +80,7 @@ export function DailyPlanCard({ aiReady }: { aiReady: boolean }) {
       )}
 
       {error && (
-        <p className="mt-3 rounded-md bg-rose-500/10 px-3 py-1.5 text-xs text-rose-500">
+        <p className="mt-3 rounded-lg bg-rose-500/10 px-3 py-1.5 text-xs text-rose-500">
           {error}
         </p>
       )}

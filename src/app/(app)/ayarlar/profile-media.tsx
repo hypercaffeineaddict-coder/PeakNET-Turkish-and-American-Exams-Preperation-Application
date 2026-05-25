@@ -112,7 +112,7 @@ export function ProfileMedia({
           type="button"
           onClick={() => bannerRef.current?.click()}
           disabled={busy === "banner"}
-          className="absolute right-3 top-3 inline-flex items-center gap-1.5 rounded-md bg-black/50 px-3 py-1.5 text-xs font-medium text-white backdrop-blur transition hover:bg-black/60 disabled:opacity-60"
+          className="absolute right-3 top-3 inline-flex items-center gap-1.5 rounded-lg bg-black/50 px-3 py-1.5 text-xs font-medium text-white backdrop-blur transition hover:bg-black/60 disabled:opacity-60"
         >
           {busy === "banner" ? <Loader2 size={13} className="animate-spin" /> : <ImagePlus size={13} />}
           Banner
@@ -166,7 +166,7 @@ export function ProfileMedia({
             maxLength={280}
             rows={2}
             placeholder="Kendini birkaç kelimeyle anlat…"
-            className="mt-1 w-full resize-none rounded-md border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary"
+            className="mt-1 w-full resize-none rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary"
           />
           <span className="text-[11px] text-muted-foreground">{bio.length}/280</span>
         </label>
@@ -174,7 +174,7 @@ export function ProfileMedia({
           type="button"
           onClick={saveBio}
           disabled={busy === "bio"}
-          className="mt-2 inline-flex items-center gap-1.5 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition hover:opacity-90 disabled:opacity-50"
+          className="mt-2 inline-flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition hover:opacity-90 disabled:opacity-50"
         >
           {busy === "bio" ? <Loader2 size={14} className="animate-spin" /> : bioSaved ? <Check size={14} /> : null}
           {bioSaved ? "Kaydedildi" : "Bio kaydet"}

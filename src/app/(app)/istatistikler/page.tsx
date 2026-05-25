@@ -262,8 +262,8 @@ export default async function IstatistiklerPage() {
                   style={{
                     backgroundColor:
                       l === 0
-                        ? "rgba(99,102,241,0.08)"
-                        : `rgba(99,102,241,${0.2 + l * 0.2})`,
+                        ? "oklch(0.62 0.21 285 / 0.10)"
+                        : `oklch(0.62 0.21 285 / ${0.2 + l * 0.2})`,
                   }}
                 />
               ))}

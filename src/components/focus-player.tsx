@@ -206,7 +206,7 @@ export function FocusPlayer() {
         <button
           type="button"
           onClick={() => setOpen(true)}
-          className={`flex w-full items-center gap-2 rounded-md border border-border bg-card/50 px-3 py-2 text-sm transition hover:bg-card ${
+          className={`flex w-full items-center gap-2 rounded-lg border border-border bg-card/50 px-3 py-2 text-sm transition hover:bg-card ${
             isPlaying ? "border-primary/40" : ""
           }`}
         >
@@ -248,7 +248,7 @@ export function FocusPlayer() {
               key={s.id}
               type="button"
               onClick={() => play(s.id)}
-              className={`flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-xs transition ${
+              className={`flex w-full items-center gap-2 rounded-lg px-2 py-1.5 text-left text-xs transition ${
                 active
                   ? "bg-primary/10 text-primary"
                   : "text-muted-foreground hover:bg-muted hover:text-foreground"
@@ -274,7 +274,7 @@ export function FocusPlayer() {
           <button
             type="button"
             onClick={() => play("off")}
-            className="flex w-full items-center justify-center gap-1 rounded-md border border-border bg-background py-1 text-[10px] text-muted-foreground transition hover:text-foreground"
+            className="flex w-full items-center justify-center gap-1 rounded-lg border border-border bg-background py-1 text-[10px] text-muted-foreground transition hover:text-foreground"
           >
             <Pause size={10} /> Durdur
           </button>

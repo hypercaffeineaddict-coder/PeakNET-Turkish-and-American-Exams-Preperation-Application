@@ -148,7 +148,7 @@ export function MicButton({
             ? "Sesli giriş bu tarayıcıda yok (Chrome/Edge dene)"
             : title ?? (listening ? "Dinlemeyi durdur" : "Sesli soru sor")
         }
-        className={`inline-flex h-9 w-9 items-center justify-center rounded-md border transition ${
+        className={`inline-flex h-9 w-9 items-center justify-center rounded-lg border transition ${
           listening
             ? "border-rose-500 bg-rose-500/10 text-rose-500 animate-pulse"
             : "border-border bg-card text-muted-foreground hover:text-foreground"
@@ -157,7 +157,7 @@ export function MicButton({
         {listening ? <MicOff size={16} /> : <Mic size={16} />}
       </button>
       {error && (
-        <div className="absolute right-0 top-11 z-10 w-48 rounded-md border border-border bg-card p-2 text-xs text-rose-500 shadow-lg">
+        <div className="absolute right-0 top-11 z-10 w-48 rounded-lg border border-border bg-card p-2 text-xs text-rose-500 shadow-lg">
           {error}
         </div>
       )}
@@ -191,7 +191,7 @@ export function SpeakerToggle({
           ? "Tarayıcı sesli okumayı desteklemiyor"
           : title ?? (on ? "Sesli okumayı kapat" : "Cevapları sesli oku")
       }
-      className={`inline-flex h-9 w-9 items-center justify-center rounded-md border transition ${
+      className={`inline-flex h-9 w-9 items-center justify-center rounded-lg border transition ${
         on
           ? "border-primary bg-primary/10 text-primary"
           : "border-border bg-card text-muted-foreground hover:text-foreground"

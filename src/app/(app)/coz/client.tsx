@@ -151,7 +151,7 @@ export function SolveClient({
                 type="button"
                 onClick={() => inputRef.current?.click()}
                 disabled={!aiReady}
-                className="inline-flex items-center gap-1.5 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition hover:opacity-90 disabled:opacity-50"
+                className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition hover:opacity-90 disabled:opacity-50"
               >
                 <Upload size={14} />
                 Dosya seç
@@ -160,7 +160,7 @@ export function SolveClient({
                 type="button"
                 onClick={() => cameraRef.current?.click()}
                 disabled={!aiReady}
-                className="inline-flex items-center gap-1.5 rounded-md border border-border bg-card px-4 py-2 text-sm transition hover:bg-muted disabled:opacity-50"
+                className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-card px-4 py-2 text-sm transition hover:bg-muted disabled:opacity-50"
               >
                 <Camera size={14} />
                 Kameradan çek
@@ -204,7 +204,7 @@ export function SolveClient({
               <button
                 type="button"
                 onClick={reset}
-                className="inline-flex items-center gap-1 rounded-md border border-border bg-card px-3 py-1.5 text-xs transition hover:bg-muted"
+                className="inline-flex items-center gap-1 rounded-lg border border-border bg-card px-3 py-1.5 text-xs transition hover:bg-muted"
               >
                 <X size={12} />
                 Başka soru
@@ -226,7 +226,7 @@ export function SolveClient({
                     setSubjectId(e.target.value);
                     setTopicId("");
                   }}
-                  className="mt-1 w-full rounded-md border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary"
+                  className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary"
                 >
                   <option value="">— Seçme</option>
                   {subjects.map((s) => (
@@ -242,7 +242,7 @@ export function SolveClient({
                   value={topicId}
                   onChange={(e) => setTopicId(e.target.value)}
                   disabled={!subjectId}
-                  className="mt-1 w-full rounded-md border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary disabled:opacity-50"
+                  className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary disabled:opacity-50"
                 >
                   <option value="">— Seçme</option>
                   {topics
@@ -266,7 +266,7 @@ export function SolveClient({
                 onChange={(e) => setUserNote(e.target.value)}
                 rows={3}
                 placeholder="Örn. İkinci adımda neden π/4 kullanıyoruz anlayamadım..."
-                className="mt-1 w-full resize-y rounded-md border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary"
+                className="mt-1 w-full resize-y rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary"
               />
             </label>
 
@@ -274,7 +274,7 @@ export function SolveClient({
               type="button"
               onClick={solve}
               disabled={!aiReady || solving}
-              className="inline-flex w-full items-center justify-center gap-2 rounded-md bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground transition hover:opacity-90 disabled:opacity-50"
+              className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground transition hover:opacity-90 disabled:opacity-50"
             >
               {solving ? (
                 <Loader2 size={16} className="animate-spin" />
@@ -288,7 +288,7 @@ export function SolveClient({
       )}
 
       {error && (
-        <div className="rounded-md bg-rose-500/10 px-4 py-3 text-sm text-rose-500">
+        <div className="rounded-lg bg-rose-500/10 px-4 py-3 text-sm text-rose-500">
           {error}
         </div>
       )}
@@ -303,7 +303,7 @@ export function SolveClient({
             </h2>
             <div className="flex items-center gap-2">
               {savedMistake ? (
-                <span className="inline-flex items-center gap-1 rounded-md bg-emerald-500/10 px-3 py-1.5 text-xs font-medium text-emerald-500">
+                <span className="inline-flex items-center gap-1 rounded-lg bg-emerald-500/10 px-3 py-1.5 text-xs font-medium text-emerald-500">
                   <Check size={12} />
                   Yanlış defterine eklendi
                 </span>
@@ -312,7 +312,7 @@ export function SolveClient({
                   type="button"
                   onClick={saveAsMistake}
                   disabled={saving}
-                  className="inline-flex items-center gap-1.5 rounded-md border border-amber-500/30 bg-amber-500/5 px-3 py-1.5 text-xs font-medium text-amber-500 transition hover:bg-amber-500/10 disabled:opacity-50"
+                  className="inline-flex items-center gap-1.5 rounded-lg border border-amber-500/30 bg-amber-500/5 px-3 py-1.5 text-xs font-medium text-amber-500 transition hover:bg-amber-500/10 disabled:opacity-50"
                 >
                   {saving ? (
                     <Loader2 size={12} className="animate-spin" />

@@ -44,7 +44,7 @@ export function NetForm({
               name="name"
               required
               placeholder="örn. Tonguç AYT-3"
-              className="mt-1 w-full rounded-md border border-border bg-background px-3 py-2 outline-none focus:border-primary"
+              className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 outline-none focus:border-primary"
             />
           </label>
           <label className="text-sm">
@@ -54,7 +54,7 @@ export function NetForm({
               type="date"
               required
               defaultValue={today}
-              className="mt-1 w-full rounded-md border border-border bg-background px-3 py-2 outline-none focus:border-primary"
+              className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 outline-none focus:border-primary"
             />
           </label>
           <label className="text-sm">
@@ -65,7 +65,7 @@ export function NetForm({
               onChange={(e) =>
                 setExamType(e.target.value as "TYT" | "AYT" | "YDT")
               }
-              className="mt-1 w-full rounded-md border border-border bg-background px-3 py-2 outline-none focus:border-primary"
+              className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 outline-none focus:border-primary"
             >
               <option value="AYT">AYT</option>
               <option value="TYT">TYT</option>
@@ -92,7 +92,7 @@ export function NetForm({
               return (
                 <div
                   key={s.id}
-                  className="grid items-center gap-3 rounded-md border border-border bg-background p-3 md:grid-cols-[1fr_auto_auto_auto_auto]"
+                  className="grid items-center gap-3 rounded-lg border border-border bg-background p-3 md:grid-cols-[1fr_auto_auto_auto_auto]"
                 >
                   <div className="flex items-center gap-2">
                     <span
@@ -121,7 +121,7 @@ export function NetForm({
                           },
                         }))
                       }
-                      className="w-16 rounded-md border border-border bg-background px-2 py-1 text-center text-sm outline-none focus:border-primary"
+                      className="w-16 rounded-lg border border-border bg-background px-2 py-1 text-center text-sm outline-none focus:border-primary"
                     />
                   </div>
                   <div className="flex items-center gap-1.5">
@@ -141,7 +141,7 @@ export function NetForm({
                           },
                         }))
                       }
-                      className="w-16 rounded-md border border-border bg-background px-2 py-1 text-center text-sm outline-none focus:border-primary"
+                      className="w-16 rounded-lg border border-border bg-background px-2 py-1 text-center text-sm outline-none focus:border-primary"
                     />
                   </div>
                   <div className="text-xs text-muted-foreground">B: {bos}</div>
@@ -157,7 +157,7 @@ export function NetForm({
             })}
           </div>
 
-          <div className="mt-4 flex items-center justify-between rounded-md bg-muted/40 px-4 py-3">
+          <div className="mt-4 flex items-center justify-between rounded-lg bg-muted/40 px-4 py-3">
             <span className="text-sm text-muted-foreground">Toplam net</span>
             <span className="text-xl font-semibold">{totalNet.toFixed(2)}</span>
           </div>
@@ -165,7 +165,7 @@ export function NetForm({
       )}
 
       {error && (
-        <p className="rounded-md bg-rose-500/10 px-3 py-2 text-sm text-rose-500">
+        <p className="rounded-lg bg-rose-500/10 px-3 py-2 text-sm text-rose-500">
           {error}
         </p>
       )}
@@ -174,7 +174,7 @@ export function NetForm({
         <button
           type="submit"
           disabled={subjects.length === 0}
-          className="rounded-md bg-primary px-6 py-2.5 font-medium text-primary-foreground transition hover:opacity-90 disabled:opacity-50"
+          className="rounded-lg bg-primary px-6 py-2.5 font-medium text-primary-foreground transition hover:opacity-90 disabled:opacity-50"
         >
           Denemeyi kaydet
         </button>

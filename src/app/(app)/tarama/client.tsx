@@ -141,7 +141,7 @@ export function TaramaClient({
             <select
               value={subjectId}
               onChange={(e) => setSubjectId(e.target.value)}
-              className="mt-1 w-full rounded-md border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary"
+              className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary"
             >
               <option value="">Ders seç...</option>
               {Object.entries(grouped).map(([exam, subs]) => (
@@ -164,7 +164,7 @@ export function TaramaClient({
                   key={n}
                   type="button"
                   onClick={() => setCount(n)}
-                  className={`rounded-md border px-4 py-1.5 text-sm transition ${
+                  className={`rounded-lg border px-4 py-1.5 text-sm transition ${
                     count === n
                       ? "border-primary bg-primary/10 text-primary"
                       : "border-border bg-background text-muted-foreground hover:text-foreground"
@@ -177,7 +177,7 @@ export function TaramaClient({
           </div>
 
           {error && (
-            <p className="rounded-md bg-rose-500/10 px-3 py-2 text-sm text-rose-500">
+            <p className="rounded-lg bg-rose-500/10 px-3 py-2 text-sm text-rose-500">
               {error}
             </p>
           )}
@@ -186,7 +186,7 @@ export function TaramaClient({
             type="button"
             onClick={generate}
             disabled={!aiReady || loading || !subjectId}
-            className="inline-flex w-full items-center justify-center gap-2 rounded-md bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground transition hover:opacity-90 disabled:opacity-50"
+            className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground transition hover:opacity-90 disabled:opacity-50"
           >
             {loading ? (
               <Loader2 size={16} className="animate-spin" />
@@ -212,9 +212,9 @@ export function TaramaClient({
         <div className="rounded-2xl border border-border bg-gradient-to-br from-primary/5 to-card p-6">
           <div className="flex flex-wrap items-baseline justify-between gap-3">
             <div>
-              <h3 className="text-2xl font-bold">
+              <h3 className="font-display text-3xl font-bold tabular-nums">
                 {report.score}
-                <span className="text-base text-muted-foreground">
+                <span className="text-base font-medium text-muted-foreground">
                   /{report.total}
                 </span>
               </h3>
@@ -223,7 +223,7 @@ export function TaramaClient({
             {savedWrongs && (
               <a
                 href="/yanlislar"
-                className="inline-flex items-center gap-1.5 rounded-md border border-amber-500/30 bg-amber-500/5 px-3 py-1.5 text-xs text-amber-500"
+                className="inline-flex items-center gap-1.5 rounded-lg border border-amber-500/30 bg-amber-500/5 px-3 py-1.5 text-xs text-amber-500"
               >
                 <BookOpen size={12} /> Yanlışlar deftere eklendi
               </a>
@@ -239,7 +239,7 @@ export function TaramaClient({
                 {report.weak.map(([topic, v]) => (
                   <li
                     key={topic}
-                    className="flex items-center justify-between rounded-md border border-border bg-background px-3 py-2 text-sm"
+                    className="flex items-center justify-between rounded-lg border border-border bg-background px-3 py-2 text-sm"
                   >
                     <span>{topic}</span>
                     <span className="text-muted-foreground">
@@ -258,7 +258,7 @@ export function TaramaClient({
           <button
             type="button"
             onClick={reset}
-            className="mt-4 inline-flex items-center gap-1.5 rounded-md border border-border bg-background px-3 py-1.5 text-sm transition hover:bg-muted"
+            className="mt-4 inline-flex items-center gap-1.5 rounded-lg border border-border bg-background px-3 py-1.5 text-sm transition hover:bg-muted"
           >
             <RotateCcw size={12} /> Yeni tarama
           </button>
@@ -311,7 +311,7 @@ export function TaramaClient({
                       type="button"
                       disabled={submitted}
                       onClick={() => setAnswers((a) => ({ ...a, [i]: letter }))}
-                      className={`flex items-start gap-3 rounded-md border px-3 py-2 text-left text-sm transition ${
+                      className={`flex items-start gap-3 rounded-lg border px-3 py-2 text-left text-sm transition ${
                         showCorrect
                           ? "border-emerald-500/40 bg-emerald-500/10"
                           : showWrongPick
@@ -328,7 +328,7 @@ export function TaramaClient({
                 })}
               </div>
               {submitted && q.explanation && (
-                <div className="mt-3 ml-9 rounded-md bg-muted/40 p-3">
+                <div className="mt-3 ml-9 rounded-lg bg-muted/40 p-3">
                   <p className="text-xs font-semibold">Çözüm</p>
                   <p className="mt-1 text-xs text-muted-foreground">
                     {q.explanation}
@@ -350,7 +350,7 @@ export function TaramaClient({
             type="button"
             onClick={submit}
             disabled={Object.keys(answers).length !== questions.length}
-            className="inline-flex items-center gap-2 rounded-md bg-primary px-5 py-2 text-sm font-medium text-primary-foreground transition hover:opacity-90 disabled:opacity-50"
+            className="inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-2 text-sm font-medium text-primary-foreground transition hover:opacity-90 disabled:opacity-50"
           >
             <Check size={14} /> Bitir ve sonucu gör
           </button>

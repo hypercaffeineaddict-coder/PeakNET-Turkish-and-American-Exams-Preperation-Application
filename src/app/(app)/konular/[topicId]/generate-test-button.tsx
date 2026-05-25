@@ -45,7 +45,7 @@ export function GenerateTestButton({
           <select
             value={count}
             onChange={(e) => setCount(Number(e.target.value))}
-            className="rounded-md border border-border bg-background px-2 py-1 text-foreground"
+            className="rounded-lg border border-border bg-background px-2 py-1 text-foreground"
           >
             {[3, 5, 7, 10].map((n) => (
               <option key={n} value={n}>
@@ -58,7 +58,7 @@ export function GenerateTestButton({
           type="button"
           onClick={generate}
           disabled={pending || !aiReady}
-          className="inline-flex items-center gap-1.5 rounded-md border border-violet-500/30 bg-violet-500/10 px-3 py-1.5 text-xs font-medium text-violet-500 transition hover:bg-violet-500/15 disabled:opacity-50"
+          className="inline-flex items-center gap-1.5 rounded-lg border border-violet-500/30 bg-violet-500/10 px-3 py-1.5 text-xs font-medium text-violet-500 transition hover:bg-violet-500/15 disabled:opacity-50"
         >
           {pending ? (
             <Loader2 size={12} className="animate-spin" />
@@ -79,7 +79,7 @@ export function GenerateTestButton({
         </p>
       )}
       {error && (
-        <p className="rounded-md bg-rose-500/10 px-3 py-1.5 text-xs text-rose-500">
+        <p className="rounded-lg bg-rose-500/10 px-3 py-1.5 text-xs text-rose-500">
           {error}
         </p>
       )}

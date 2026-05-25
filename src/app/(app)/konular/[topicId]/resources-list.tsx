@@ -121,7 +121,7 @@ function ResourceCard({
               <input type="hidden" name="current" value={String(r.is_favorite)} />
               <button
                 type="submit"
-                className="rounded-md p-1 text-muted-foreground transition hover:text-amber-500"
+                className="rounded-lg p-1 text-muted-foreground transition hover:text-amber-500"
                 aria-label="Favori"
               >
                 <Star
@@ -137,7 +137,7 @@ function ResourceCard({
               <input type="hidden" name="topic_id" value={topicId} />
               <button
                 type="submit"
-                className="rounded-md p-1 text-muted-foreground opacity-0 transition group-hover:opacity-100 hover:text-rose-500"
+                className="rounded-lg p-1 text-muted-foreground opacity-0 transition group-hover:opacity-100 hover:text-rose-500"
                 aria-label="Sil"
               >
                 <Trash2 size={14} />

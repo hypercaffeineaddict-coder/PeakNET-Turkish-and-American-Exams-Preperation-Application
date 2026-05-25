@@ -274,7 +274,7 @@ export function PomodoroTimer({
         <button
           type="button"
           onClick={() => setSettingsOpen((o) => !o)}
-          className="inline-flex items-center gap-1 rounded-md border border-border bg-background px-3 py-1.5 text-xs text-muted-foreground transition hover:text-foreground"
+          className="inline-flex items-center gap-1 rounded-lg border border-border bg-background px-3 py-1.5 text-xs text-muted-foreground transition hover:text-foreground"
         >
           <Settings2 size={12} />
           Süreler
@@ -294,7 +294,7 @@ export function PomodoroTimer({
                   key={p.name}
                   type="button"
                   onClick={() => applyPreset(p)}
-                  className="rounded-md border border-border bg-background px-3 py-1.5 text-xs transition hover:bg-muted"
+                  className="rounded-lg border border-border bg-background px-3 py-1.5 text-xs transition hover:bg-muted"
                 >
                   {p.name} · {p.work}/{p.short}/{p.long}
                 </button>
@@ -405,7 +405,7 @@ export function PomodoroTimer({
         </div>
 
         {savedMsg && (
-          <p className="mt-4 rounded-md bg-emerald-500/10 px-3 py-1.5 text-sm text-emerald-500">
+          <p className="mt-4 rounded-lg bg-emerald-500/10 px-3 py-1.5 text-sm text-emerald-500">
             {savedMsg}
           </p>
         )}
@@ -423,7 +423,7 @@ export function PomodoroTimer({
               setSubjectId(e.target.value);
               setTopicId("");
             }}
-            className="mt-1 w-full rounded-md border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary"
+            className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary"
           >
             <option value="">Genel çalışma</option>
             {subjects.map((s) => (
@@ -439,7 +439,7 @@ export function PomodoroTimer({
             value={topicId}
             onChange={(e) => setTopicId(e.target.value)}
             disabled={!subjectId}
-            className="mt-1 w-full rounded-md border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary disabled:opacity-50"
+            className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary disabled:opacity-50"
           >
             <option value="">— Konusuz</option>
             {topicsForSubject
@@ -473,14 +473,14 @@ function DurationInput({
         <button
           type="button"
           onClick={() => onChange(value - 5)}
-          className="rounded-md border border-border bg-background px-2 py-1 text-xs hover:bg-muted"
+          className="rounded-lg border border-border bg-background px-2 py-1 text-xs hover:bg-muted"
         >
           -5
         </button>
         <button
           type="button"
           onClick={() => onChange(value - 1)}
-          className="rounded-md border border-border bg-background px-2 py-1 text-xs hover:bg-muted"
+          className="rounded-lg border border-border bg-background px-2 py-1 text-xs hover:bg-muted"
         >
           -1
         </button>
@@ -490,19 +490,19 @@ function DurationInput({
           max={180}
           value={value}
           onChange={(e) => onChange(Number(e.target.value) || 1)}
-          className="flex-1 rounded-md border border-border bg-background px-2 py-1 text-center text-sm outline-none focus:border-primary"
+          className="flex-1 rounded-lg border border-border bg-background px-2 py-1 text-center text-sm outline-none focus:border-primary"
         />
         <button
           type="button"
           onClick={() => onChange(value + 1)}
-          className="rounded-md border border-border bg-background px-2 py-1 text-xs hover:bg-muted"
+          className="rounded-lg border border-border bg-background px-2 py-1 text-xs hover:bg-muted"
         >
           +1
         </button>
         <button
           type="button"
           onClick={() => onChange(value + 5)}
-          className="rounded-md border border-border bg-background px-2 py-1 text-xs hover:bg-muted"
+          className="rounded-lg border border-border bg-background px-2 py-1 text-xs hover:bg-muted"
         >
           +5
         </button>

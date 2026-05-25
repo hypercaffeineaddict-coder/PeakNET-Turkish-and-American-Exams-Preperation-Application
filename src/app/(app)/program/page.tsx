@@ -229,7 +229,7 @@ export default async function ProgramPage() {
               </div>
               <div className="space-y-1.5">
                 {day.topics.length === 0 ? (
-                  <div className="rounded-md bg-muted/30 px-2 py-3 text-center text-[10px] text-muted-foreground">
+                  <div className="rounded-lg bg-muted/30 px-2 py-3 text-center text-[10px] text-muted-foreground">
                     Tekrar / deneme
                   </div>
                 ) : (
@@ -237,7 +237,7 @@ export default async function ProgramPage() {
                     <Link
                       key={t.id}
                       href={`/pomodoro?topic=${t.id}`}
-                      className="block rounded-md border border-border bg-background px-2 py-1.5 transition hover:border-primary/50"
+                      className="block rounded-lg border border-border bg-background px-2 py-1.5 transition hover:border-primary/50"
                       title={`${t.subjectName} · ustalık ${t.score} · Pomodoro başlat`}
                     >
                       <div className="flex items-center gap-1.5">
@@ -268,7 +268,7 @@ function Stat({ label, value, sub }: { label: string; value: string; sub?: strin
   return (
     <div className="rounded-2xl border border-border bg-card p-5">
       <div className="text-sm text-muted-foreground">{label}</div>
-      <div className="mt-1 text-2xl font-semibold">
+      <div className="mt-1 font-display text-2xl font-bold tabular-nums">
         {value} {sub && <span className="text-sm font-normal text-muted-foreground">{sub}</span>}
       </div>
     </div>

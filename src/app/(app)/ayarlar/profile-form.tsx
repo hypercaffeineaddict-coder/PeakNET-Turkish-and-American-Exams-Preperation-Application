@@ -88,7 +88,7 @@ export function ProfileForm({
               name="display_name"
               required
               defaultValue={profile.display_name}
-              className="mt-1 w-full rounded-md border border-border bg-background px-3 py-2 outline-none focus:border-primary"
+              className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 outline-none focus:border-primary"
             />
           </label>
         </div>
@@ -168,7 +168,7 @@ export function ProfileForm({
               name="target_university"
               list="university-list"
               defaultValue={profile.target_university}
-              className="mt-1 w-full rounded-md border border-border bg-background px-3 py-2 outline-none focus:border-primary"
+              className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 outline-none focus:border-primary"
             />
             <datalist id="university-list">
               {universities.map((u) => (
@@ -183,7 +183,7 @@ export function ProfileForm({
               list="department-list"
               placeholder="yazmaya başla, listeden seç"
               defaultValue={profile.target_department}
-              className="mt-1 w-full rounded-md border border-border bg-background px-3 py-2 outline-none focus:border-primary"
+              className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 outline-none focus:border-primary"
             />
             <datalist id="department-list">
               {departments.map((d) => (
@@ -272,7 +272,7 @@ export function ProfileForm({
       </section>
 
       {error && (
-        <p className="rounded-md bg-rose-500/10 px-3 py-2 text-sm text-rose-500">
+        <p className="rounded-lg bg-rose-500/10 px-3 py-2 text-sm text-rose-500">
           {error}
         </p>
       )}
@@ -286,7 +286,7 @@ export function ProfileForm({
         <button
           type="submit"
           disabled={pending}
-          className="inline-flex items-center gap-1.5 rounded-md bg-primary px-6 py-2 text-sm font-medium text-primary-foreground transition hover:opacity-90 disabled:opacity-60"
+          className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-6 py-2 text-sm font-medium text-primary-foreground transition hover:opacity-90 disabled:opacity-60"
         >
           {pending && <Loader2 size={14} className="animate-spin" />}
           Profili kaydet

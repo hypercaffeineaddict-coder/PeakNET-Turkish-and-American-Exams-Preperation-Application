@@ -69,7 +69,7 @@ export function SoruUretClient({
                 setSubjectId(e.target.value);
                 setTopicId("");
               }}
-              className="mt-1 block w-44 rounded-md border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary"
+              className="mt-1 block w-44 rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary"
             >
               <option value="">Seç…</option>
               {subjects.map((s) => (
@@ -83,7 +83,7 @@ export function SoruUretClient({
               value={topicId}
               onChange={(e) => setTopicId(e.target.value)}
               disabled={!subjectId}
-              className="mt-1 block w-56 rounded-md border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary disabled:opacity-50"
+              className="mt-1 block w-56 rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary disabled:opacity-50"
             >
               <option value="">Seç…</option>
               {topics.map((t) => (
@@ -96,7 +96,7 @@ export function SoruUretClient({
             <select
               value={count}
               onChange={(e) => setCount(Number(e.target.value))}
-              className="mt-1 block w-20 rounded-md border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary"
+              className="mt-1 block w-20 rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary"
             >
               {[3, 5, 7, 10].map((n) => (
                 <option key={n} value={n}>{n}</option>
@@ -107,7 +107,7 @@ export function SoruUretClient({
             type="button"
             onClick={generate}
             disabled={busy || !topicId}
-            className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition hover:opacity-90 disabled:opacity-50"
+            className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition hover:opacity-90 disabled:opacity-50"
           >
             {busy ? <Loader2 size={15} className="animate-spin" /> : <Sparkles size={15} />}
             {busy ? "Üretiliyor… (~30sn)" : "Test üret"}

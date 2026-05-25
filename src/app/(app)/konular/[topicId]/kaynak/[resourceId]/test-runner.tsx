@@ -69,9 +69,9 @@ export function TestRunner({
         <div className="rounded-2xl border border-border bg-gradient-to-br from-primary/5 to-card p-6">
           <div className="flex flex-wrap items-baseline justify-between gap-3">
             <div>
-              <h3 className="text-2xl font-bold">
+              <h3 className="font-display text-3xl font-bold tabular-nums">
                 {result.score}
-                <span className="text-base text-muted-foreground">
+                <span className="text-base font-medium text-muted-foreground">
                   /{result.total}
                 </span>
               </h3>
@@ -101,13 +101,13 @@ export function TestRunner({
             <button
               type="button"
               onClick={reset}
-              className="inline-flex items-center gap-1.5 rounded-md border border-border bg-background px-3 py-1.5 text-sm transition hover:bg-muted"
+              className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-background px-3 py-1.5 text-sm transition hover:bg-muted"
             >
               <RotateCcw size={12} /> Tekrar çöz
             </button>
             <a
               href="/yanlislar"
-              className="inline-flex items-center gap-1.5 rounded-md border border-amber-500/30 bg-amber-500/5 px-3 py-1.5 text-sm text-amber-500 transition hover:bg-amber-500/10"
+              className="inline-flex items-center gap-1.5 rounded-lg border border-amber-500/30 bg-amber-500/5 px-3 py-1.5 text-sm text-amber-500 transition hover:bg-amber-500/10"
             >
               <BookOpen size={12} /> Yanlış defterine git
             </a>
@@ -160,7 +160,7 @@ export function TestRunner({
                       onClick={() =>
                         setAnswers((a) => ({ ...a, [i]: letter }))
                       }
-                      className={`flex items-start gap-3 rounded-md border px-3 py-2 text-left text-sm transition ${
+                      className={`flex items-start gap-3 rounded-lg border px-3 py-2 text-left text-sm transition ${
                         showCorrect
                           ? "border-emerald-500/40 bg-emerald-500/10"
                           : showWrongPick
@@ -184,7 +184,7 @@ export function TestRunner({
               </div>
 
               {submitted && q.explanation && (
-                <div className="mt-3 ml-9 rounded-md bg-muted/40 p-3">
+                <div className="mt-3 ml-9 rounded-lg bg-muted/40 p-3">
                   <p className="text-xs font-semibold text-foreground">
                     Çözüm
                   </p>
@@ -208,7 +208,7 @@ export function TestRunner({
             type="button"
             onClick={submit}
             disabled={!allAnswered || submitting}
-            className="inline-flex items-center gap-2 rounded-md bg-primary px-5 py-2 text-sm font-medium text-primary-foreground transition hover:opacity-90 disabled:opacity-50"
+            className="inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-2 text-sm font-medium text-primary-foreground transition hover:opacity-90 disabled:opacity-50"
           >
             {submitting ? (
               <Loader2 size={14} className="animate-spin" />

@@ -39,11 +39,11 @@ export function PasswordForm() {
           minLength={6}
           required
           autoComplete="new-password"
-          className="mt-1 w-full rounded-md border border-border bg-background px-3 py-2 outline-none focus:border-primary"
+          className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 outline-none focus:border-primary"
         />
       </label>
       {error && (
-        <p className="rounded-md bg-rose-500/10 px-3 py-2 text-sm text-rose-500">
+        <p className="rounded-lg bg-rose-500/10 px-3 py-2 text-sm text-rose-500">
           {error}
         </p>
       )}
@@ -56,7 +56,7 @@ export function PasswordForm() {
         <button
           type="submit"
           disabled={pending}
-          className="inline-flex items-center gap-1.5 rounded-md border border-border bg-background px-5 py-2 text-sm font-medium transition hover:bg-muted disabled:opacity-60"
+          className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-background px-5 py-2 text-sm font-medium transition hover:bg-muted disabled:opacity-60"
         >
           {pending && <Loader2 size={14} className="animate-spin" />}
           Şifreyi değiştir

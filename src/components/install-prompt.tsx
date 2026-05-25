@@ -67,7 +67,7 @@ export function InstallPrompt() {
       <button
         type="button"
         onClick={install}
-        className="shrink-0 rounded-md bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground transition hover:opacity-90"
+        className="shrink-0 rounded-lg bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground transition hover:opacity-90"
       >
         Yükle
       </button>
@@ -75,7 +75,7 @@ export function InstallPrompt() {
         type="button"
         onClick={dismiss}
         aria-label="Kapat"
-        className="shrink-0 rounded-md p-1 text-muted-foreground transition hover:bg-muted hover:text-foreground"
+        className="shrink-0 rounded-lg p-1 text-muted-foreground transition hover:bg-muted hover:text-foreground"
       >
         <X size={16} />
       </button>

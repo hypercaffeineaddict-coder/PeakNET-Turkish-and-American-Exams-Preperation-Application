@@ -37,10 +37,10 @@ export function DeleteAccountForm({
         value={confirmInput}
         onChange={(e) => setConfirmInput(e.target.value)}
         placeholder="E-postanı yaz"
-        className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm outline-none focus:border-rose-500"
+        className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-rose-500"
       />
       {initialError && (
-        <p className="rounded-md bg-rose-500/10 px-3 py-2 text-sm text-rose-500">
+        <p className="rounded-lg bg-rose-500/10 px-3 py-2 text-sm text-rose-500">
           {initialError}
         </p>
       )}
@@ -48,7 +48,7 @@ export function DeleteAccountForm({
         <button
           type="submit"
           disabled={!matches}
-          className="inline-flex items-center gap-1.5 rounded-md border border-rose-500/40 bg-rose-500/10 px-4 py-2 text-sm font-medium text-rose-500 transition hover:bg-rose-500/20 disabled:opacity-40"
+          className="inline-flex items-center gap-1.5 rounded-lg border border-rose-500/40 bg-rose-500/10 px-4 py-2 text-sm font-medium text-rose-500 transition hover:bg-rose-500/20 disabled:opacity-40"
         >
           <Trash2 size={14} />
           Hesabımı sil

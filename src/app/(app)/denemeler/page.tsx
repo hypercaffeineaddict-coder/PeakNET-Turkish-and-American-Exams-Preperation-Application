@@ -47,7 +47,7 @@ export default async function DenemelerPage() {
         </div>
         <Link
           href="/denemeler/yeni"
-          className="inline-flex items-center gap-1.5 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition hover:opacity-90"
+          className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition hover:opacity-90"
         >
           <Plus size={14} /> Yeni deneme
         </Link>
@@ -71,7 +71,7 @@ export default async function DenemelerPage() {
           </p>
           <Link
             href="/denemeler/yeni"
-            className="mt-4 inline-flex items-center gap-1.5 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition hover:opacity-90"
+            className="mt-4 inline-flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition hover:opacity-90"
           >
             <Plus size={14} /> İlk denemeyi ekle
           </Link>
@@ -104,7 +104,7 @@ export default async function DenemelerPage() {
                     <div>
                       <h3 className="text-base font-semibold">
                         {exam.name}{" "}
-                        <span className="ml-1 rounded-md bg-primary/10 px-1.5 py-0.5 text-xs text-primary">
+                        <span className="ml-1 rounded-lg bg-primary/10 px-1.5 py-0.5 text-xs text-primary">
                           {exam.exam_type}
                         </span>
                       </h3>
@@ -114,7 +114,7 @@ export default async function DenemelerPage() {
                     </div>
                     <div className="flex items-center gap-3">
                       <div className="text-right">
-                        <div className="text-xl font-semibold">
+                        <div className="font-display text-xl font-bold tabular-nums">
                           {total.toFixed(2)}
                         </div>
                         <div className="text-[10px] uppercase tracking-wider text-muted-foreground">
@@ -125,7 +125,7 @@ export default async function DenemelerPage() {
                         <input type="hidden" name="id" value={exam.id} />
                         <button
                           type="submit"
-                          className="rounded-md p-1.5 text-muted-foreground transition hover:text-rose-500"
+                          className="rounded-lg p-1.5 text-muted-foreground transition hover:text-rose-500"
                           title="Sil"
                         >
                           <Trash2 size={14} />
@@ -138,11 +138,11 @@ export default async function DenemelerPage() {
                     {Object.entries(totals).map(([sid, t]) => (
                       <div
                         key={sid}
-                        className="rounded-md border border-border bg-background p-3"
+                        className="rounded-lg border border-border bg-background p-3"
                       >
                         <div className="flex items-center justify-between text-xs">
                           <span
-                            className="rounded-md px-1.5 py-0.5 font-medium"
+                            className="rounded-lg px-1.5 py-0.5 font-medium"
                             style={{
                               backgroundColor: `${SUBJECT_DISPLAY[sid]?.color ?? "#888"}20`,
                               color: SUBJECT_DISPLAY[sid]?.color ?? "#888",
@@ -182,7 +182,7 @@ function Stat({ label, value }: { label: string; value: string }) {
   return (
     <div className="rounded-2xl border border-border bg-card p-5">
       <div className="text-sm text-muted-foreground">{label}</div>
-      <div className="mt-2 text-2xl font-semibold">{value}</div>
+      <div className="mt-2 font-display text-2xl font-bold tabular-nums">{value}</div>
     </div>
   );
 }

@@ -19,7 +19,7 @@ export function TopMistakes({ data }: { data: Item[] }) {
           <li key={d.id}>
             <Link
               href={`/konular/${d.id}`}
-              className="group block rounded-md border border-border bg-background p-3 transition hover:border-primary/40"
+              className="group block rounded-lg border border-border bg-background p-3 transition hover:border-primary/40"
             >
               <div className="mb-1 flex items-center justify-between gap-3 text-sm">
                 <div className="min-w-0 flex-1">
