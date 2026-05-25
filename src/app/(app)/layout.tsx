@@ -19,7 +19,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
 
   const [{ data: streak }, { data: profile }] = await Promise.all([
     supabase.from("streaks").select("current_streak, last_study_date").eq("user_id", user.id).single(),
-    supabase.from("profiles").select("*").eq("id", user.id).single(),
+    supabase.from("profiles").select("total_xp, avatar_url, display_name").eq("id", user.id).single(),
   ]);
 
   const lv = levelForXp(profile?.total_xp ?? 0);

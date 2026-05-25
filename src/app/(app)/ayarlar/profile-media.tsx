@@ -4,26 +4,58 @@ import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Camera, Loader2, ImagePlus, User as UserIcon, Check } from "lucide-react";
 import { toast } from "sonner";
-import { createClient } from "@/lib/supabase/client";
 import { updateProfileMedia } from "./actions";
 
-const MAX_BYTES = 5 * 1024 * 1024;
+const MAX_BYTES = 8 * 1024 * 1024;
 const OK_TYPES = ["image/png", "image/jpeg", "image/webp", "image/gif"];
 
+// Görseli tarayıcıda küçült + sıkıştır, data URL döndür. Supabase Storage
+// gerektirmez; sonuç doğrudan profiles tablosundaki kolona yazılır.
+function fileToScaledDataUrl(
+  file: File,
+  maxW: number,
+  maxH: number,
+  quality = 0.8,
+): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const url = URL.createObjectURL(file);
+    const img = new Image();
+    img.onload = () => {
+      URL.revokeObjectURL(url);
+      const scale = Math.min(1, maxW / img.width, maxH / img.height);
+      const w = Math.max(1, Math.round(img.width * scale));
+      const h = Math.max(1, Math.round(img.height * scale));
+      const canvas = document.createElement("canvas");
+      canvas.width = w;
+      canvas.height = h;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) {
+        reject(new Error("canvas desteklenmiyor"));
+        return;
+      }
+      ctx.drawImage(img, 0, 0, w, h);
+      // webp desteklenmezse tarayıcı png'ye düşer (yine çalışır).
+      resolve(canvas.toDataURL("image/webp", quality));
+    };
+    img.onerror = () => {
+      URL.revokeObjectURL(url);
+      reject(new Error("görsel okunamadı"));
+    };
+    img.src = url;
+  });
+}
+
 export function ProfileMedia({
-  userId,
   initialAvatar,
   initialBanner,
   initialBio,
   displayName,
 }: {
-  userId: string;
   initialAvatar: string | null;
   initialBanner: string | null;
   initialBio: string;
   displayName: string;
 }) {
-  const supabase = createClient();
   const router = useRouter();
   const [avatar, setAvatar] = useState(initialAvatar);
   const [banner, setBanner] = useState(initialBanner);
@@ -44,43 +76,31 @@ export function ProfileMedia({
     }
     setBusy(kind);
     try {
-      const ext = (file.name.split(".").pop() || "png").toLowerCase();
-      const fileName = `${kind}-${Date.now()}.${ext}`;
-      const path = `${userId}/${fileName}`;
-      const { error } = await supabase.storage
-        .from("avatars")
-        .upload(path, file, { upsert: true, cacheControl: "3600" });
-      if (error) {
-        const missing = /bucket not found|does not exist/i.test(error.message);
-        toast.error(
-          missing
-            ? "Görsel depolaması henüz hazır değil (0012 migration'ı çalıştırılmalı)."
-            : `Yükleme hatası: ${error.message}`,
-        );
-        return;
-      }
-      // Eski dosyaları temizle (storage birikmesin)
-      try {
-        const { data: list } = await supabase.storage.from("avatars").list(userId);
-        const old = (list ?? [])
-          .filter((f) => f.name.startsWith(`${kind}-`) && f.name !== fileName)
-          .map((f) => `${userId}/${f.name}`);
-        if (old.length) await supabase.storage.from("avatars").remove(old);
-      } catch {
-        // temizlik kritik değil
-      }
-      const { data } = supabase.storage.from("avatars").getPublicUrl(path);
-      const url = data.publicUrl;
+      // Avatar küçük (256px), banner geniş (1280x480) — DB satırı şişmesin.
+      const url =
+        kind === "avatar"
+          ? await fileToScaledDataUrl(file, 256, 256, 0.85)
+          : await fileToScaledDataUrl(file, 1280, 480, 0.72);
+
       const res = await updateProfileMedia(
         kind === "avatar" ? { avatar_url: url } : { banner_url: url },
       );
       if (res?.error) {
-        toast.error(res.error);
+        const missingCol = /column .*does not exist|avatar_url|banner_url/i.test(
+          res.error,
+        );
+        toast.error(
+          missingCol
+            ? "Profil kolonları eksik. Ayarlar SQL'ini (3 satır) bir kez çalıştır."
+            : res.error,
+        );
         return;
       }
       if (kind === "avatar") setAvatar(url);
       else setBanner(url);
-      toast.success(kind === "avatar" ? "Profil resmi güncellendi." : "Banner güncellendi.");
+      toast.success(
+        kind === "avatar" ? "Profil resmi güncellendi." : "Banner güncellendi.",
+      );
       router.refresh(); // header'daki avatar anında güncellensin
     } catch (e) {
       toast.error(`Hata: ${String(e)}`);

@@ -39,7 +39,6 @@ export default async function AyarlarPage({
       </header>
 
       <ProfileMedia
-        userId={user.id}
         initialAvatar={profile?.avatar_url ?? null}
         initialBanner={profile?.banner_url ?? null}
         initialBio={profile?.bio ?? ""}
