@@ -64,7 +64,7 @@ export function GoogleButton({ label = "Google ile devam et" }: { label?: string
       type="button"
       onClick={signIn}
       disabled={busy || enabled === null}
-      className="flex w-full items-center justify-center gap-2.5 rounded-md border border-border bg-background px-4 py-2.5 text-sm font-medium transition hover:bg-muted disabled:opacity-60"
+      className="flex w-full items-center justify-center gap-2.5 rounded-xl border border-border bg-background px-4 py-2.5 text-sm font-medium shadow-soft transition hover:border-primary/40 hover:bg-muted disabled:opacity-60"
     >
       {busy ? (
         <Loader2 size={16} className="animate-spin" />

@@ -92,17 +92,17 @@ export default async function BasarimlarPage() {
       <section className="rounded-2xl border border-border bg-gradient-to-br from-primary/10 via-card to-card p-6">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center gap-4">
-            <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/15 text-2xl font-bold text-primary">
+            <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/15 font-display text-3xl font-bold tabular-nums text-primary shadow-soft">
               {lv.level}
             </div>
             <div>
               <div className="text-xs uppercase tracking-wider text-muted-foreground">
                 Seviye
               </div>
-              <div className="text-xl font-semibold">Seviye {lv.level}</div>
-              <div className="flex items-center gap-1 text-sm text-amber-500">
+              <div className="font-display text-xl font-bold">Seviye {lv.level}</div>
+              <div className="flex items-center gap-1 text-sm font-medium text-amber-500">
                 <Zap size={14} className="fill-amber-500" />
-                {totalXp.toLocaleString("tr-TR")} XP
+                <span className="tabular-nums">{totalXp.toLocaleString("tr-TR")}</span> XP
               </div>
             </div>
           </div>

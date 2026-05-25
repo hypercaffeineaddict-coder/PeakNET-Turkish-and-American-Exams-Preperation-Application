@@ -345,8 +345,8 @@ export default async function IstatistiklerPage() {
               · En uzun: {streak?.longest_streak ?? 0} gün
             </p>
           </div>
-          <div className="flex items-center gap-1 text-3xl font-bold text-orange-500">
-            <Flame size={28} className="fill-orange-500" />
+          <div className="flex items-center gap-1.5 font-display text-3xl font-bold tabular-nums text-orange-500">
+            <Flame size={28} className={`fill-orange-500 ${(streak?.current_streak ?? 0) > 0 ? "animate-ember" : ""}`} />
             {streak?.current_streak ?? 0}
           </div>
         </div>
@@ -372,7 +372,7 @@ function Stat({
         <span className="text-sm text-muted-foreground">{label}</span>
         <Icon size={16} className={color} />
       </div>
-      <div className="mt-2 text-2xl font-semibold">{value}</div>
+      <div className="mt-2 font-display text-2xl font-bold tabular-nums">{value}</div>
     </div>
   );
 }

@@ -28,31 +28,62 @@ import {
   Wand2,
   Music,
   Share2,
+  Mountain,
 } from "lucide-react";
 import { FocusPlayer } from "@/components/focus-player";
 
-const navItems = [
-  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/panel", label: "Panel", icon: CalendarDays },
-  { href: "/konular", label: "Konular", icon: ListChecks },
-  { href: "/ustalik", label: "Ustalık", icon: GraduationCap },
-  { href: "/program", label: "Program", icon: ClipboardList },
-  { href: "/pomodoro", label: "Pomodoro", icon: Clock },
-  { href: "/denemeler", label: "Denemeler", icon: FlaskConical },
-  { href: "/deneme-sim", label: "Deneme Sim.", icon: Timer },
-  { href: "/yanlislar", label: "Yanlış defteri", icon: BookOpen },
-  { href: "/kartlar", label: "Tekrar kartları", icon: Layers },
-  { href: "/coz", label: "Soru çözücü", icon: Camera },
-  { href: "/tarama", label: "Tarama testi", icon: ScanLine },
-  { href: "/soru-uret", label: "Soru Üret", icon: Wand2 },
-  { href: "/araclar", label: "YKS Araçları", icon: Calculator },
-  { href: "/istatistikler", label: "İstatistikler", icon: BarChart3 },
-  { href: "/basarimlar", label: "Başarımlar", icon: Trophy },
-  { href: "/asistan", label: "AI Asistan", icon: Sparkles },
-  { href: "/diller", label: "Diller", icon: Languages },
-  { href: "/muzik", label: "Müzik", icon: Music },
-  { href: "/paylas", label: "Paylaş", icon: Share2 },
-  { href: "/ayarlar", label: "Ayarlar", icon: Settings },
+type NavItem = { href: string; label: string; icon: React.ElementType };
+
+const navGroups: { title: string | null; items: NavItem[] }[] = [
+  {
+    title: null,
+    items: [{ href: "/dashboard", label: "Genel bakış", icon: LayoutDashboard }],
+  },
+  {
+    title: "Çalışma",
+    items: [
+      { href: "/panel", label: "Panel", icon: CalendarDays },
+      { href: "/konular", label: "Konular", icon: ListChecks },
+      { href: "/ustalik", label: "Ustalık", icon: GraduationCap },
+      { href: "/program", label: "Program", icon: ClipboardList },
+      { href: "/pomodoro", label: "Pomodoro", icon: Clock },
+    ],
+  },
+  {
+    title: "Ölç & pratik",
+    items: [
+      { href: "/denemeler", label: "Denemeler", icon: FlaskConical },
+      { href: "/deneme-sim", label: "Deneme sim.", icon: Timer },
+      { href: "/tarama", label: "Tarama testi", icon: ScanLine },
+      { href: "/coz", label: "Soru çözücü", icon: Camera },
+      { href: "/soru-uret", label: "Soru üret", icon: Wand2 },
+    ],
+  },
+  {
+    title: "Tekrar",
+    items: [
+      { href: "/yanlislar", label: "Yanlış defteri", icon: BookOpen },
+      { href: "/kartlar", label: "Tekrar kartları", icon: Layers },
+    ],
+  },
+  {
+    title: "İlerleme",
+    items: [
+      { href: "/istatistikler", label: "İstatistikler", icon: BarChart3 },
+      { href: "/basarimlar", label: "Başarımlar", icon: Trophy },
+      { href: "/araclar", label: "YKS araçları", icon: Calculator },
+      { href: "/asistan", label: "AI asistan", icon: Sparkles },
+    ],
+  },
+  {
+    title: "Ekstra",
+    items: [
+      { href: "/diller", label: "Diller", icon: Languages },
+      { href: "/muzik", label: "Müzik", icon: Music },
+      { href: "/paylas", label: "Paylaş", icon: Share2 },
+      { href: "/ayarlar", label: "Ayarlar", icon: Settings },
+    ],
+  },
 ];
 
 export function Sidebar({
@@ -84,7 +115,7 @@ export function Sidebar({
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="fixed left-3 top-3 z-30 inline-flex h-9 w-9 items-center justify-center rounded-md border border-border bg-card text-foreground shadow-sm lg:hidden"
+        className="fixed left-3 top-3 z-30 inline-flex h-9 w-9 items-center justify-center rounded-xl border border-border bg-card/90 text-foreground shadow-soft backdrop-blur transition hover:border-primary/40 lg:hidden"
         aria-label="Menüyü aç"
       >
         <Menu size={18} />
@@ -93,58 +124,82 @@ export function Sidebar({
       {/* Mobile backdrop */}
       {open && (
         <div
-          className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm lg:hidden"
+          className="fixed inset-0 z-40 bg-foreground/30 backdrop-blur-sm lg:hidden"
           onClick={() => setOpen(false)}
         />
       )}
 
       {/* Sidebar */}
       <aside
-        className={`fixed inset-y-0 left-0 z-50 flex w-64 flex-col border-r border-border bg-card p-4 transition-transform lg:static lg:translate-x-0 ${
+        className={`fixed inset-y-0 left-0 z-50 flex w-64 flex-col border-r border-border bg-card/60 backdrop-blur-xl transition-transform duration-300 lg:static lg:translate-x-0 ${
           open ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
         }`}
+        style={{ transitionTimingFunction: "var(--ease-out-expo)" }}
       >
-        <div className="mb-6 flex items-center justify-between px-2">
-          <Link href="/dashboard" className="flex items-center gap-2">
-            <span className="text-lg font-semibold tracking-tight">
+        <div className="flex items-center justify-between px-5 py-5">
+          <Link href="/dashboard" className="group flex items-center gap-2.5">
+            <span className="relative flex h-8 w-8 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-soft transition group-hover:scale-105">
+              <Mountain size={17} strokeWidth={2.5} />
+            </span>
+            <span className="font-display text-lg font-bold tracking-tight">
               Peak<span className="text-primary">NET</span>
             </span>
           </Link>
           <button
             type="button"
             onClick={() => setOpen(false)}
-            className="rounded-md p-1 text-muted-foreground transition hover:bg-muted hover:text-foreground lg:hidden"
+            className="rounded-lg p-1 text-muted-foreground transition hover:bg-muted hover:text-foreground lg:hidden"
             aria-label="Menüyü kapat"
           >
             <X size={16} />
           </button>
         </div>
 
-        <nav className="flex flex-1 flex-col gap-1 overflow-y-auto">
-          {navItems.map(({ href, label, icon: Icon }) => {
-            const isActive = pathname === href || pathname.startsWith(href + "/");
-            return (
-              <Link
-                key={href}
-                href={href}
-                className={`flex items-center gap-3 rounded-md px-3 py-2 text-sm transition ${
-                  isActive
-                    ? "bg-primary/10 text-primary font-medium"
-                    : "text-muted-foreground hover:bg-muted hover:text-foreground"
-                }`}
-              >
-                <Icon size={16} />
-                {label}
-              </Link>
-            );
-          })}
+        <nav className="flex flex-1 flex-col gap-5 overflow-y-auto px-3 pb-2">
+          {navGroups.map((group, gi) => (
+            <div key={gi} className="flex flex-col gap-0.5">
+              {group.title && (
+                <div className="px-3 pb-1.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground/70">
+                  {group.title}
+                </div>
+              )}
+              {group.items.map(({ href, label, icon: Icon }) => {
+                const isActive =
+                  pathname === href || pathname.startsWith(href + "/");
+                return (
+                  <Link
+                    key={href}
+                    href={href}
+                    className={`group relative flex items-center gap-3 rounded-xl px-3 py-2 text-sm transition ${
+                      isActive
+                        ? "bg-primary/12 font-medium text-primary"
+                        : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                    }`}
+                  >
+                    {isActive && (
+                      <span className="absolute left-0 top-1/2 h-5 w-1 -translate-y-1/2 rounded-full bg-primary" />
+                    )}
+                    <Icon
+                      size={17}
+                      className={
+                        isActive
+                          ? "text-primary"
+                          : "text-muted-foreground transition group-hover:text-foreground"
+                      }
+                    />
+                    {label}
+                  </Link>
+                );
+              })}
+            </div>
+          ))}
         </nav>
 
-        <div className="-mx-4 mb-2 mt-2">
+        <div className="px-3">
           <FocusPlayer />
         </div>
 
-        <form action={logoutAction}>
+        <form action={logoutAction} className="border-t border-border p-3">
           <button
             type="submit"
             onClick={() => {
@@ -160,9 +215,9 @@ export function Sidebar({
                   .catch(() => {});
               }
             }}
-            className="flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm text-muted-foreground transition hover:bg-muted hover:text-foreground"
+            className="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-sm text-muted-foreground transition hover:bg-rose-500/10 hover:text-rose-500"
           >
-            <LogOut size={16} />
+            <LogOut size={17} />
             Çıkış
           </button>
         </form>

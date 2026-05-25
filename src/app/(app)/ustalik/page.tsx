@@ -222,7 +222,7 @@ export default async function UstalikPage({
                 <div className="text-xs uppercase tracking-wider text-muted-foreground">
                   Genel ustalık
                 </div>
-                <div className="text-3xl font-semibold">{avgScore}%</div>
+                <div className="font-display text-3xl font-bold tabular-nums">{avgScore}%</div>
                 <div className="text-xs text-muted-foreground">
                   {masteredCount}/{totalTopics} konu usta
                 </div>

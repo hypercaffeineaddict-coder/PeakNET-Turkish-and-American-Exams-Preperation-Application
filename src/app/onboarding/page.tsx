@@ -86,7 +86,7 @@ export default async function OnboardingPage({
                 required
                 defaultValue={profile?.display_name ?? ""}
                 placeholder="Adın"
-                className="w-full rounded-md border border-border bg-background px-3 py-2 outline-none focus:border-primary"
+                className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/30"
               />
             </section>
 
@@ -158,7 +158,7 @@ export default async function OnboardingPage({
                     list="university-list"
                     placeholder="yazmaya başla, listeden seç"
                     defaultValue={profile?.target_university ?? ""}
-                    className="mt-1 w-full rounded-md border border-border bg-background px-3 py-2 outline-none focus:border-primary"
+                    className="mt-1 w-full rounded-xl border border-border bg-background px-3 py-2 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/30"
                   />
                   <datalist id="university-list">
                     {universities.map((u) => (
@@ -174,7 +174,7 @@ export default async function OnboardingPage({
                     list="department-list"
                     placeholder="yazmaya başla, listeden seç"
                     defaultValue={profile?.target_department ?? ""}
-                    className="mt-1 w-full rounded-md border border-border bg-background px-3 py-2 outline-none focus:border-primary"
+                    className="mt-1 w-full rounded-xl border border-border bg-background px-3 py-2 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/30"
                   />
                   <datalist id="department-list">
                     {departments.map((d) => (
@@ -215,7 +215,7 @@ export default async function OnboardingPage({
             </section>
 
             {error && (
-              <p className="rounded-md bg-red-500/10 px-3 py-2 text-sm text-red-500">
+              <p className="rounded-xl bg-rose-500/10 px-3.5 py-2.5 text-sm text-rose-500">
                 {error}
               </p>
             )}
@@ -223,7 +223,7 @@ export default async function OnboardingPage({
             <div className="flex justify-end">
               <button
                 type="submit"
-                className="rounded-md bg-primary px-6 py-2.5 font-medium text-primary-foreground transition hover:opacity-90"
+                className="rounded-xl bg-primary px-6 py-2.5 text-sm font-semibold text-primary-foreground shadow-soft transition hover:opacity-90 active:scale-[0.99]"
               >
                 Programımı oluştur →
               </button>

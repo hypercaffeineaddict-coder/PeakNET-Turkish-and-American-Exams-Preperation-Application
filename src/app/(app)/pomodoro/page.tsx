@@ -95,9 +95,9 @@ export default async function PomodoroPage({
             <span className="text-sm text-muted-foreground">Bugün toplam</span>
             <Clock size={16} className="text-primary" />
           </div>
-          <div className="mt-2 text-2xl font-semibold">
+          <div className="mt-2 font-display text-2xl font-bold tabular-nums">
             {totalMinutes} dk
-            <span className="ml-1 text-sm text-muted-foreground">/ {goal} dk</span>
+            <span className="ml-1 text-sm font-medium text-muted-foreground">/ {goal} dk</span>
           </div>
           <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-muted">
             <div
@@ -111,13 +111,13 @@ export default async function PomodoroPage({
             <span className="text-sm text-muted-foreground">Bugün Pomodoro</span>
             <Flame size={16} className="text-orange-500" />
           </div>
-          <div className="mt-2 text-2xl font-semibold">{totalPomodoros}</div>
+          <div className="mt-2 font-display text-2xl font-bold tabular-nums">{totalPomodoros}</div>
         </div>
         <div className="rounded-2xl border border-border bg-card p-5">
           <div className="flex items-center justify-between">
             <span className="text-sm text-muted-foreground">Seans sayısı</span>
           </div>
-          <div className="mt-2 text-2xl font-semibold">
+          <div className="mt-2 font-display text-2xl font-bold tabular-nums">
             {todaySessions?.length ?? 0}
           </div>
         </div>

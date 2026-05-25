@@ -169,7 +169,7 @@ export default async function KonularPage({
         </div>
         {totalTopics > 0 && (
           <div className="text-right">
-            <div className="text-2xl font-semibold leading-none">
+            <div className="font-display text-2xl font-bold leading-none tabular-nums">
               {doneTopics}
               <span className="text-lg text-muted-foreground">
                 /{totalTopics}
@@ -223,7 +223,7 @@ export default async function KonularPage({
             name="q"
             defaultValue={query}
             placeholder="Konu ara (örn. türev, polinom, hareket...)"
-            className="w-full rounded-md border border-border bg-card pl-9 pr-3 py-2 text-sm outline-none focus:border-primary"
+            className="w-full rounded-xl border border-border bg-card pl-9 pr-3 py-2 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/30"
           />
         </form>
 

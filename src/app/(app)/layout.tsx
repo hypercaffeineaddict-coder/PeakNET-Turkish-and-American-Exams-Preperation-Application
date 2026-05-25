@@ -27,32 +27,37 @@ export default async function AppLayout({ children }: { children: React.ReactNod
       <Sidebar logoutAction={logoutAction} />
 
       <div className="flex flex-1 flex-col min-w-0">
-        <header className="flex h-14 items-center justify-between border-b border-border bg-background/80 px-4 pl-14 backdrop-blur lg:pl-6">
+        <header className="sticky top-0 z-20 flex h-14 items-center justify-between border-b border-border bg-background/70 px-4 pl-14 backdrop-blur-xl lg:pl-6">
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <span className="hidden sm:inline truncate">{user.email}</span>
+            <span className="hidden truncate sm:inline">{user.email}</span>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5">
             <Link
               href="/basarimlar"
-              className="flex items-center gap-1 rounded-full bg-primary/10 px-3 py-1 text-sm font-semibold text-primary transition hover:bg-primary/20"
+              className="group flex items-center gap-1.5 rounded-full bg-primary/10 py-1 pl-2 pr-3 text-sm font-semibold text-primary transition hover:bg-primary/20"
               title={`Seviye ${lv.level} · ${(profile?.total_xp ?? 0).toLocaleString("tr-TR")} XP`}
             >
-              <Zap size={14} className="fill-primary" />
-              Sv.{lv.level}
+              <Zap size={14} className="fill-primary transition group-hover:scale-110" />
+              <span className="font-display tabular-nums">Sv.{lv.level}</span>
             </Link>
             <Link
               href="/basarimlar"
-              className="flex items-center gap-1 rounded-full bg-orange-500/10 px-3 py-1 text-sm font-semibold text-orange-500 transition hover:bg-orange-500/20"
-              title="Streak"
+              className="group flex items-center gap-1.5 rounded-full bg-orange-500/10 py-1 pl-2 pr-3 text-sm font-semibold text-orange-500 transition hover:bg-orange-500/20"
+              title="Günlük seri"
             >
-              <Flame size={14} />
-              {streak?.current_streak ?? 0}
+              <Flame
+                size={14}
+                className={(streak?.current_streak ?? 0) > 0 ? "animate-ember" : ""}
+              />
+              <span className="font-display tabular-nums">
+                {streak?.current_streak ?? 0}
+              </span>
             </Link>
             <ThemeToggle />
             <Link
               href="/ayarlar"
               title="Profil"
-              className="ml-1 inline-flex h-8 w-8 items-center justify-center overflow-hidden rounded-full border border-border bg-muted text-xs font-semibold text-muted-foreground transition hover:border-primary/50"
+              className="ml-0.5 inline-flex h-8 w-8 items-center justify-center overflow-hidden rounded-full border border-border bg-muted text-xs font-semibold text-muted-foreground ring-2 ring-transparent transition hover:ring-primary/40"
             >
               {profile?.avatar_url ? (
                 // eslint-disable-next-line @next/next/no-img-element
@@ -68,7 +73,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
           </div>
         </header>
 
-        <main className="flex-1 p-4 sm:p-6">{children}</main>
+        <main className="flex-1 p-4 sm:p-6 lg:p-8">{children}</main>
       </div>
       <InstallPrompt />
     </div>
