@@ -221,6 +221,7 @@ export default async function DashboardPage() {
             <QuickLink href="/denemeler" icon={FlaskConical} label="Denemeler" />
             <QuickLink href="/yanlislar" icon={BookOpen} label="Yanlışlar" />
             <QuickLink href="/asistan" icon={SparklesIcon} label="Asistan" />
+            <QuickLink href="/rapor" icon={SparklesIcon} label="Haftalık koç" />
             <QuickLink href="/istatistikler" icon={TrendingUp} label="İstatistik" />
             <QuickLink href="/basarimlar" icon={Zap} label="Başarımlar" />
           </div>

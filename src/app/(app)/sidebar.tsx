@@ -71,6 +71,7 @@ const navGroups: { title: string | null; items: NavItem[] }[] = [
   {
     title: "İlerleme",
     items: [
+      { href: "/rapor", label: "Haftalık koç", icon: Sparkles },
       { href: "/istatistikler", label: "İstatistikler", icon: BarChart3 },
       { href: "/basarimlar", label: "Başarımlar", icon: Trophy },
       { href: "/araclar", label: "YKS araçları", icon: Calculator },
