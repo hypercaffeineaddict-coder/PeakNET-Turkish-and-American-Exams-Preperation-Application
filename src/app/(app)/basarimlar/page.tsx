@@ -2,11 +2,13 @@ import { redirect } from "next/navigation";
 import { Trophy, Zap, Medal, Crown } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { levelForXp, effectiveStreak, BADGES, type BadgeStats } from "@/lib/gamification";
+import { AvatarView } from "@/components/avatar-view";
 
 type Totals = Record<string, { net?: number }>;
 type LeaderRow = {
   user_id: string;
   display_name: string;
+  avatar_url: string | null;
   weekly_xp: number;
   total_xp: number;
   is_me: boolean;
@@ -217,7 +219,7 @@ export default async function BasarimlarPage() {
                 }`}
               >
                 <span
-                  className={`w-7 text-center font-semibold ${
+                  className={`w-7 shrink-0 text-center font-semibold tabular-nums ${
                     i === 0
                       ? "text-amber-500"
                       : i === 1
@@ -229,6 +231,7 @@ export default async function BasarimlarPage() {
                 >
                   {i < 3 ? ["🥇", "🥈", "🥉"][i] : `#${i + 1}`}
                 </span>
+                <AvatarView src={r.avatar_url} name={r.display_name} size={32} />
                 <span className="flex-1 truncate">
                   {r.display_name}
                   {r.is_me && <span className="ml-1 text-xs text-primary">(sen)</span>}

@@ -34,8 +34,13 @@ function fileToScaledDataUrl(
         return;
       }
       ctx.drawImage(img, 0, 0, w, h);
-      // webp desteklenmezse tarayıcı png'ye düşer (yine çalışır).
-      resolve(canvas.toDataURL("image/webp", quality));
+      // webp dene; desteklenmiyorsa (ör. Safari) png yerine jpeg'e düş —
+      // aksi halde dev bir PNG data URL oluşur.
+      let out = canvas.toDataURL("image/webp", quality);
+      if (!out.startsWith("data:image/webp")) {
+        out = canvas.toDataURL("image/jpeg", quality);
+      }
+      resolve(out);
     };
     img.onerror = () => {
       URL.revokeObjectURL(url);
@@ -86,9 +91,8 @@ export function ProfileMedia({
         kind === "avatar" ? { avatar_url: url } : { banner_url: url },
       );
       if (res?.error) {
-        const missingCol = /column .*does not exist|avatar_url|banner_url/i.test(
-          res.error,
-        );
+        const missingCol =
+          /does not exist|could not find .*column|schema cache/i.test(res.error);
         toast.error(
           missingCol
             ? "Profil kolonları eksik. Ayarlar SQL'ini (3 satır) bir kez çalıştır."
