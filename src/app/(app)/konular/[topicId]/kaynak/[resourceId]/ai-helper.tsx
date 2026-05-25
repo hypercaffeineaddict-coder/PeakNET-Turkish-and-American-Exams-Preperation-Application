@@ -107,7 +107,7 @@ export function AIHelperDrawer({
         <button
           type="button"
           onClick={() => setOpen(true)}
-          className="fixed bottom-6 right-6 z-30 flex items-center gap-2 rounded-full bg-violet-500 px-5 py-3 text-sm font-medium text-white shadow-lg transition hover:bg-violet-600"
+          className="fixed bottom-24 right-4 z-30 flex items-center gap-2 rounded-full bg-violet-500 px-5 py-3 text-sm font-medium text-white shadow-pop transition hover:bg-violet-600 lg:bottom-6 lg:right-6"
         >
           <Sparkles size={16} />
           AI yardımcı
@@ -119,10 +119,10 @@ export function AIHelperDrawer({
       {open && (
         <>
           <div
-            className="fixed inset-0 z-30 bg-black/30 backdrop-blur-sm"
+            className="fixed inset-0 z-50 bg-foreground/30 backdrop-blur-sm"
             onClick={() => setOpen(false)}
           />
-          <aside className="fixed bottom-0 left-0 right-0 z-40 mx-auto flex h-[min(80vh,720px)] max-w-3xl flex-col rounded-t-2xl border border-border bg-card shadow-2xl">
+          <aside className="fixed bottom-0 left-0 right-0 z-50 mx-auto flex h-[min(80vh,720px)] max-w-3xl flex-col rounded-t-2xl border border-border bg-card shadow-pop">
             <header className="flex items-center justify-between border-b border-border px-5 py-3">
               <div className="flex items-center gap-2">
                 <div className="flex h-8 w-8 items-center justify-center rounded-full bg-violet-500/10 text-violet-500">

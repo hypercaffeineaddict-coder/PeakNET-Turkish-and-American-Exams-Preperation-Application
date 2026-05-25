@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/server";
 import { logoutAction } from "../login/actions";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Sidebar } from "./sidebar";
+import { MobileNav } from "./mobile-nav";
 import { InstallPrompt } from "@/components/install-prompt";
 import { levelForXp } from "@/lib/gamification";
 
@@ -73,8 +74,9 @@ export default async function AppLayout({ children }: { children: React.ReactNod
           </div>
         </header>
 
-        <main className="flex-1 p-4 sm:p-6 lg:p-8">{children}</main>
+        <main className="flex-1 p-4 pb-24 sm:p-6 sm:pb-24 lg:p-8 lg:pb-8">{children}</main>
       </div>
+      <MobileNav />
       <InstallPrompt />
     </div>
   );

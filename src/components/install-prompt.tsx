@@ -54,7 +54,7 @@ export function InstallPrompt() {
   }
 
   return (
-    <div className="fixed inset-x-3 bottom-3 z-[55] mx-auto flex max-w-md items-center gap-3 rounded-2xl border border-border bg-card/95 p-3 shadow-2xl shadow-primary/10 backdrop-blur lg:left-auto lg:right-4">
+    <div className="fixed inset-x-3 bottom-20 z-[55] mx-auto flex max-w-md items-center gap-3 rounded-2xl border border-border bg-card/95 p-3 shadow-pop backdrop-blur lg:bottom-4 lg:left-auto lg:right-4">
       <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10">
         <Download size={18} className="text-primary" />
       </div>

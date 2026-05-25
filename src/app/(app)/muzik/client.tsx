@@ -293,7 +293,7 @@ export function MuzikClient({ configured }: { configured: boolean }) {
 
       {/* Now playing bar */}
       {nowPlaying && (
-        <div className="sticky bottom-2 flex items-center gap-3 rounded-2xl border border-border bg-card/95 p-3 backdrop-blur">
+        <div className="sticky bottom-20 flex items-center gap-3 rounded-2xl border border-border bg-card/95 p-3 shadow-pop backdrop-blur lg:bottom-2">
           {nowPlaying.album.images?.[2]?.url && (
             // eslint-disable-next-line @next/next/no-img-element
             <img src={nowPlaying.album.images[2].url} alt="" className="h-10 w-10 rounded" />

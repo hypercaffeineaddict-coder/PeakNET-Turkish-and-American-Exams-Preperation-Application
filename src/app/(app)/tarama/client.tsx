@@ -341,7 +341,7 @@ export function TaramaClient({
       </ol>
 
       {!submitted && (
-        <div className="sticky bottom-4 flex items-center justify-between gap-3 rounded-2xl border border-border bg-card p-4 shadow-lg">
+        <div className="sticky bottom-20 flex items-center justify-between gap-3 rounded-2xl border border-border bg-card p-4 shadow-pop lg:bottom-4">
           <span className="text-sm">
             <span className="font-semibold">{Object.keys(answers).length}</span>
             <span className="text-muted-foreground">/{questions.length}</span>
