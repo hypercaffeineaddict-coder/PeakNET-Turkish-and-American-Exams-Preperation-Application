@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { examSubjects } from "@/data/exam-subjects";
 
+type Row = { d: number; y: number; total: number };
+
 export function NetForm({
   action,
   defaultType,
@@ -15,24 +17,27 @@ export function NetForm({
   error: string | null;
 }) {
   const [examType, setExamType] = useState<"TYT" | "AYT" | "YDT">(defaultType);
-  const [values, setValues] = useState<Record<string, { d: number; y: number }>>(
-    {},
-  );
+  const [values, setValues] = useState<Record<string, Row>>({});
 
   const subjects = examSubjects(examType, track);
-
   const today = new Date().toISOString().slice(0, 10);
 
-  function getNet(sid: string) {
-    const v = values[sid] ?? { d: 0, y: 0 };
-    return Math.max(0, v.d - v.y / 4);
-  }
-  function getBos(sid: string, total: number) {
-    const v = values[sid] ?? { d: 0, y: 0 };
-    return Math.max(0, total - v.d - v.y);
-  }
+  const rowOf = (sid: string, fallbackTotal: number): Row =>
+    values[sid] ?? { d: 0, y: 0, total: fallbackTotal };
 
-  const totalNet = subjects.reduce((acc, s) => acc + getNet(s.id), 0);
+  const setRow = (sid: string, patch: Partial<Row>, fallbackTotal: number) =>
+    setValues((vs) => ({
+      ...vs,
+      [sid]: { ...rowOf(sid, fallbackTotal), ...patch },
+    }));
+
+  const getNet = (r: Row) => Math.max(0, r.d - r.y / 4);
+  const getBos = (r: Row) => Math.max(0, r.total - r.d - r.y);
+
+  const totalNet = subjects.reduce(
+    (acc, s) => acc + getNet(rowOf(s.id, s.total)),
+    0,
+  );
 
   return (
     <form action={action} className="space-y-5">
@@ -82,17 +87,36 @@ export function NetForm({
         </div>
       ) : (
         <section className="rounded-2xl border border-border bg-card p-5">
-          <h3 className="text-sm font-semibold">Net girişleri</h3>
-          <div className="mt-4 space-y-3">
+          <div className="flex flex-wrap items-baseline justify-between gap-2">
+            <h3 className="text-sm font-semibold">Net girişleri</h3>
+            <p className="text-xs text-muted-foreground">
+              Soru sayısı (S) yayına göre değiştirilebilir. Çözmediğin dersi 0
+              soru bırak.
+            </p>
+          </div>
+          <div className="mt-4 space-y-2.5">
+            {/* başlık satırı (geniş ekran) */}
+            <div className="hidden grid-cols-[1fr_auto_auto_auto_auto_auto] gap-3 px-3 text-[10px] font-medium uppercase tracking-wider text-muted-foreground md:grid">
+              <span>Ders</span>
+              <span className="w-16 text-center">Soru</span>
+              <span className="w-16 text-center text-emerald-500">Doğru</span>
+              <span className="w-16 text-center text-rose-500">Yanlış</span>
+              <span className="w-12 text-center">Boş</span>
+              <span className="w-16 text-right">Net</span>
+            </div>
+
             {subjects.map((s) => {
-              const v = values[s.id] ?? { d: 0, y: 0 };
-              const bos = getBos(s.id, s.total);
-              const net = getNet(s.id);
-              const valid = v.d + v.y <= s.total;
+              const r = rowOf(s.id, s.total);
+              const bos = getBos(r);
+              const net = getNet(r);
+              const skipped = r.total === 0;
+              const valid = skipped || r.d + r.y <= r.total;
               return (
                 <div
                   key={s.id}
-                  className="grid items-center gap-3 rounded-lg border border-border bg-background p-3 md:grid-cols-[1fr_auto_auto_auto_auto]"
+                  className={`grid items-center gap-3 rounded-lg border bg-background p-3 md:grid-cols-[1fr_auto_auto_auto_auto_auto] ${
+                    skipped ? "border-border opacity-55" : "border-border"
+                  }`}
                 >
                   <div className="flex items-center gap-2">
                     <span
@@ -100,53 +124,36 @@ export function NetForm({
                       style={{ backgroundColor: s.color }}
                     />
                     <span className="font-medium">{s.name}</span>
-                    <span className="text-xs text-muted-foreground">
-                      / {s.total}
-                    </span>
                   </div>
-                  <div className="flex items-center gap-1.5">
-                    <label className="text-[10px] text-emerald-500">D</label>
-                    <input
-                      type="number"
-                      name={`${s.id}_d`}
-                      min={0}
-                      max={s.total}
-                      value={v.d}
-                      onChange={(e) =>
-                        setValues((vs) => ({
-                          ...vs,
-                          [s.id]: {
-                            d: Math.max(0, Number(e.target.value) || 0),
-                            y: vs[s.id]?.y ?? 0,
-                          },
-                        }))
-                      }
-                      className="w-16 rounded-lg border border-border bg-background px-2 py-1 text-center text-sm outline-none focus:border-primary"
-                    />
+                  <NumCell
+                    label="S"
+                    name={`${s.id}_total`}
+                    value={r.total}
+                    accent="text-muted-foreground"
+                    onChange={(n) => setRow(s.id, { total: n }, s.total)}
+                  />
+                  <NumCell
+                    label="D"
+                    name={`${s.id}_d`}
+                    value={r.d}
+                    max={r.total}
+                    accent="text-emerald-500"
+                    onChange={(n) => setRow(s.id, { d: n }, s.total)}
+                  />
+                  <NumCell
+                    label="Y"
+                    name={`${s.id}_y`}
+                    value={r.y}
+                    max={r.total}
+                    accent="text-rose-500"
+                    onChange={(n) => setRow(s.id, { y: n }, s.total)}
+                  />
+                  <div className="text-xs text-muted-foreground md:w-12 md:text-center">
+                    <span className="md:hidden">Boş: </span>
+                    {bos}
                   </div>
-                  <div className="flex items-center gap-1.5">
-                    <label className="text-[10px] text-rose-500">Y</label>
-                    <input
-                      type="number"
-                      name={`${s.id}_y`}
-                      min={0}
-                      max={s.total}
-                      value={v.y}
-                      onChange={(e) =>
-                        setValues((vs) => ({
-                          ...vs,
-                          [s.id]: {
-                            d: vs[s.id]?.d ?? 0,
-                            y: Math.max(0, Number(e.target.value) || 0),
-                          },
-                        }))
-                      }
-                      className="w-16 rounded-lg border border-border bg-background px-2 py-1 text-center text-sm outline-none focus:border-primary"
-                    />
-                  </div>
-                  <div className="text-xs text-muted-foreground">B: {bos}</div>
                   <div
-                    className={`text-right font-mono font-semibold ${
+                    className={`text-right font-mono font-semibold md:w-16 ${
                       valid ? "text-primary" : "text-rose-500"
                     }`}
                   >
@@ -159,7 +166,9 @@ export function NetForm({
 
           <div className="mt-4 flex items-center justify-between rounded-lg bg-muted/40 px-4 py-3">
             <span className="text-sm text-muted-foreground">Toplam net</span>
-            <span className="text-xl font-semibold">{totalNet.toFixed(2)}</span>
+            <span className="font-display text-xl font-bold tabular-nums">
+              {totalNet.toFixed(2)}
+            </span>
           </div>
         </section>
       )}
@@ -174,11 +183,42 @@ export function NetForm({
         <button
           type="submit"
           disabled={subjects.length === 0}
-          className="rounded-lg bg-primary px-6 py-2.5 font-medium text-primary-foreground transition hover:opacity-90 disabled:opacity-50"
+          className="rounded-lg bg-primary px-6 py-2.5 font-medium text-primary-foreground shadow-soft transition hover:opacity-90 active:scale-[0.99] disabled:opacity-50"
         >
           Denemeyi kaydet
         </button>
       </div>
     </form>
+  );
+}
+
+function NumCell({
+  label,
+  name,
+  value,
+  max,
+  accent,
+  onChange,
+}: {
+  label: string;
+  name: string;
+  value: number;
+  max?: number;
+  accent: string;
+  onChange: (n: number) => void;
+}) {
+  return (
+    <div className="flex items-center gap-1.5">
+      <label className={`text-[10px] md:hidden ${accent}`}>{label}</label>
+      <input
+        type="number"
+        name={name}
+        min={0}
+        max={max}
+        value={value}
+        onChange={(e) => onChange(Math.max(0, Number(e.target.value) || 0))}
+        className="w-16 rounded-lg border border-border bg-background px-2 py-1 text-center text-sm outline-none focus:border-primary"
+      />
+    </div>
   );
 }

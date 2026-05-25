@@ -38,9 +38,17 @@ export async function createExam(formData: FormData) {
   const subs = examSubjects(examType, profile?.high_school_track ?? null);
   const totals: Totals = {};
   for (const s of subs) {
+    // Soru sayısı yayına göre kullanıcı tarafından değiştirilebilir.
+    const totalRaw = formData.get(`${s.id}_total`);
+    const total = Math.max(
+      0,
+      totalRaw == null ? s.total : Number(totalRaw) || 0,
+    );
     const d = Math.max(0, Number(formData.get(`${s.id}_d`)) || 0);
     const y = Math.max(0, Number(formData.get(`${s.id}_y`)) || 0);
-    const b = Math.max(0, s.total - d - y);
+    // 0 soru = bu derste deneme yok → kaydetme.
+    if (total === 0 && d === 0 && y === 0) continue;
+    const b = Math.max(0, total - d - y);
     totals[s.id] = { d, y, b, net: net(d, y) };
   }
 

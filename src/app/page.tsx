@@ -12,10 +12,10 @@ import {
   ScanLine,
   ArrowRight,
   CheckCircle2,
-  Mountain,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { Logo } from "@/components/logo";
 
 const spotlight = {
   icon: Sparkles,
@@ -64,9 +64,7 @@ export default async function LandingPage() {
       {/* Header */}
       <header className="sticky top-0 z-20 flex items-center justify-between border-b border-transparent px-6 py-4 backdrop-blur-sm sm:px-10">
         <Link href="/" className="flex items-center gap-2.5">
-          <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-soft">
-            <Mountain size={17} strokeWidth={2.5} />
-          </span>
+          <Logo className="h-8 w-8 rounded-xl shadow-soft" />
           <span className="font-display text-lg font-bold tracking-tight">
             Peak<span className="text-primary">NET</span>
           </span>

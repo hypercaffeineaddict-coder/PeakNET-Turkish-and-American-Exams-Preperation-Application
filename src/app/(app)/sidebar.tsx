@@ -28,9 +28,9 @@ import {
   Wand2,
   Music,
   Share2,
-  Mountain,
 } from "lucide-react";
 import { FocusPlayer } from "@/components/focus-player";
+import { Logo } from "@/components/logo";
 
 type NavItem = { href: string; label: string; icon: React.ElementType };
 
@@ -131,16 +131,14 @@ export function Sidebar({
 
       {/* Sidebar */}
       <aside
-        className={`fixed inset-y-0 left-0 z-50 flex w-64 flex-col border-r border-border bg-card/60 backdrop-blur-xl transition-transform duration-300 lg:static lg:translate-x-0 ${
+        className={`fixed inset-y-0 left-0 z-50 flex w-64 flex-col border-r border-border bg-card/60 backdrop-blur-xl transition-transform duration-300 lg:sticky lg:top-0 lg:h-screen lg:translate-x-0 ${
           open ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
         }`}
         style={{ transitionTimingFunction: "var(--ease-out-expo)" }}
       >
         <div className="flex items-center justify-between px-5 py-5">
           <Link href="/dashboard" className="group flex items-center gap-2.5">
-            <span className="relative flex h-8 w-8 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-soft transition group-hover:scale-105">
-              <Mountain size={17} strokeWidth={2.5} />
-            </span>
+            <Logo className="h-8 w-8 rounded-xl shadow-soft transition group-hover:scale-105" />
             <span className="font-display text-lg font-bold tracking-tight">
               Peak<span className="text-primary">NET</span>
             </span>
