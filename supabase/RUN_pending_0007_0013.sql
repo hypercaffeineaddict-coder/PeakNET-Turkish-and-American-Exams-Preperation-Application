@@ -1,5 +1,5 @@
 -- ============================================================
--- PeakNET — BEKLEYEN TÜM MIGRATION'LAR (0007 → 0015)
+-- PeakNET — BEKLEYEN TÜM MIGRATION'LAR (0007 → 0016)
 -- Supabase SQL Editor'a TAMAMINI yapıştır, bir kez 'Run' de.
 -- Hepsi idempotent (tekrar çalıştırmak güvenli).
 -- ============================================================
@@ -355,4 +355,34 @@ language sql security definer set search_path = public as $fn$
   order by weekly_xp desc, total_xp desc
   limit greatest(1, least(p_limit, 100));
 $fn$;
+
+
+-- ===================== migrations/0016_question_logs.sql =====================
+-- ============================================================
+-- 0016: Soru takibi (günlük ders bazlı soru çözüm kaydı).
+-- ============================================================
+create table if not exists public.question_logs (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references auth.users(id) on delete cascade,
+  log_date date not null default current_date,
+  subject text not null,
+  topic_id text,
+  correct int not null default 0,
+  wrong int not null default 0,
+  blank int not null default 0,
+  created_at timestamptz default now()
+);
+
+create index if not exists question_logs_user_date_idx
+  on public.question_logs (user_id, log_date desc);
+
+alter table public.question_logs enable row level security;
+
+do $$
+begin
+  if not exists (select 1 from pg_policies where tablename = 'question_logs' and policyname = 'own question logs') then
+    create policy "own question logs" on public.question_logs for all
+      using (auth.uid() = user_id) with check (auth.uid() = user_id);
+  end if;
+end $$;
 

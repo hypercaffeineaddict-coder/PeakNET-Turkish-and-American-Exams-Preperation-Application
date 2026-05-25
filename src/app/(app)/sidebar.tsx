@@ -28,6 +28,7 @@ import {
   Wand2,
   Music,
   Share2,
+  Target,
 } from "lucide-react";
 import { FocusPlayer } from "@/components/focus-player";
 import { Logo } from "@/components/logo";
@@ -52,6 +53,7 @@ const navGroups: { title: string | null; items: NavItem[] }[] = [
   {
     title: "Ölç & pratik",
     items: [
+      { href: "/soru-takibi", label: "Soru takibi", icon: Target },
       { href: "/denemeler", label: "Denemeler", icon: FlaskConical },
       { href: "/deneme-sim", label: "Deneme sim.", icon: Timer },
       { href: "/tarama", label: "Tarama testi", icon: ScanLine },
