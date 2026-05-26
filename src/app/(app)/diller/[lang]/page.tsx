@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { ArrowLeft, AlertTriangle, BookOpen } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
-import { languageById } from "@/data/languages";
+import { languageById, languageResources } from "@/data/languages";
 import { aiHealth } from "@/lib/ai";
 import { LanguageChat } from "./chat";
 
@@ -154,10 +154,38 @@ export default async function LanguagePage({
           </section>
 
           <section className="rounded-2xl border border-border bg-card p-5 text-sm">
-            <h3 className="text-sm font-semibold">Sıradaki</h3>
-            <p className="mt-2 text-xs text-muted-foreground">
-              Kelime kartları, telaffuz oyunu, günlük seri ve seviyeli ünite
-              ilerlemesi yakında.
+            <h3 className="text-sm font-semibold">Pratik akış</h3>
+            <ul className="mt-2 space-y-1.5 text-xs text-muted-foreground">
+              <li>1. Yazı sistemi notunu oku, sesli okumayı dene.</li>
+              <li>2. 7 temel kalıbı + üniteleri (sayılar, günlük ifadeler) ezberle.</li>
+              <li>3. AI ile sohbet et: yazdığını gör, hatanı düzelt.</li>
+              <li>4. Yardımcı kaynaklarla kelimeni genişlet (aşağıda).</li>
+            </ul>
+          </section>
+
+          <section className="rounded-2xl border border-border bg-card p-5 text-sm">
+            <h3 className="text-sm font-semibold">Yardımcı kaynaklar</h3>
+            <ul className="mt-3 space-y-2.5">
+              {languageResources(language).map((r) => (
+                <li key={r.url}>
+                  <a
+                    href={r.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block text-xs font-medium text-primary hover:underline"
+                  >
+                    {r.title} ↗
+                  </a>
+                  {r.note && (
+                    <p className="mt-0.5 text-[11px] text-muted-foreground">
+                      {r.note}
+                    </p>
+                  )}
+                </li>
+              ))}
+            </ul>
+            <p className="mt-3 text-[10px] text-muted-foreground">
+              Wikipedia ve Wiktionary CC BY-SA lisansıyla ücretsizdir.
             </p>
           </section>
         </aside>

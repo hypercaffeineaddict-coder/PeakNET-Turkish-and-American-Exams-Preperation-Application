@@ -68,8 +68,8 @@ export default async function DillerPage() {
       </div>
 
       <p className="text-xs text-muted-foreground">
-        Daha sonra: kelime kartları, telaffuz, yazma alıştırmaları ve günlük seri
-        eklenecek.
+        Her dilde temel kalıplar + tematik kelime paketleri + AI sohbet partneri
+        hazır. Sesli okuma için cihazına bcp47 dil paketini yüklemen yeterli.
       </p>
     </div>
   );

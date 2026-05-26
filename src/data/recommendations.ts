@@ -345,9 +345,83 @@ subjectRecommendations.tyt_fen = [
   },
 ];
 
-// Konuya özel öneriler (her konu için spesifik kazanım sayfası bulunmadığında
-// ders düzeyi öneriler yeterli)
-export const topicRecommendations: Record<string, Recommendation[]> = {};
+// Konuya özel öneriler — Khan Academy Türkçe bölüm linkleri.
+// Bölüm yoksa ders düzeyi (subjectRecommendations) zaten devreye girer.
+const KA_TR = "https://tr.khanacademy.org";
+
+const ka = (
+  path: string,
+  title: string,
+  desc?: string,
+): Recommendation => ({
+  kind: "link",
+  title: `Khan Academy — ${title}`,
+  url: `${KA_TR}${path}`,
+  description: `${desc ? desc + " · " : ""}${KA_ATTRIBUTION}`,
+  source: "KhanAcademy",
+});
+
+export const topicRecommendations: Record<string, Recommendation[]> = {
+  // Matematik
+  mat_polinomlar: [ka("/math/algebra2", "Polinomlar (Algebra 2)")],
+  mat_2dereceden_denklemler: [ka("/math/algebra", "İkinci Dereceden Denklemler")],
+  mat_2dereceden_esitsizlikler: [ka("/math/algebra", "İkinci Dereceden Eşitsizlikler")],
+  mat_esitsizlik_sistemleri: [ka("/math/algebra", "Eşitsizlik Sistemleri")],
+  mat_karmasik_sayilar: [ka("/math/algebra2", "Karmaşık Sayılar")],
+  mat_fonksiyonlar: [ka("/math/algebra", "Fonksiyonlar")],
+  mat_fonksiyonlarla_islemler: [ka("/math/algebra2", "Fonksiyonlarla İşlemler")],
+  mat_trigonometri: [ka("/math/trigonometry", "Trigonometri")],
+  mat_logaritma: [ka("/math/algebra2", "Logaritma")],
+  mat_diziler: [ka("/math/precalculus", "Diziler (Precalculus)")],
+  mat_limit: [ka("/math/calculus-1", "Limit ve Süreklilik")],
+  mat_turev: [ka("/math/calculus-1", "Türev")],
+  mat_integral: [ka("/math/integral-calculus", "İntegral")],
+  mat_analitik_dogru: [ka("/math/geometry", "Analitik Geometri — Doğru")],
+  mat_analitik_cember: [ka("/math/geometry", "Analitik Geometri — Çember")],
+  mat_cember_daire: [ka("/math/geometry", "Çember ve Daire")],
+  mat_dik_ucgen: [ka("/math/geometry", "Dik Üçgen")],
+  mat_dogruda_aci: [ka("/math/geometry", "Doğruda Açılar")],
+  mat_ucgende_aci: [ka("/math/geometry", "Üçgende Açılar")],
+  mat_ucgende_alan: [ka("/math/geometry", "Üçgende Alan")],
+  mat_ucgende_benzerlik: [ka("/math/geometry", "Üçgende Benzerlik")],
+  mat_dortgenler: [ka("/math/geometry", "Dörtgenler")],
+
+  // Fizik (anahtar konular)
+  fiz_vektorler: [ka("/science/physics", "Vektörler")],
+  fiz_kuvvet_tork: [ka("/science/physics", "Kuvvet ve Tork")],
+  fiz_dairesel_hareket: [ka("/science/physics", "Dairesel Hareket")],
+  fiz_basit_harmonik: [ka("/science/physics", "Basit Harmonik Hareket")],
+  fiz_dalga_mekanigi: [ka("/science/physics", "Dalga Mekaniği")],
+  fiz_dalga_optigi: [ka("/science/physics", "Dalga Optiği")],
+  fiz_elektrik_alani: [ka("/science/physics", "Elektrik Alanı")],
+  fiz_manyetizma_indukleme: [ka("/science/physics", "Manyetizma ve İndükleme")],
+  fiz_modern_fizik: [ka("/science/physics", "Modern Fizik")],
+  fiz_atom_fizigi: [ka("/science/physics", "Atom Fiziği")],
+
+  // Kimya
+  kim_modern_atom: [ka("/science/chemistry", "Modern Atom Teorisi")],
+  kim_gazlar: [ka("/science/chemistry", "Gazlar")],
+  kim_sivi_cozeltiler: [ka("/science/chemistry", "Sıvı Çözeltiler")],
+  kim_kim_denge: [ka("/science/chemistry", "Kimyasal Denge")],
+  kim_asit_baz: [ka("/science/chemistry", "Asit-Baz")],
+  kim_tepkime_hizi: [ka("/science/chemistry", "Tepkime Hızı")],
+  kim_elektrokimya: [ka("/science/chemistry", "Elektrokimya")],
+  kim_karbon_kimyasi: [ka("/science/chemistry", "Karbon Kimyası")],
+  kim_organik_bilesikler: [ka("/science/chemistry", "Organik Bileşikler")],
+
+  // Biyoloji
+  biy_genden_proteine: [ka("/science/biology", "Genden Proteine")],
+  biy_canlilarda_enerji: [ka("/science/biology", "Canlılarda Enerji")],
+  biy_bitki_biyolojisi: [ka("/science/biology", "Bitki Biyolojisi")],
+  biy_komunite_populasyon: [ka("/science/biology", "Komünite ve Popülasyon")],
+  biy_canlilar_cevre: [ka("/science/biology", "Canlılar ve Çevre")],
+  biy_insan_sinir: [ka("/science/biology", "Sinir Sistemi")],
+  biy_insan_dolasim: [ka("/science/biology", "Dolaşım Sistemi")],
+  biy_insan_solunum: [ka("/science/biology", "Solunum Sistemi")],
+  biy_insan_sindirim: [ka("/science/biology", "Sindirim Sistemi")],
+  biy_insan_endokrin: [ka("/science/biology", "Endokrin Sistem")],
+  biy_insan_ureme_gelisme: [ka("/science/biology", "Üreme ve Gelişme")],
+};
 
 export function recommendationsFor(
   topicId: string,

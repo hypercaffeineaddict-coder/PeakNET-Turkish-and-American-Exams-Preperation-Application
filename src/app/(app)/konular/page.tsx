@@ -16,8 +16,6 @@ const examTabs = [
   { id: "AYT", label: "AYT", desc: "Alan Yeterlilik" },
   { id: "TYT", label: "TYT", desc: "Temel Yeterlilik" },
   { id: "YDT", label: "YDT", desc: "Yabancı Dil" },
-  { id: "MSU", label: "MSÜ", desc: "Milli Savunma" },
-  { id: "KPSS", label: "KPSS", desc: "Kamu Personel" },
 ] as const;
 type ExamTab = (typeof examTabs)[number]["id"];
 

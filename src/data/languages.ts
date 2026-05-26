@@ -7,10 +7,16 @@ export type LanguageId =
   | "de"
   | "it"
   | "ko"
-  | "ar";
+  | "ar"
+  | "pt"
+  | "el"
+  | "pl"
+  | "sv"
+  | "hi";
 
 export type Phrase = { item: string; reading?: string; translation: string };
 export type Unit = { title: string; phrases: Phrase[] };
+export type LanguageResource = { title: string; url: string; note?: string };
 
 export type Language = {
   id: LanguageId;
@@ -22,9 +28,11 @@ export type Language = {
   difficulty: 1 | 2 | 3 | 4 | 5;
   basics: Phrase[];
   units?: Unit[]; // tematik kelime/ifade paketleri
+  resources?: LanguageResource[]; // dile özel ücretsiz kaynaklar
   alphabetIntro: string;
   aiSystemHint: string;
   bcp47: string; // Web Speech API için
+  wikiSlug?: string; // tr.wikipedia.org/wiki/{slug}_dili (varsayılan: name'den türetilir)
 };
 
 export const languages: Language[] = [
@@ -499,7 +507,343 @@ export const languages: Language[] = [
       "Sen Modern Standart Arapça (الفصحى) öğreten sabırlı bir öğretmensin. Her Arapça ifadeyi Arap harfleriyle yaz, parantez içinde Latin transkripsiyon (ALA-LC benzeri) ve Türkçe çevirisini ver. Sağdan sola yazıyı koru. Kısa ünlüleri (hareke) önemli olduğunda işaretle.",
     bcp47: "ar-SA",
   },
+  {
+    id: "pt",
+    name: "Portekizce",
+    nativeName: "Português",
+    flag: "🇵🇹",
+    hello: "Olá!",
+    description:
+      "Romantik dil; Brezilya ve Portekiz versiyonu birbirine yakın (telaffuz farkı belirgin). İspanyolcaya yakın yapı.",
+    difficulty: 2,
+    alphabetIntro:
+      "Latin alfabesi + ã õ á é í ó ú ç. Burundan çıkan ünlüler (ã, õ) Portekizceye has. ç='s', nh='ny', lh='lyi', x bağlama göre 'ş' veya 'z'.",
+    basics: [
+      { item: "Olá", translation: "Merhaba" },
+      { item: "Obrigado / Obrigada", translation: "Teşekkürler (erkek/kadın)" },
+      { item: "Sim / Não", translation: "Evet / Hayır" },
+      { item: "Desculpe", translation: "Affedersiniz" },
+      { item: "Eu", translation: "Ben" },
+      { item: "Chamo-me…", translation: "Adım…" },
+      { item: "Um, dois, três", translation: "Bir, iki, üç" },
+    ],
+    units: [
+      {
+        title: "Sayılar 1-10",
+        phrases: [
+          { item: "um", translation: "1" },
+          { item: "dois", translation: "2" },
+          { item: "três", translation: "3" },
+          { item: "quatro", translation: "4" },
+          { item: "cinco", translation: "5" },
+          { item: "seis", translation: "6" },
+          { item: "sete", translation: "7" },
+          { item: "oito", translation: "8" },
+          { item: "nove", translation: "9" },
+          { item: "dez", translation: "10" },
+        ],
+      },
+      {
+        title: "Günlük ifadeler",
+        phrases: [
+          { item: "Bom dia", translation: "Günaydın" },
+          { item: "Boa tarde", translation: "İyi öğleden sonralar" },
+          { item: "Boa noite", translation: "İyi akşamlar / İyi geceler" },
+          { item: "Adeus", translation: "Hoşça kal" },
+          { item: "Por favor", translation: "Lütfen" },
+          { item: "Não entendo", translation: "Anlamıyorum" },
+        ],
+      },
+    ],
+    aiSystemHint:
+      "Sen Portekizce öğreten sabırlı bir öğretmensin. Her Portekizce cümleyi yaz, Türkçe çevirisini ver. Brezilya ve Portekiz farkı varsa belirt. Cinsiyet (m/f) ekle.",
+    bcp47: "pt-PT",
+  },
+  {
+    id: "el",
+    name: "Yunanca",
+    nativeName: "Ελληνικά",
+    flag: "🇬🇷",
+    hello: "Γειά σου",
+    description:
+      "Hint-Avrupa dil ailesinin tek başına bir kolu. Kendine has alfabesi (Yunan alfabesi, 24 harf) modern Türk matematiği için tanıdık.",
+    difficulty: 3,
+    alphabetIntro:
+      "Yunan alfabesi 24 harf (Α α, Β β=v, Γ γ=gh/y, Δ δ=th, Ε ε, Ζ ζ=z, Η η=i, Θ θ=th, Ι ι, ...). Tonos (΄) işareti vurguyu gösterir.",
+    basics: [
+      { item: "Γειά σου", reading: "ya su", translation: "Merhaba (samimi)" },
+      { item: "Καλημέρα", reading: "kalimera", translation: "Günaydın" },
+      { item: "Ευχαριστώ", reading: "efharisto", translation: "Teşekkürler" },
+      { item: "Ναι / Όχι", reading: "ne / ohi", translation: "Evet / Hayır" },
+      { item: "Συγγνώμη", reading: "signomi", translation: "Affedersiniz" },
+      { item: "Εγώ", reading: "egho", translation: "Ben" },
+      { item: "Ένα, δύο, τρία", reading: "ena, dhio, tria", translation: "Bir, iki, üç" },
+    ],
+    units: [
+      {
+        title: "Sayılar 1-10",
+        phrases: [
+          { item: "ένα", reading: "ena", translation: "1" },
+          { item: "δύο", reading: "dhio", translation: "2" },
+          { item: "τρία", reading: "tria", translation: "3" },
+          { item: "τέσσερα", reading: "tessera", translation: "4" },
+          { item: "πέντε", reading: "pende", translation: "5" },
+          { item: "έξι", reading: "exi", translation: "6" },
+          { item: "επτά", reading: "epta", translation: "7" },
+          { item: "οκτώ", reading: "okto", translation: "8" },
+          { item: "εννιά", reading: "ennia", translation: "9" },
+          { item: "δέκα", reading: "dheka", translation: "10" },
+        ],
+      },
+      {
+        title: "Günlük ifadeler",
+        phrases: [
+          { item: "Καλησπέρα", reading: "kalispera", translation: "İyi akşamlar" },
+          { item: "Καληνύχτα", reading: "kalinihta", translation: "İyi geceler" },
+          { item: "Αντίο", reading: "andio", translation: "Hoşça kal" },
+          { item: "Παρακαλώ", reading: "parakalo", translation: "Lütfen / Rica ederim" },
+          { item: "Δεν καταλαβαίνω", reading: "dhen katalaveno", translation: "Anlamıyorum" },
+          { item: "Τι κάνεις;", reading: "ti kanis", translation: "Nasılsın?" },
+        ],
+      },
+    ],
+    aiSystemHint:
+      "Sen Modern Yunanca öğreten sabırlı bir öğretmensin. Her Yunanca cümleyi Yunan alfabesiyle yaz, parantez içinde Latin transkripsiyon ve Türkçe çevirisini ver. Vurguyu (tonos) doğru göster.",
+    bcp47: "el-GR",
+  },
+  {
+    id: "pl",
+    name: "Lehçe",
+    nativeName: "Polski",
+    flag: "🇵🇱",
+    hello: "Cześć",
+    description:
+      "Batı Slav dili. Yedi durum (case) sistemi, zengin ünsüz kümeleri (ör. cz, sz, rz). Latin alfabesi + diakritik harfler.",
+    difficulty: 4,
+    alphabetIntro:
+      "Latin alfabesi + ą ć ę ł ń ó ś ź ż. cz='ç', sz='ş', dz='dz', rz='j', ł='w'. Vurgu çoğunlukla sondan bir önceki hecede. Vurgu kuralı düzenli.",
+    basics: [
+      { item: "Cześć", reading: "çeşç", translation: "Selam" },
+      { item: "Dzień dobry", reading: "cyen dobri", translation: "Günaydın / Merhaba (resmi)" },
+      { item: "Dziękuję", reading: "cyenkuye", translation: "Teşekkürler" },
+      { item: "Tak / Nie", reading: "tak / nye", translation: "Evet / Hayır" },
+      { item: "Przepraszam", reading: "psheprasham", translation: "Affedersiniz" },
+      { item: "Ja", reading: "ya", translation: "Ben" },
+      { item: "Jeden, dwa, trzy", reading: "yeden, dva, tşi", translation: "Bir, iki, üç" },
+    ],
+    units: [
+      {
+        title: "Sayılar 1-10",
+        phrases: [
+          { item: "jeden", reading: "yeden", translation: "1" },
+          { item: "dwa", reading: "dva", translation: "2" },
+          { item: "trzy", reading: "tşi", translation: "3" },
+          { item: "cztery", reading: "çteri", translation: "4" },
+          { item: "pięć", reading: "pyenç", translation: "5" },
+          { item: "sześć", reading: "şeşç", translation: "6" },
+          { item: "siedem", reading: "şedem", translation: "7" },
+          { item: "osiem", reading: "oşem", translation: "8" },
+          { item: "dziewięć", reading: "cyevyenç", translation: "9" },
+          { item: "dziesięć", reading: "cyeşenç", translation: "10" },
+        ],
+      },
+      {
+        title: "Günlük ifadeler",
+        phrases: [
+          { item: "Dobry wieczór", reading: "dobri vyeçur", translation: "İyi akşamlar" },
+          { item: "Dobranoc", reading: "dobranots", translation: "İyi geceler" },
+          { item: "Do widzenia", reading: "do vidzenya", translation: "Hoşça kal" },
+          { item: "Proszę", reading: "proşe", translation: "Lütfen / Rica ederim" },
+          { item: "Nie rozumiem", reading: "nye rozumyem", translation: "Anlamıyorum" },
+          { item: "Jak się masz?", reading: "yak şe maş", translation: "Nasılsın?" },
+        ],
+      },
+    ],
+    aiSystemHint:
+      "Sen Lehçe öğreten sabırlı bir öğretmensin. Her Lehçe cümleyi yaz, parantez içinde basitleştirilmiş okunuş ve Türkçe çevirisini ver. Durum (case) bilgisini gerektiğinde kısaca belirt. ą ę ł ó ś ź ż karakterlerini doğru kullan.",
+    bcp47: "pl-PL",
+  },
+  {
+    id: "sv",
+    name: "İsveççe",
+    nativeName: "Svenska",
+    flag: "🇸🇪",
+    hello: "Hej!",
+    description:
+      "Kuzey Germen dili. Telaffuzu özel (sj-, sk- gibi sesler), gramer Almancadan basit. İki cinsiyet (en/ett).",
+    difficulty: 3,
+    alphabetIntro:
+      "Latin alfabesi + å ä ö (alfabenin sonunda). sj/skj/stj 'ş'a yakın özel ses, k+e/i 'ş', j başta 'y'. Vurgu çoğunlukla ilk hecede + ezgili (tonal).",
+    basics: [
+      { item: "Hej", translation: "Selam" },
+      { item: "Tack", translation: "Teşekkürler" },
+      { item: "Ja / Nej", translation: "Evet / Hayır" },
+      { item: "Förlåt", translation: "Affedersiniz" },
+      { item: "Jag", translation: "Ben" },
+      { item: "Jag heter…", translation: "Adım…" },
+      { item: "Ett, två, tre", translation: "Bir, iki, üç" },
+    ],
+    units: [
+      {
+        title: "Sayılar 1-10",
+        phrases: [
+          { item: "ett", translation: "1" },
+          { item: "två", translation: "2" },
+          { item: "tre", translation: "3" },
+          { item: "fyra", translation: "4" },
+          { item: "fem", translation: "5" },
+          { item: "sex", translation: "6" },
+          { item: "sju", translation: "7" },
+          { item: "åtta", translation: "8" },
+          { item: "nio", translation: "9" },
+          { item: "tio", translation: "10" },
+        ],
+      },
+      {
+        title: "Günlük ifadeler",
+        phrases: [
+          { item: "God morgon", translation: "Günaydın" },
+          { item: "God kväll", translation: "İyi akşamlar" },
+          { item: "God natt", translation: "İyi geceler" },
+          { item: "Hej då", translation: "Hoşça kal" },
+          { item: "Snälla / Vänligen", translation: "Lütfen" },
+          { item: "Jag förstår inte", translation: "Anlamıyorum" },
+          { item: "Hur mår du?", translation: "Nasılsın?" },
+        ],
+      },
+    ],
+    aiSystemHint:
+      "Sen İsveççe öğreten sabırlı bir öğretmensin. Her İsveççe cümleyi yaz, Türkçe çevirisini ver. İsimlere artikel (en/ett) ekle, çoğul ekleri kısaca belirt. å ä ö karakterlerini doğru kullan.",
+    bcp47: "sv-SE",
+  },
+  {
+    id: "hi",
+    name: "Hintçe",
+    nativeName: "हिन्दी",
+    flag: "🇮🇳",
+    hello: "नमस्ते",
+    description:
+      "Hint-Aryan dil ailesi. Devanagari yazı sistemi (heceli alfabe). SOV yapısı. Urdu ile konuşma dilinde benzer.",
+    difficulty: 4,
+    alphabetIntro:
+      "Devanagari: 11 ünlü + 33 ünsüz, hece bloklarına dizilir. Kelimelerin üstünde yatay çizgi (शिरोरेखा). Türkçe gibi büyük ölçüde fonetik yazılır.",
+    basics: [
+      { item: "नमस्ते", reading: "namaste", translation: "Merhaba (saygılı)" },
+      { item: "धन्यवाद", reading: "dhanyavaad", translation: "Teşekkürler" },
+      { item: "हाँ / नहीं", reading: "haan / nahin", translation: "Evet / Hayır" },
+      { item: "माफ़ कीजिए", reading: "maaf kijiye", translation: "Affedersiniz" },
+      { item: "मैं", reading: "main", translation: "Ben" },
+      { item: "मेरा नाम…", reading: "mera naam…", translation: "Adım…" },
+      { item: "एक, दो, तीन", reading: "ek, do, tin", translation: "Bir, iki, üç" },
+    ],
+    units: [
+      {
+        title: "Sayılar 1-10",
+        phrases: [
+          { item: "एक", reading: "ek", translation: "1" },
+          { item: "दो", reading: "do", translation: "2" },
+          { item: "तीन", reading: "tin", translation: "3" },
+          { item: "चार", reading: "char", translation: "4" },
+          { item: "पाँच", reading: "panch", translation: "5" },
+          { item: "छह", reading: "chhah", translation: "6" },
+          { item: "सात", reading: "saat", translation: "7" },
+          { item: "आठ", reading: "aath", translation: "8" },
+          { item: "नौ", reading: "nau", translation: "9" },
+          { item: "दस", reading: "das", translation: "10" },
+        ],
+      },
+      {
+        title: "Günlük ifadeler",
+        phrases: [
+          { item: "सुप्रभात", reading: "suprabhaat", translation: "Günaydın" },
+          { item: "शुभ रात्रि", reading: "shubh raatri", translation: "İyi geceler" },
+          { item: "अलविदा", reading: "alvida", translation: "Hoşça kal" },
+          { item: "कृपया", reading: "kripaya", translation: "Lütfen" },
+          { item: "मुझे समझ नहीं आया", reading: "mujhe samajh nahin aaya", translation: "Anlamıyorum" },
+          { item: "आप कैसे हैं?", reading: "aap kaise hain", translation: "Nasılsınız?" },
+        ],
+      },
+    ],
+    aiSystemHint:
+      "Sen Hintçe öğreten sabırlı bir öğretmensin. Her Hintçe cümleyi Devanagari ile yaz, parantez içinde basitleştirilmiş okunuş ve Türkçe çevirisini ver. Cinsiyet (m/f) ve fiil çekimini kısaca belirt.",
+    bcp47: "hi-IN",
+  },
 ];
+
+// Dile özel ücretsiz kaynaklar (hand-curated). Telifsiz/kamu hizmeti tercihi.
+const RESOURCES: Partial<Record<LanguageId, LanguageResource[]>> = {
+  ja: [
+    { title: "NHK Easy Japanese News", url: "https://www3.nhk.or.jp/news/easy/", note: "Kamu yayıncısı NHK — kolay Japonca haberler" },
+    { title: "Tofugu", url: "https://www.tofugu.com/", note: "Ücretsiz Japonca öğrenme makaleleri" },
+  ],
+  zh: [
+    { title: "Arch Chinese", url: "https://www.archchinese.com/", note: "Ücretsiz karakter sözlüğü + çizim sırası" },
+  ],
+  fr: [
+    { title: "TV5MONDE Apprendre", url: "https://apprendre.tv5monde.com/", note: "Devlet destekli ücretsiz Fransızca öğrenme platformu" },
+    { title: "Lawless French", url: "https://www.lawlessfrench.com/", note: "Geniş ücretsiz dilbilgisi kaynağı" },
+  ],
+  ru: [
+    { title: "Master Russian", url: "http://masterrussian.com/", note: "Ücretsiz dilbilgisi/sözlük" },
+  ],
+  es: [
+    { title: "RAE — İspanyol Kraliyet Akademisi Sözlüğü", url: "https://dle.rae.es/", note: "Resmi ücretsiz İspanyolca sözlük" },
+  ],
+  de: [
+    { title: "Deutsche Welle — Deutsch Lernen", url: "https://learngerman.dw.com/", note: "Devlet yayıncısı DW — A1'den C'ye ücretsiz kurslar" },
+  ],
+  it: [
+    { title: "Treccani", url: "https://www.treccani.it/vocabolario/", note: "İtalyan ulusal ansiklopedi/sözlük" },
+  ],
+  ko: [
+    { title: "Talk To Me In Korean", url: "https://talktomeinkorean.com/", note: "Geniş ücretsiz Korece müfredatı" },
+  ],
+  ar: [
+    { title: "Madinah Arabic", url: "https://www.madinaharabic.com/", note: "Ücretsiz klasik Arapça kursu" },
+  ],
+  pt: [
+    { title: "RTP Ensina — Português", url: "https://ensina.rtp.pt/", note: "Portekiz devlet yayıncısı eğitim arşivi" },
+  ],
+  el: [
+    { title: "Centre for the Greek Language", url: "https://www.greek-language.gr/", note: "Yunan devlet kurumu — ücretsiz Modern Yunanca" },
+  ],
+  pl: [
+    { title: "Polski.pl (Polonyalı dilbilgisi)", url: "https://polski.pl/", note: "Genel referans" },
+  ],
+  sv: [
+    { title: "Lär dig svenska — UR.se", url: "https://urplay.se/program/serie/svenska-for-dig", note: "İsveç devlet yayıncısı UR — ücretsiz İsveççe öğrenme" },
+  ],
+  hi: [
+    { title: "BBC Hindi", url: "https://www.bbc.com/hindi", note: "Günlük basit Hintçe haber metinleri" },
+  ],
+};
+
+// Tüm dillere uygulanan jenerik ücretsiz kaynaklar (Wikipedia, Wiktionary, Forvo).
+export function defaultResources(lang: Language): LanguageResource[] {
+  const code = lang.bcp47.split("-")[0]!;
+  const wikiSlug = lang.wikiSlug ?? lang.name.replaceAll(" ", "_");
+  return [
+    {
+      title: `Vikipedi — ${lang.name}`,
+      url: `https://tr.wikipedia.org/wiki/${encodeURIComponent(wikiSlug)}`,
+      note: "Dil hakkında Türkçe genel bilgi (CC BY-SA)",
+    },
+    {
+      title: `Wiktionary — ${lang.name} sözlüğü`,
+      url: `https://${code}.wiktionary.org/`,
+      note: "Topluluk sözlüğü (CC BY-SA)",
+    },
+    {
+      title: `Forvo — Telaffuz`,
+      url: `https://forvo.com/languages/${code}/`,
+      note: "Ana dilden ücretsiz telaffuz örnekleri",
+    },
+  ];
+}
+
+export function languageResources(lang: Language): LanguageResource[] {
+  return [...(RESOURCES[lang.id] ?? []), ...defaultResources(lang)];
+}
 
 export function languageById(id: string) {
   return languages.find((l) => l.id === id);
