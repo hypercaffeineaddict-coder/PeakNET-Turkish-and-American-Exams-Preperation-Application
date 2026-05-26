@@ -95,6 +95,45 @@ export default async function LanguagePage({
             </ul>
           </section>
 
+          {/* Tematik kelime paketleri */}
+          {language.units?.map((u, ui) => (
+            <details
+              key={ui}
+              className="group overflow-hidden rounded-2xl border border-border bg-card"
+              open={ui === 0}
+            >
+              <summary className="flex cursor-pointer items-center justify-between px-6 py-4 marker:hidden [&::-webkit-details-marker]:hidden">
+                <span className="flex items-center gap-2 text-sm font-semibold">
+                  <BookOpen size={14} className="text-primary" />
+                  {u.title}
+                </span>
+                <span className="text-xs text-muted-foreground transition group-open:rotate-180">
+                  ▾
+                </span>
+              </summary>
+              <ul className="divide-y divide-border border-t border-border">
+                {u.phrases.map((p, i) => (
+                  <li
+                    key={i}
+                    className="flex flex-wrap items-baseline gap-3 px-6 py-2.5 text-sm"
+                  >
+                    <span className="min-w-[6rem] font-medium text-foreground">
+                      {p.item}
+                    </span>
+                    {p.reading && (
+                      <span className="text-xs italic text-muted-foreground">
+                        [{p.reading}]
+                      </span>
+                    )}
+                    <span className="ml-auto text-muted-foreground">
+                      {p.translation}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </details>
+          ))}
+
           {/* AI ile pratik */}
           <LanguageChat
             languageId={language.id}

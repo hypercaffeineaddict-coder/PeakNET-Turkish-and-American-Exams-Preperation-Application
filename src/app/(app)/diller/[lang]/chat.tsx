@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Send, Loader2, Bot, User, Sparkles } from "lucide-react";
-import { languageById } from "@/data/languages";
+import { languageById, type LanguageId } from "@/data/languages";
 import { MicButton, SpeakerToggle, speak, stopSpeaking } from "@/components/voice-controls";
 
 type Message = { role: "user" | "assistant"; content: string };
@@ -12,7 +12,7 @@ export function LanguageChat({
   languageName,
   aiReady,
 }: {
-  languageId: "ja" | "zh" | "fr" | "ru";
+  languageId: LanguageId;
   languageName: string;
   aiReady: boolean;
 }) {

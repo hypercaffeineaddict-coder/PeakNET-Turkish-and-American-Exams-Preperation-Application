@@ -417,14 +417,25 @@ function RecommendationsCard({
                 className="rounded-lg border border-border bg-background p-2.5"
               >
                 <div className="flex items-start justify-between gap-2">
-                  <a
-                    href={rec.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex-1 text-xs font-medium hover:underline"
-                  >
-                    {rec.title}
-                  </a>
+                  <div className="flex-1">
+                    <a
+                      href={rec.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-xs font-medium hover:underline"
+                    >
+                      {rec.title}
+                    </a>
+                    <span
+                      className={`ml-1.5 inline-block rounded-full px-1.5 py-0.5 align-middle text-[9px] font-medium uppercase tracking-wider ${
+                        rec.source === "KhanAcademy"
+                          ? "bg-primary/10 text-primary"
+                          : "bg-muted text-muted-foreground"
+                      }`}
+                    >
+                      {rec.source === "KhanAcademy" ? "Khan Academy" : "MEB"}
+                    </span>
+                  </div>
                   <form action={importRecommendation} className="shrink-0">
                     <input type="hidden" name="topic_id" value={topicId} />
                     <input type="hidden" name="kind" value={rec.kind} />

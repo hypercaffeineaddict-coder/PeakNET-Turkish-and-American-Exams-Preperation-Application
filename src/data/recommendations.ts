@@ -1,21 +1,34 @@
 import type { ResourceKind } from "@/lib/resources";
 
+export type RecommendationSource = "MEB" | "KhanAcademy";
+
 export type Recommendation = {
   kind: ResourceKind;
   title: string;
   url: string;
   description?: string;
-  source: "MEB";
+  source: RecommendationSource;
 };
 
 // =======================================================================
-// SADECE MEB / EBA / OGM Materyal / ÖSYM kaynakları kullanılır.
-// Üçüncü taraf yayınların (özel hocalar, özel kurum YouTube vb.)
-// videoları ya da içerikleri uygulamaya gömülmez — kullanıcı kendisi
-// YouTube arama butonuyla araştırabilir.
+// Kaynak politikası:
+//
+// 1) Birincil kaynaklar MEB / EBA / OGM Materyal / ÖSYM (Türkiye resmî
+//    eğitim ekosistemi). Bunlar telif açısından açıkça serbesttir.
+//
+// 2) İkincil kaynak: Khan Academy / Khan Academy Türkçe (CC BY-NC-SA 3.0).
+//    Atıf zorunlu + ticari olmayan kullanım. PeakNET ücretsiz/öğrenci
+//    odaklı bir uygulama olduğu için bu lisansla uyumlu. Her Khan Academy
+//    kaynağında atıf görünür şekilde gösterilir.
+//
+// Başka üçüncü taraf yayın/özel hoca içeriği gömülmez; kullanıcı isterse
+// YouTube arama butonuyla kendisi araştırır.
 // =======================================================================
 
-// Tüm konulara önerilen genel kaynaklar (resmî MEB ekosistemi)
+const KA_ATTRIBUTION =
+  "Khan Academy içerikleri CC BY-NC-SA lisansıyla ücretsiz, ticari olmayan kullanım için. Kaynak: khanacademy.org";
+
+// Tüm konulara önerilen genel kaynaklar
 export const globalRecommendations: Recommendation[] = [
   {
     kind: "link",
@@ -59,6 +72,20 @@ export const globalRecommendations: Recommendation[] = [
     description: "Resmî sınav arşivi: TYT, AYT ve YDT tüm yıllar.",
     source: "MEB",
   },
+  {
+    kind: "link",
+    title: "Khan Academy Türkçe — Ana sayfa",
+    url: "https://tr.khanacademy.org/",
+    description: `Ücretsiz video dersler ve alıştırmalar (matematik, fen, ekonomi, kodlama, ...). ${KA_ATTRIBUTION}`,
+    source: "KhanAcademy",
+  },
+  {
+    kind: "video",
+    title: "Khan Academy Türkçe — YouTube kanalı",
+    url: "https://www.youtube.com/@khanacademyturkce",
+    description: `Türkçe altyazılı/dublajlı resmi Khan Academy YouTube kanalı. ${KA_ATTRIBUTION}`,
+    source: "KhanAcademy",
+  },
 ];
 
 // Derse özel öneriler (subject.id)
@@ -85,6 +112,13 @@ export const subjectRecommendations: Record<string, Recommendation[]> = {
       description: "TRT işbirliğinde hazırlanmış MEB ders anlatım videoları.",
       source: "MEB",
     },
+    {
+      kind: "link",
+      title: "Khan Academy — Matematik",
+      url: "https://tr.khanacademy.org/math",
+      description: `Cebir, geometri, trigonometri, türev/integral — adım adım video ders ve alıştırmalar. ${KA_ATTRIBUTION}`,
+      source: "KhanAcademy",
+    },
   ],
   fizik: [
     {
@@ -107,6 +141,13 @@ export const subjectRecommendations: Record<string, Recommendation[]> = {
       url: "https://ogmmateryal.eba.gov.tr/ebatv-ogm/SinifListele.aspx?kod=fizik&s=0&d=0&u=0&k=0",
       description: "TRT işbirliğinde hazırlanmış MEB fizik videoları.",
       source: "MEB",
+    },
+    {
+      kind: "link",
+      title: "Khan Academy — Fizik",
+      url: "https://tr.khanacademy.org/science/physics",
+      description: `Hareket, kuvvet, enerji, elektromanyetizma — kavramsal anlatım. ${KA_ATTRIBUTION}`,
+      source: "KhanAcademy",
     },
   ],
   kimya: [
@@ -131,6 +172,13 @@ export const subjectRecommendations: Record<string, Recommendation[]> = {
       description: "TRT işbirliğinde hazırlanmış MEB kimya videoları.",
       source: "MEB",
     },
+    {
+      kind: "link",
+      title: "Khan Academy — Kimya",
+      url: "https://tr.khanacademy.org/science/chemistry",
+      description: `Atom, molekül, asit-baz, organik kimya. ${KA_ATTRIBUTION}`,
+      source: "KhanAcademy",
+    },
   ],
   biyoloji: [
     {
@@ -154,6 +202,94 @@ export const subjectRecommendations: Record<string, Recommendation[]> = {
       description: "TRT işbirliğinde hazırlanmış MEB biyoloji videoları.",
       source: "MEB",
     },
+    {
+      kind: "link",
+      title: "Khan Academy — Biyoloji",
+      url: "https://tr.khanacademy.org/science/biology",
+      description: `Hücre, genetik, evrim, ekoloji, insan vücudu. ${KA_ATTRIBUTION}`,
+      source: "KhanAcademy",
+    },
+  ],
+  // TM / Sözel AYT dersleri
+  edebiyat: [
+    {
+      kind: "link",
+      title: "OGM Materyal — Türk Dili ve Edebiyatı",
+      url: "https://ogmmateryal.eba.gov.tr/yks-konu-anlatim?kod=EDB&s=0&d=0&u=0&k=0",
+      description: "MEB edebiyat konu anlatımları.",
+      source: "MEB",
+    },
+  ],
+  tarih1: [
+    {
+      kind: "link",
+      title: "OGM Materyal — Tarih",
+      url: "https://ogmmateryal.eba.gov.tr/yks-konu-anlatim?kod=TAR&s=0&d=0&u=0&k=0",
+      description: "MEB tarih konu anlatımları.",
+      source: "MEB",
+    },
+  ],
+  tarih2: [
+    {
+      kind: "link",
+      title: "OGM Materyal — Tarih (Çağdaş)",
+      url: "https://ogmmateryal.eba.gov.tr/yks-konu-anlatim?kod=TAR&s=0&d=0&u=0&k=0",
+      description: "MEB tarih konu anlatımları.",
+      source: "MEB",
+    },
+  ],
+  cografya1: [
+    {
+      kind: "link",
+      title: "OGM Materyal — Coğrafya",
+      url: "https://ogmmateryal.eba.gov.tr/yks-konu-anlatim?kod=COG&s=0&d=0&u=0&k=0",
+      description: "MEB coğrafya konu anlatımları.",
+      source: "MEB",
+    },
+  ],
+  cografya2: [
+    {
+      kind: "link",
+      title: "OGM Materyal — Coğrafya (İleri)",
+      url: "https://ogmmateryal.eba.gov.tr/yks-konu-anlatim?kod=COG&s=0&d=0&u=0&k=0",
+      description: "MEB coğrafya konu anlatımları.",
+      source: "MEB",
+    },
+  ],
+  felsefe: [
+    {
+      kind: "link",
+      title: "OGM Materyal — Felsefe Grubu",
+      url: "https://ogmmateryal.eba.gov.tr/yks-konu-anlatim?kod=FEL&s=0&d=0&u=0&k=0",
+      description: "Felsefe, mantık, psikoloji, sosyoloji MEB konu anlatımları.",
+      source: "MEB",
+    },
+  ],
+  din: [
+    {
+      kind: "link",
+      title: "OGM Materyal — Din Kültürü ve Ahlak Bilgisi",
+      url: "https://ogmmateryal.eba.gov.tr/yks-konu-anlatim?kod=DKB&s=0&d=0&u=0&k=0",
+      description: "MEB din kültürü konu anlatımları.",
+      source: "MEB",
+    },
+  ],
+  // YDT İngilizce
+  ydt_ingilizce: [
+    {
+      kind: "link",
+      title: "OGM Materyal — İngilizce",
+      url: "https://ogmmateryal.eba.gov.tr/yks-konu-anlatim?kod=ING&s=0&d=0&u=0&k=0",
+      description: "MEB İngilizce konu anlatım modülü.",
+      source: "MEB",
+    },
+    {
+      kind: "link",
+      title: "Khan Academy — Grammar",
+      url: "https://www.khanacademy.org/humanities/grammar",
+      description: `İngilizce dil bilgisi (İngilizce anlatım). ${KA_ATTRIBUTION}`,
+      source: "KhanAcademy",
+    },
   ],
 };
 
@@ -175,6 +311,13 @@ subjectRecommendations.tyt_matematik = [
     description: "MEB'in matematik konu anlatım modülü (TYT dahil).",
     source: "MEB",
   },
+  {
+    kind: "link",
+    title: "Khan Academy — Matematik",
+    url: "https://tr.khanacademy.org/math",
+    description: `Cebir, geometri, fonksiyon, temel matematik. ${KA_ATTRIBUTION}`,
+    source: "KhanAcademy",
+  },
 ];
 subjectRecommendations.tyt_sosyal = [
   {
@@ -192,6 +335,13 @@ subjectRecommendations.tyt_fen = [
     url: "https://ogmmateryal.eba.gov.tr/yks-konu-anlatim?kod=FIZ&s=0&d=0&u=0&k=0",
     description: "MEB fen bilimleri konu anlatımları.",
     source: "MEB",
+  },
+  {
+    kind: "link",
+    title: "Khan Academy — Fen Bilimleri",
+    url: "https://tr.khanacademy.org/science",
+    description: `Fizik, kimya, biyoloji temelleri. ${KA_ATTRIBUTION}`,
+    source: "KhanAcademy",
   },
 ];
 
