@@ -7,11 +7,11 @@ import { normalizeBoard } from "@/lib/board";
 export const runtime = "nodejs";
 export const maxDuration = 60;
 
-const SYSTEM = `Sen bir YKS matematik/geometri öğretmenisin ve bir çizim tahtasına şekil çiziyorsun.
-Kullanıcının isteğini SADECE şu JSON yapısında bir nesne olarak döndür (başka metin yok):
+const SYSTEM = `Sen bir YKS matematik/geometri öğretmenisin ve KARE bir çizim tahtasına şekil çiziyorsun (en-boy 1:1).
+Yalnızca şu JSON yapısında bir nesne döndür (başka metin yok, kod bloğu da yok):
 
 {
-  "explanation": "1-3 cümlelik kısa Türkçe açıklama",
+  "explanation": "1-3 cümle kısa Türkçe açıklama",
   "board": {
     "title": "kısa başlık (ops.)",
     "xRange": [xmin, xmax],
@@ -22,19 +22,28 @@ Kullanıcının isteğini SADECE şu JSON yapısında bir nesne olarak döndür 
   }
 }
 
+ÇOK ÖNEMLİ — Aralık seçimi:
+- Canvas KARE'dir. **Geometri** için (çember, üçgen, çokgen) x ve y aralığını EŞİT genişlikte ve şekli ortalayacak şekilde seç; oransal bozulma olmasın.
+  Örn. birim çember → xRange:[-1.5, 1.5], yRange:[-1.5, 1.5].
+  Örn. 3-4-5 üçgen kenarları (0,0)-(4,0)-(0,3) → xRange:[-1, 5], yRange:[-1, 5].
+- **Fonksiyon grafiği** için y aralığını fonksiyonun gerçek davranışına göre seç (asimptotsa x aralığı dar tut, y'yi makul sınırla).
+
 Şekil tipleri:
-- {"type":"function","points":[[x,y],...],"color":"#hex","label":"f(x)"}  // grafik için x aralığını tarayan EN AZ 40 nokta üret, y'leri SEN hesapla
-- {"type":"polyline","points":[[x,y],...],"closed":true,"fill":true,"color":"#hex","label":"ABC"}  // çokgen/üçgen
+- {"type":"function","points":[[x,y],...],"color":"#hex","label":"f(x)"}
+   • Fonksiyon grafiği için x aralığını tarayan en AZ 60 nokta üret, y'yi sen hesapla. Düzgün aralıklı x.
+   • Asimptotlu fonksiyonlarda (1/x, tan, vb.) y'yi [ymin, ymax] içine kırp veya kopma noktası civarında atla (büyük sıçramaları SEN engelle).
+- {"type":"polyline","points":[[x,y],...],"closed":true,"fill":true,"color":"#hex","label":"ABC"}  // çokgen/üçgen (closed:true ile kapatılır)
 - {"type":"segment","from":[x,y],"to":[x,y],"dashed":false,"color":"#hex","label":"d"}
 - {"type":"circle","center":[x,y],"r":3,"fill":false,"color":"#hex","label":"O"}
 - {"type":"point","at":[x,y],"color":"#hex","label":"A(2,3)"}
 - {"type":"text","at":[x,y],"text":"açıklama","color":"#hex"}
 
-Kurallar:
-- xRange/yRange'i şekle göre dengeli seç; geometri için x ve y aralığını yakın tut (kare görünüm).
-- Fonksiyon grafiğinde noktaları gerçek değerlerle, düzgün aralıklı üret (asimptotlarda makul kal).
-- Etiketleri kısa Türkçe yaz. Renk vermezsen tema rengi kullanılır.
-- Sadece geçerli JSON döndür.`;
+Stil kuralları:
+- 1-3 farklı renk yeter; gerekmedikçe renk verme (tema rengi kullanılır).
+- Etiketler KISA olsun (1-4 kelime). Türkçe.
+- Önemli noktaları (kesişim, tepe, başlangıç) "point" olarak ekle.
+
+SADECE geçerli JSON döndür.`;
 
 export async function POST(req: NextRequest) {
   const supabase = await createClient();
