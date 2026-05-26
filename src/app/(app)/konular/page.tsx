@@ -284,25 +284,21 @@ export default async function KonularPage({
             ),
           )}
 
-          {/* Diğer alanların dersleri — göz at */}
+          {/* Diğer alanların dersleri — daima görünür ama ayrı başlıklı */}
           {filteredOtherSubjects.length > 0 && (
-            <details className="overflow-hidden rounded-2xl border border-dashed border-border bg-card/50">
-              <summary className="flex cursor-pointer items-center justify-between gap-3 px-5 py-3.5 text-sm font-medium text-muted-foreground transition hover:bg-muted/30 marker:hidden [&::-webkit-details-marker]:hidden">
-                <span>
-                  Diğer alanların dersleri{" "}
-                  <span className="text-xs">
-                    ({filteredOtherSubjects.length} ders — gözat amaçlı, ustalığa
-                    sayılmaz)
-                  </span>
+            <div className="space-y-3 pt-2">
+              <div className="flex items-baseline justify-between border-t border-dashed border-border pt-4">
+                <h3 className="text-sm font-semibold text-muted-foreground">
+                  Diğer alanların dersleri
+                </h3>
+                <span className="text-xs text-muted-foreground/70">
+                  {filteredOtherSubjects.length} ders · gözat amaçlı, ustalığa sayılmaz
                 </span>
-                <span className="text-muted-foreground/60">▾</span>
-              </summary>
-              <div className="space-y-3 border-t border-border bg-background/30 p-3">
-                {filteredOtherSubjects.map((subject) =>
-                  renderSubject(subject, progressMap, false),
-                )}
               </div>
-            </details>
+              {filteredOtherSubjects.map((subject) =>
+                renderSubject(subject, progressMap, false),
+              )}
+            </div>
           )}
         </div>
       )}

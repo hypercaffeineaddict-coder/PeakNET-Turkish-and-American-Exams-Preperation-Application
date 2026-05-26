@@ -4,7 +4,7 @@ import { ArrowLeft, TrendingUp, TrendingDown, Minus, AlertTriangle } from "lucid
 import { createClient } from "@/lib/supabase/server";
 import { TYT_SUBJECTS, AYT_BY_TRACK, YDT_SUBJECTS } from "@/data/exam-subjects";
 
-type SubjectTotal = { d: number; y: number; b: number; net: number };
+type SubjectTotal = { d: number; y: number; b: number; net: number; name?: string };
 type Totals = Record<string, SubjectTotal>;
 type Exam = {
   id: string;
@@ -168,7 +168,7 @@ export default async function DenemeDetayPage({
                 className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-card px-3 py-1.5 text-xs"
               >
                 <span className="h-2 w-2 rounded-full" style={{ backgroundColor: info(r.sid).color }} />
-                <span className="font-medium">{info(r.sid).name}</span>
+                <span className="font-medium">{r.name ?? info(r.sid).name}</span>
                 <span className="tabular-nums text-muted-foreground">%{Math.round(r.acc)} isabet</span>
               </span>
             ))}
@@ -185,7 +185,7 @@ export default async function DenemeDetayPage({
               <div className="flex items-center justify-between gap-3 text-sm">
                 <span className="flex items-center gap-2 font-medium">
                   <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: info(r.sid).color }} />
-                  {info(r.sid).name}
+                  {r.name ?? info(r.sid).name}
                 </span>
                 <span className="flex items-center gap-2">
                   <span className="text-xs tabular-nums text-muted-foreground">

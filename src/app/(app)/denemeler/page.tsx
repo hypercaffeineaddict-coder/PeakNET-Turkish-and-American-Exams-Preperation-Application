@@ -5,7 +5,7 @@ import { createClient } from "@/lib/supabase/server";
 import { deleteExam } from "./actions";
 import { SUBJECT_DISPLAY } from "@/data/exam-subjects";
 
-type SubjectTotal = { d: number; y: number; b: number; net: number };
+type SubjectTotal = { d: number; y: number; b: number; net: number; name?: string };
 type Totals = Record<string, SubjectTotal>;
 
 export default async function DenemelerPage() {
@@ -149,11 +149,12 @@ export default async function DenemelerPage() {
                           <span
                             className="rounded-lg px-1.5 py-0.5 font-medium"
                             style={{
-                              backgroundColor: `${SUBJECT_DISPLAY[sid]?.color ?? "#888"}20`,
-                              color: SUBJECT_DISPLAY[sid]?.color ?? "#888",
+                              backgroundColor: `${SUBJECT_DISPLAY[sid]?.color ?? "#8b7cf6"}20`,
+                              color: SUBJECT_DISPLAY[sid]?.color ?? "#8b7cf6",
                             }}
+                            title={t.name ?? SUBJECT_DISPLAY[sid]?.short ?? sid}
                           >
-                            {SUBJECT_DISPLAY[sid]?.short ?? sid}
+                            {t.name ?? SUBJECT_DISPLAY[sid]?.short ?? sid}
                           </span>
                           <span className="text-base font-semibold">
                             {t.net.toFixed(2)}

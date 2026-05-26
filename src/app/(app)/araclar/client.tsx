@@ -112,6 +112,8 @@ export function AraclarClient() {
         </p>
       </header>
 
+      <QuickNet />
+
       {/* Puan türü seçici */}
       <div className="flex flex-wrap gap-2">
         {PUAN_TURLERI.map((t) => (
@@ -234,6 +236,83 @@ export function AraclarClient() {
         </span>
       </p>
     </div>
+  );
+}
+
+function QuickNet() {
+  const [d, setD] = useState("");
+  const [y, setY] = useState("");
+  const [total, setTotal] = useState("");
+  const dn = Number(d) || 0;
+  const yn = Number(y) || 0;
+  const tn = Number(total) || 0;
+  const net = Math.max(0, dn - yn / 4);
+  const bos = tn > 0 ? Math.max(0, tn - dn - yn) : null;
+  const valid = tn === 0 || dn + yn <= tn;
+  return (
+    <section className="rounded-2xl border border-border bg-card p-5">
+      <h2 className="flex items-center gap-2 text-sm font-semibold">
+        <Calculator size={15} className="text-primary" />
+        Hızlı net hesabı (tek test / branda)
+      </h2>
+      <p className="mt-1 text-xs text-muted-foreground">
+        Standart YKS dışı bir testin (GİS, branda, mini sınav) netini anında
+        hesapla. <strong>Net = D − Y/4</strong>. Soru sayısı opsiyonel.
+      </p>
+      <div className="mt-3 grid items-end gap-3 sm:grid-cols-[1fr_1fr_1fr_auto]">
+        <label className="text-xs">
+          <span className="text-muted-foreground">Soru sayısı (ops.)</span>
+          <input
+            type="text"
+            inputMode="numeric"
+            value={total}
+            onChange={(e) => setTotal(e.target.value.replace(/[^0-9]/g, ""))}
+            placeholder="—"
+            className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm tabular-nums outline-none focus:border-primary"
+          />
+        </label>
+        <label className="text-xs">
+          <span className="text-emerald-500">Doğru</span>
+          <input
+            type="text"
+            inputMode="numeric"
+            value={d}
+            onChange={(e) => setD(e.target.value.replace(/[^0-9]/g, ""))}
+            placeholder="0"
+            className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm tabular-nums outline-none focus:border-primary"
+          />
+        </label>
+        <label className="text-xs">
+          <span className="text-rose-500">Yanlış</span>
+          <input
+            type="text"
+            inputMode="numeric"
+            value={y}
+            onChange={(e) => setY(e.target.value.replace(/[^0-9]/g, ""))}
+            placeholder="0"
+            className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm tabular-nums outline-none focus:border-primary"
+          />
+        </label>
+        <div className="text-right">
+          <div className="text-xs text-muted-foreground">Net</div>
+          <div
+            className={`font-display text-2xl font-bold tabular-nums ${
+              valid ? "text-primary" : "text-rose-500"
+            }`}
+          >
+            {valid ? net.toFixed(2) : "geçersiz"}
+          </div>
+        </div>
+      </div>
+      {bos !== null && valid && (
+        <div className="mt-2 text-xs text-muted-foreground">
+          Boş: <span className="tabular-nums">{bos}</span> · İsabet:{" "}
+          <span className="tabular-nums">
+            {dn + yn > 0 ? `%${Math.round((dn / (dn + yn)) * 100)}` : "—"}
+          </span>
+        </div>
+      )}
+    </section>
   );
 }
 
