@@ -95,16 +95,26 @@ export default async function KonularPage({
     (progressRows ?? []).map((p) => [p.topic_id, p]),
   );
 
-  // AYT derslerini öğrencinin lise bölümüne (track) göre filtrele.
-  // TYT/diğer sınavlar herkese açık; tracks boş olan ders de herkese görünür.
+  // AYT derslerini öğrencinin lise bölümüne (track) göre ayır:
+  //   - MY tracks: kendi alanına ait dersler (ana liste).
+  //   - OTHER: diğer alanların dersleri (göz atmak için, altta gizli).
+  // TYT/YDT'de herkese açık ders zaten subjectForTrack ile geçer.
   const track = profile?.high_school_track ?? null;
   const allSubjects: SubjectRow[] = (subjectsRaw ?? []) as SubjectRow[];
   const subjects: SubjectRow[] = allSubjects.filter((s) =>
     subjectForTrack(activeTab, s.tracks, track),
   );
+  const otherSubjects: SubjectRow[] =
+    activeTab === "AYT" && track
+      ? allSubjects.filter(
+          (s) =>
+            !subjectForTrack(activeTab, s.tracks, track) &&
+            (s.tracks?.length ?? 0) > 0,
+        )
+      : [];
 
-  // Filtre + arama uygula
-  const filteredSubjects = subjects.map((s) => {
+  // Topic filtre + arama yardımcısı (iki listede de kullanılır)
+  const applyTopicFilter = (s: SubjectRow): SubjectRow => {
     const topics = (s.topics ?? [])
       .slice()
       .sort((a, b) => {
@@ -129,7 +139,12 @@ export default async function KonularPage({
         return true;
       });
     return { ...s, topics };
-  });
+  };
+
+  const filteredSubjects = subjects.map(applyTopicFilter);
+  const filteredOtherSubjects = otherSubjects
+    .map(applyTopicFilter)
+    .filter((s) => s.topics.length > 0 || !query);
 
   // Toplam ilerleme
   const totalTopics = subjects.reduce(
@@ -261,114 +276,34 @@ export default async function KonularPage({
         </div>
       ) : (
         <div className="space-y-3">
-          {filteredSubjects.map((subject, idx) => {
-            const allTopics = subject.topics;
-            const subjectDone = allTopics.filter(
-              (t) => progressMap.get(t.id)?.status === "done",
-            ).length;
-            const subjectInProgress = allTopics.filter(
-              (t) => progressMap.get(t.id)?.status === "in_progress",
-            ).length;
-            const progressPct =
-              allTopics.length === 0
-                ? 0
-                : Math.round((subjectDone / allTopics.length) * 100);
+          {filteredSubjects.map((subject, idx) =>
+            renderSubject(
+              subject,
+              progressMap,
+              idx === 0 || query.length > 0 || activeFilter !== "all",
+            ),
+          )}
 
-            // Sınıfa göre grupla
-            const byGrade = new Map<number, TopicRow[]>();
-            for (const t of allTopics) {
-              const g = t.grade ?? 0;
-              if (!byGrade.has(g)) byGrade.set(g, []);
-              byGrade.get(g)!.push(t);
-            }
-            const gradeKeys = Array.from(byGrade.keys()).sort((a, b) => a - b);
-
-            // İlk ders varsayılan açık, diğerleri kapalı
-            const defaultOpen = idx === 0 || query.length > 0 || activeFilter !== "all";
-
-            return (
-              <details
-                key={subject.id}
-                open={defaultOpen}
-                className="group overflow-hidden rounded-2xl border border-border bg-card transition"
-              >
-                <summary
-                  className="flex cursor-pointer items-center gap-4 px-5 py-4 marker:hidden hover:bg-muted/30 [&::-webkit-details-marker]:hidden"
-                >
-                  <ChevronRight
-                    size={18}
-                    className="text-muted-foreground transition group-open:rotate-90"
-                  />
-                  <span
-                    className="h-2.5 w-2.5 shrink-0 rounded-full"
-                    style={{ backgroundColor: subject.color ?? "#888" }}
-                  />
-                  <div className="flex min-w-0 flex-1 items-baseline gap-3">
-                    <h2 className="text-base font-semibold">{subject.name}</h2>
-                    <span className="text-xs text-muted-foreground">
-                      {subject.question_count} soru · {allTopics.length} konu
-                    </span>
-                  </div>
-
-                  <div className="flex items-center gap-3">
-                    <div className="hidden sm:flex items-center gap-2">
-                      <div className="h-1.5 w-32 overflow-hidden rounded-full bg-muted">
-                        <div
-                          className="h-full rounded-full transition-all"
-                          style={{
-                            width: `${progressPct}%`,
-                            backgroundColor: subject.color ?? undefined,
-                          }}
-                        />
-                      </div>
-                      <span className="w-10 text-right text-xs tabular-nums text-muted-foreground">
-                        {progressPct}%
-                      </span>
-                    </div>
-                    <span className="text-sm text-muted-foreground">
-                      {subjectDone}/{allTopics.length}
-                      {subjectInProgress > 0 && (
-                        <span className="ml-1 text-primary">
-                          (+{subjectInProgress})
-                        </span>
-                      )}
-                    </span>
-                  </div>
-                </summary>
-
-                {allTopics.length === 0 ? (
-                  <div className="border-t border-border px-5 py-4 text-sm text-muted-foreground">
-                    Bu filtreye uyan konu yok.
-                  </div>
-                ) : (
-                  <div className="border-t border-border">
-                    {gradeKeys.map((grade, gi) => {
-                      const topicsInGrade = byGrade.get(grade)!;
-                      return (
-                        <div
-                          key={grade}
-                          className={gi > 0 ? "border-t border-border/60" : ""}
-                        >
-                          <div className="bg-muted/20 px-5 py-1.5 text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
-                            {grade > 0 ? `${grade}. sınıf` : "Genel"}
-                          </div>
-                          <ul>
-                            {topicsInGrade.map((topic) => (
-                              <TopicListItem
-                                key={topic.id}
-                                topic={topic}
-                                progress={progressMap.get(topic.id)}
-                              />
-                            ))}
-                          </ul>
-                        </div>
-                      );
-                    })}
-                  </div>
+          {/* Diğer alanların dersleri — göz at */}
+          {filteredOtherSubjects.length > 0 && (
+            <details className="overflow-hidden rounded-2xl border border-dashed border-border bg-card/50">
+              <summary className="flex cursor-pointer items-center justify-between gap-3 px-5 py-3.5 text-sm font-medium text-muted-foreground transition hover:bg-muted/30 marker:hidden [&::-webkit-details-marker]:hidden">
+                <span>
+                  Diğer alanların dersleri{" "}
+                  <span className="text-xs">
+                    ({filteredOtherSubjects.length} ders — gözat amaçlı, ustalığa
+                    sayılmaz)
+                  </span>
+                </span>
+                <span className="text-muted-foreground/60">▾</span>
+              </summary>
+              <div className="space-y-3 border-t border-border bg-background/30 p-3">
+                {filteredOtherSubjects.map((subject) =>
+                  renderSubject(subject, progressMap, false),
                 )}
-              </details>
-            );
-          })}
+              </div>
+            </details>
+          )}
         </div>
       )}
     </div>
@@ -380,7 +315,7 @@ function TopicListItem({
   progress,
 }: {
   topic: TopicRow;
-  progress?: { status?: string; confidence?: number };
+  progress?: { status?: string | null; confidence?: number | null };
 }) {
   const status = progress?.status ?? "not_started";
   const confidence = progress?.confidence ?? 0;
@@ -438,5 +373,116 @@ function TopicListItem({
         />
       </Link>
     </li>
+  );
+}
+
+type ProgressMap = Map<
+  string,
+  { status?: string | null; confidence?: number | null } | undefined
+>;
+
+function renderSubject(
+  subject: SubjectRow,
+  progressMap: ProgressMap,
+  defaultOpen: boolean,
+) {
+  const allTopics = subject.topics ?? [];
+  const subjectDone = allTopics.filter(
+    (t) => progressMap.get(t.id)?.status === "done",
+  ).length;
+  const subjectInProgress = allTopics.filter(
+    (t) => progressMap.get(t.id)?.status === "in_progress",
+  ).length;
+  const progressPct =
+    allTopics.length === 0
+      ? 0
+      : Math.round((subjectDone / allTopics.length) * 100);
+
+  // Sınıfa göre grupla
+  const byGrade = new Map<number, TopicRow[]>();
+  for (const t of allTopics) {
+    const g = t.grade ?? 0;
+    if (!byGrade.has(g)) byGrade.set(g, []);
+    byGrade.get(g)!.push(t);
+  }
+  const gradeKeys = Array.from(byGrade.keys()).sort((a, b) => a - b);
+
+  return (
+    <details
+      key={subject.id}
+      open={defaultOpen}
+      className="group overflow-hidden rounded-2xl border border-border bg-card transition"
+    >
+      <summary className="flex cursor-pointer items-center gap-4 px-5 py-4 marker:hidden hover:bg-muted/30 [&::-webkit-details-marker]:hidden">
+        <ChevronRight
+          size={18}
+          className="text-muted-foreground transition group-open:rotate-90"
+        />
+        <span
+          className="h-2.5 w-2.5 shrink-0 rounded-full"
+          style={{ backgroundColor: subject.color ?? "#888" }}
+        />
+        <div className="flex min-w-0 flex-1 items-baseline gap-3">
+          <h2 className="text-base font-semibold">{subject.name}</h2>
+          <span className="text-xs text-muted-foreground">
+            {subject.question_count} soru · {allTopics.length} konu
+          </span>
+        </div>
+
+        <div className="flex items-center gap-3">
+          <div className="hidden sm:flex items-center gap-2">
+            <div className="h-1.5 w-32 overflow-hidden rounded-full bg-muted">
+              <div
+                className="h-full rounded-full transition-all"
+                style={{
+                  width: `${progressPct}%`,
+                  backgroundColor: subject.color ?? undefined,
+                }}
+              />
+            </div>
+            <span className="w-10 text-right text-xs tabular-nums text-muted-foreground">
+              {progressPct}%
+            </span>
+          </div>
+          <span className="text-sm text-muted-foreground">
+            {subjectDone}/{allTopics.length}
+            {subjectInProgress > 0 && (
+              <span className="ml-1 text-primary">(+{subjectInProgress})</span>
+            )}
+          </span>
+        </div>
+      </summary>
+
+      {allTopics.length === 0 ? (
+        <div className="border-t border-border px-5 py-4 text-sm text-muted-foreground">
+          Bu filtreye uyan konu yok.
+        </div>
+      ) : (
+        <div className="border-t border-border">
+          {gradeKeys.map((grade, gi) => {
+            const topicsInGrade = byGrade.get(grade)!;
+            return (
+              <div
+                key={grade}
+                className={gi > 0 ? "border-t border-border/60" : ""}
+              >
+                <div className="bg-muted/20 px-5 py-1.5 text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+                  {grade > 0 ? `${grade}. sınıf` : "Genel"}
+                </div>
+                <ul>
+                  {topicsInGrade.map((topic) => (
+                    <TopicListItem
+                      key={topic.id}
+                      topic={topic}
+                      progress={progressMap.get(topic.id) ?? undefined}
+                    />
+                  ))}
+                </ul>
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </details>
   );
 }
