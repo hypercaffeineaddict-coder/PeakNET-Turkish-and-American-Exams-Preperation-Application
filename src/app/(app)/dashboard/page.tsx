@@ -18,6 +18,7 @@ import {
   ArrowRight,
   Flag,
   PencilRuler,
+  NotebookPen,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { MotivationCard } from "@/components/motivation-card";
@@ -220,6 +221,7 @@ export default async function DashboardPage() {
             <QuickLink href="/coz" icon={CameraIcon} label="Soru çöz" />
             <QuickLink href="/soru-takibi" icon={Target} label="Soru takibi" />
             <QuickLink href="/tahta" icon={PencilRuler} label="Çizim tahtası" />
+            <QuickLink href="/notlar" icon={NotebookPen} label="AI notlar" />
             <QuickLink href="/tarama" icon={ScanLineIcon} label="Tarama" />
             <QuickLink href="/araclar" icon={Calculator} label="Araçlar" />
             <QuickLink href="/denemeler" icon={FlaskConical} label="Denemeler" />

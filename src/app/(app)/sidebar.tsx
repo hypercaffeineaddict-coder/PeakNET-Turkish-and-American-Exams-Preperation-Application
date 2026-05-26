@@ -31,6 +31,7 @@ import {
   Target,
   Flag,
   PencilRuler,
+  NotebookPen,
 } from "lucide-react";
 import { FocusPlayer } from "@/components/focus-player";
 import { Logo } from "@/components/logo";
@@ -62,6 +63,7 @@ const navGroups: { title: string | null; items: NavItem[] }[] = [
       { href: "/tarama", label: "Tarama testi", icon: ScanLine },
       { href: "/coz", label: "Soru çözücü", icon: Camera },
       { href: "/tahta", label: "Çizim tahtası", icon: PencilRuler },
+      { href: "/notlar", label: "AI notlar", icon: NotebookPen },
       { href: "/soru-uret", label: "Soru üret", icon: Wand2 },
     ],
   },
