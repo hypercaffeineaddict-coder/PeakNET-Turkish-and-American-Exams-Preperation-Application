@@ -1,9 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
+import { timingSafeEqual } from "node:crypto";
 import { createClient } from "@supabase/supabase-js";
 import { isPushConfigured, sendPush, type PushSub } from "@/lib/push";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
+
+// Zaman saldırılarına karşı sabit-süreli karşılaştırma.
+function safeEqual(a: string, b: string): boolean {
+  const ab = Buffer.from(a);
+  const bb = Buffer.from(b);
+  if (ab.length !== bb.length) return false;
+  return timingSafeEqual(ab, bb);
+}
 
 // Günlük cron: streak'i CANLI ama bugün çalışmamış (dün çalışmış) kullanıcılara
 // "serin tehlikede" hatırlatması gönderir. Vercel Cron tetikler.
@@ -13,8 +22,8 @@ export async function GET(req: NextRequest) {
   if (!secret) {
     return NextResponse.json({ error: "CRON_SECRET not set" }, { status: 503 });
   }
-  const auth = req.headers.get("authorization");
-  if (auth !== `Bearer ${secret}`) {
+  const auth = req.headers.get("authorization") ?? "";
+  if (!safeEqual(auth, `Bearer ${secret}`)) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   }
 

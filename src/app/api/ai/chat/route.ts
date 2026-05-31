@@ -8,6 +8,10 @@ export const maxDuration = 60;
 
 // Inline-edilebilir maksimum dosya boyutu (Gemini ~20MB limit ama büyük olunca yavaş)
 const MAX_INLINE_BYTES = 15 * 1024 * 1024;
+// Mesaj/içerik sınırları — DOS ve AI maliyeti koruması.
+const MAX_MESSAGES = 60;
+const MAX_MSG_CHARS = 8000;
+const MAX_TOTAL_CHARS = 60_000;
 
 export async function POST(req: NextRequest) {
   const supabase = await createClient();
@@ -22,6 +26,41 @@ export async function POST(req: NextRequest) {
   };
   if (!Array.isArray(body.messages) || body.messages.length === 0) {
     return new Response("Bad request", { status: 400 });
+  }
+  if (body.messages.length > MAX_MESSAGES) {
+    return new Response(
+      `Çok fazla mesaj (${body.messages.length}/${MAX_MESSAGES}). Sohbeti yenile.`,
+      { status: 413 },
+    );
+  }
+  // Şema doğrulaması + uzunluk kapağı.
+  let total = 0;
+  for (const m of body.messages) {
+    if (!m || typeof m !== "object") {
+      return new Response("Bad request", { status: 400 });
+    }
+    const role = (m as { role?: unknown }).role;
+    const content = (m as { content?: unknown }).content;
+    if (
+      role !== "user" &&
+      role !== "assistant" &&
+      role !== "system"
+    ) {
+      return new Response("Bad request", { status: 400 });
+    }
+    if (typeof content !== "string" || content.length > MAX_MSG_CHARS) {
+      return new Response(
+        `Mesaj çok uzun (>${MAX_MSG_CHARS} karakter)`,
+        { status: 413 },
+      );
+    }
+    total += content.length;
+    if (total > MAX_TOTAL_CHARS) {
+      return new Response(
+        `Toplam içerik çok uzun (>${MAX_TOTAL_CHARS} karakter)`,
+        { status: 413 },
+      );
+    }
   }
 
   // Rate limit

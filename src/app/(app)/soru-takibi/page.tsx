@@ -1,9 +1,18 @@
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Target, Trash2, AlertTriangle } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { examSubjects, subjectForTrack } from "@/data/exam-subjects";
 import { AddLog } from "./add-log";
 import { deleteQuestionLog } from "./actions";
+
+const RANGES = [
+  { id: "7", label: "Son 7 gün", days: 7 },
+  { id: "30", label: "Son 30 gün", days: 30 },
+  { id: "90", label: "Son 90 gün", days: 90 },
+  { id: "all", label: "Tümü", days: null as number | null },
+] as const;
+type RangeId = (typeof RANGES)[number]["id"];
 
 export const metadata = { title: "Soru Takibi · PeakNET" };
 
@@ -18,7 +27,16 @@ type Log = {
 
 const netOf = (c: number, w: number) => Math.max(0, c - w / 4);
 
-export default async function SoruTakibiPage() {
+export default async function SoruTakibiPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ aralik?: string }>;
+}) {
+  const { aralik } = await searchParams;
+  const activeRange: RangeId =
+    (RANGES.find((r) => r.id === aralik)?.id ?? "30") as RangeId;
+  const rangeDays = RANGES.find((r) => r.id === activeRange)?.days ?? null;
+
   const supabase = await createClient();
   const {
     data: { user },
@@ -73,15 +91,17 @@ export default async function SoruTakibiPage() {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   const todayStr = today.toISOString().slice(0, 10);
-  const monthAgo = new Date(today);
-  monthAgo.setDate(monthAgo.getDate() - 29);
-  const monthAgoStr = monthAgo.toISOString().slice(0, 10);
 
-  const { data: logsRaw, error } = await supabase
+  let logsQuery = supabase
     .from("question_logs")
     .select("id, log_date, subject, correct, wrong, blank")
-    .eq("user_id", user.id)
-    .gte("log_date", monthAgoStr)
+    .eq("user_id", user.id);
+  if (rangeDays !== null) {
+    const start = new Date(today);
+    start.setDate(start.getDate() - (rangeDays - 1));
+    logsQuery = logsQuery.gte("log_date", start.toISOString().slice(0, 10));
+  }
+  const { data: logsRaw, error } = await logsQuery
     .order("log_date", { ascending: false })
     .order("created_at", { ascending: false });
 
@@ -188,9 +208,34 @@ export default async function SoruTakibiPage() {
         </div>
       </section>
 
-      {/* Ders dağılımı (30 gün) */}
+      {/* Ders dağılımı (seçili aralık) */}
       <section className="rounded-2xl border border-border bg-card p-5">
-        <h2 className="text-sm font-semibold">Ders dağılımı (30 gün)</h2>
+        <div className="flex flex-wrap items-baseline justify-between gap-3">
+          <h2 className="text-sm font-semibold">
+            Ders dağılımı ·{" "}
+            <span className="text-muted-foreground">
+              {RANGES.find((r) => r.id === activeRange)?.label}
+            </span>
+          </h2>
+          <div className="flex flex-wrap gap-1.5">
+            {RANGES.map((r) => {
+              const isActive = r.id === activeRange;
+              return (
+                <Link
+                  key={r.id}
+                  href={r.id === "30" ? "/soru-takibi" : `/soru-takibi?aralik=${r.id}`}
+                  className={`rounded-full border px-2.5 py-0.5 text-[11px] font-medium transition ${
+                    isActive
+                      ? "border-primary bg-primary/10 text-primary"
+                      : "border-border bg-card text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  {r.label}
+                </Link>
+              );
+            })}
+          </div>
+        </div>
         {subjectTotals.length === 0 ? (
           <p className="mt-3 text-sm text-muted-foreground">
             Henüz kayıt yok. Yukarıdan çözdüğün soruları ekleyerek başla.
