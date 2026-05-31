@@ -71,7 +71,9 @@ export { aiHealth as ollamaHealth };
 
 // Ham AI hatasını kullanıcı dostu mesaja çevirir (tüm AI rotalarında ortak).
 export function friendlyAIError(err: unknown): string {
-  const msg = String(err);
+  // Sızıntıya karşı: ham hatada anahtar/anahtar-query geçerse maskele; ayrıca
+  // son çare mesajında ham metni istemciye olduğu gibi dökme.
+  const msg = String(err).replace(/([?&]key=)[^&\s"']+/gi, "$1***");
   const lower = msg.toLowerCase();
   if (msg.includes("503") || lower.includes("overloaded")) {
     return "AI modeli şu an çok yoğun (503). Birkaç saniye bekleyip tekrar dene.";
@@ -80,10 +82,11 @@ export function friendlyAIError(err: unknown): string {
     return "İstek limitin doldu (429). Birkaç dakika bekle.";
   }
   if (lower.includes("api key") || msg.includes("401") || msg.includes("403")) {
-    return "AI API key sorunu. .env.local'da GEMINI_API_KEY'i kontrol et.";
+    // Stack/yapılandırma ayrıntısını son kullanıcıya sızdırma.
+    return "AI servisi şu an kullanılamıyor (yapılandırma). Lütfen sonra tekrar dene.";
   }
   if (lower.includes("fetch failed") || lower.includes("econnrefused")) {
-    return "AI sunucusuna ulaşılamadı. Ollama yerel çalışıyorsa `ollama serve` aç; Gemini için internet kontrol et.";
+    return "AI sunucusuna ulaşılamadı. Birkaç saniye sonra tekrar dene.";
   }
-  return `AI hatası: ${msg}`;
+  return "AI hatası oluştu. Birkaç saniye sonra tekrar dene.";
 }

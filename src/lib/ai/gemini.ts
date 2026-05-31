@@ -12,6 +12,19 @@ const API_BASE = (
 const MODEL = (process.env.GEMINI_MODEL ?? "gemini-2.5-flash").trim();
 const KEY = (process.env.GEMINI_API_KEY ?? "").trim();
 
+// Anahtarı URL query'sinde TAŞIMA — header ile gönder. Böylece anahtar hiçbir
+// hata mesajı, log satırı veya proxy erişim kaydındaki URL'de görünmez.
+function authHeaders(extra?: Record<string, string>): Record<string, string> {
+  return { "x-goog-api-key": KEY, ...(extra ?? {}) };
+}
+
+// Son savunma: bir metinde anahtar ya da key= query'si geçerse maskele.
+export function redactSecrets(s: string): string {
+  let out = s.replace(/([?&]key=)[^&\s"']+/gi, "$1***");
+  if (KEY) out = out.split(KEY).join("***");
+  return out;
+}
+
 export function isConfigured(): boolean {
   return KEY.length > 0;
 }
@@ -31,7 +44,8 @@ export async function geminiHealth(): Promise<{
     };
   }
   try {
-    const res = await fetch(`${API_BASE}/models/${MODEL}?key=${KEY}`, {
+    const res = await fetch(`${API_BASE}/models/${MODEL}`, {
+      headers: authHeaders(),
       signal: AbortSignal.timeout(4000),
     });
     if (!res.ok) {
@@ -40,7 +54,7 @@ export async function geminiHealth(): Promise<{
         ok: false,
         models: [],
         hasChatModel: false,
-        error: `HTTP ${res.status}: ${text.slice(0, 200)}`,
+        error: `HTTP ${res.status}: ${redactSecrets(text).slice(0, 200)}`,
       };
     }
     return { ok: true, models: [MODEL], hasChatModel: true };
@@ -49,7 +63,7 @@ export async function geminiHealth(): Promise<{
       ok: false,
       models: [],
       hasChatModel: false,
-      error: String(err),
+      error: redactSecrets(String(err)),
     };
   }
 }
@@ -105,15 +119,15 @@ export async function generateJson(
     };
   }
 
-  const url = `${API_BASE}/models/${MODEL}:generateContent?key=${KEY}`;
+  const url = `${API_BASE}/models/${MODEL}:generateContent`;
   const res = await fetch(url, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: authHeaders({ "Content-Type": "application/json" }),
     body: JSON.stringify(body),
   });
   if (!res.ok) {
     const t = await res.text().catch(() => "");
-    throw new Error(`Gemini error: ${res.status} ${t.slice(0, 200)}`);
+    throw new Error(`Gemini error: ${res.status} ${redactSecrets(t).slice(0, 200)}`);
   }
   const data = (await res.json()) as {
     candidates?: {
@@ -171,15 +185,15 @@ export async function generateText(
     };
   }
 
-  const url = `${API_BASE}/models/${MODEL}:generateContent?key=${KEY}`;
+  const url = `${API_BASE}/models/${MODEL}:generateContent`;
   const res = await fetch(url, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: authHeaders({ "Content-Type": "application/json" }),
     body: JSON.stringify(body),
   });
   if (!res.ok) {
     const t = await res.text().catch(() => "");
-    throw new Error(`Gemini error: ${res.status} ${t.slice(0, 200)}`);
+    throw new Error(`Gemini error: ${res.status} ${redactSecrets(t).slice(0, 200)}`);
   }
   const data = (await res.json()) as {
     candidates?: { content?: { parts?: GeminiPart[] }; finishReason?: string }[];
