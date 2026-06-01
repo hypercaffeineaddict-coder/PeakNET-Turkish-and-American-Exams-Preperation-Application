@@ -32,6 +32,7 @@ import {
   Flag,
   PencilRuler,
   NotebookPen,
+  Crown,
 } from "lucide-react";
 import { FocusPlayer } from "@/components/focus-player";
 import { Logo } from "@/components/logo";
@@ -89,6 +90,7 @@ const navGroups: { title: string | null; items: NavItem[] }[] = [
     items: [
       { href: "/diller", label: "Diller", icon: Languages },
       { href: "/muzik", label: "Müzik", icon: Music },
+      { href: "/satranc", label: "Satranç", icon: Crown },
       { href: "/paylas", label: "Paylaş", icon: Share2 },
       { href: "/ayarlar", label: "Ayarlar", icon: Settings },
     ],
