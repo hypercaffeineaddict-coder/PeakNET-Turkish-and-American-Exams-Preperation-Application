@@ -9,12 +9,13 @@ import {
   Target,
   Clock,
   Sparkles,
+  Award,
 } from "lucide-react";
 import { toast } from "sonner";
 import { updateProfile } from "./actions";
 import { universities } from "@/data/universities";
 import { departments } from "@/data/departments";
-import { selfSubjects } from "@/data/exam-subjects";
+import { selfSubjects, EXTRA_EXAMS } from "@/data/exam-subjects";
 
 const grades = [
   { value: 9, label: "9. sınıf" },
@@ -43,6 +44,7 @@ type Profile = {
   daily_goal_minutes: number;
   strong_subjects: string[];
   weak_subjects: string[];
+  extra_exams: string[];
 };
 
 export function ProfileForm({
@@ -153,6 +155,38 @@ export function ProfileForm({
               </label>
             ))}
           </div>
+        </div>
+      </section>
+
+      <section className="rounded-2xl border border-border bg-card p-6 space-y-3">
+        <h2 className="flex items-center gap-2 text-sm font-semibold">
+          <Award size={16} className="text-primary" />
+          Ekstra sınavlar
+        </h2>
+        <p className="text-xs text-muted-foreground">
+          YKS dışı sınav ailelerini aç. Açtığında Konular ve Ustalık&apos;ta ayrı
+          bir sekme olarak görünür; YKS akışına (panel, program, denemeler)
+          karışmaz.
+        </p>
+        <div className="flex flex-col gap-2">
+          {EXTRA_EXAMS.map((e) => (
+            <label
+              key={e.id}
+              className="flex cursor-pointer items-start gap-3 rounded-xl border border-border bg-background p-3 transition has-[:checked]:border-primary has-[:checked]:bg-primary/5"
+            >
+              <input
+                type="checkbox"
+                name="extra_exams"
+                value={e.id}
+                defaultChecked={profile.extra_exams?.includes(e.id)}
+                className="mt-0.5 accent-[var(--primary)]"
+              />
+              <div className="text-sm">
+                <div className="font-medium">{e.label}</div>
+                <div className="text-xs text-muted-foreground">{e.desc}</div>
+              </div>
+            </label>
+          ))}
         </div>
       </section>
 

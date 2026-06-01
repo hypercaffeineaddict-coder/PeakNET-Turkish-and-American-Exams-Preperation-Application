@@ -5,6 +5,8 @@ import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 
 const TRACKS = ["MF", "TM", "Sozel", "Dil"] as const;
+// Açılabilecek ekstra (YKS-dışı) sınav aileleri.
+const VALID_EXTRA_EXAMS = ["AP"];
 
 export async function updateProfile(formData: FormData): Promise<{ ok?: boolean; error?: string }> {
   const supabase = await createClient();
@@ -20,6 +22,10 @@ export async function updateProfile(formData: FormData): Promise<{ ok?: boolean;
   const trackRaw = String(formData.get("high_school_track") || "");
   const track = (TRACKS as readonly string[]).includes(trackRaw) ? trackRaw : null;
   const isExam = formData.get("is_exam_student") === "on";
+  const extraExams = formData
+    .getAll("extra_exams")
+    .map(String)
+    .filter((e) => VALID_EXTRA_EXAMS.includes(e));
 
   const { error } = await supabase
     .from("profiles")
@@ -33,6 +39,7 @@ export async function updateProfile(formData: FormData): Promise<{ ok?: boolean;
       daily_goal_minutes: Math.min(720, Math.max(15, daily)),
       strong_subjects: strong,
       weak_subjects: weak,
+      extra_exams: extraExams,
     })
     .eq("id", user.id);
 

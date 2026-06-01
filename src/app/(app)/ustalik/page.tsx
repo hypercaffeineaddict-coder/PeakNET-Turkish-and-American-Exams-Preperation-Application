@@ -7,7 +7,7 @@ import {
   Construction,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
-import { subjectForTrack } from "@/data/exam-subjects";
+import { subjectVisible } from "@/data/exam-subjects";
 import {
   computeMastery,
   MASTERY_LABELS,
@@ -19,9 +19,10 @@ import {
 export const metadata = { title: "Ustalık · PeakNET" };
 
 const examTabs = [
-  { id: "AYT", label: "AYT", desc: "Alan Yeterlilik" },
-  { id: "TYT", label: "TYT", desc: "Temel Yeterlilik" },
-  { id: "YDT", label: "YDT", desc: "Yabancı Dil" },
+  { id: "AYT", label: "AYT", desc: "Alan Yeterlilik", extra: false },
+  { id: "TYT", label: "TYT", desc: "Temel Yeterlilik", extra: false },
+  { id: "YDT", label: "YDT", desc: "Yabancı Dil", extra: false },
+  { id: "AP", label: "AP", desc: "Advanced Placement", extra: true },
 ] as const;
 type ExamTab = (typeof examTabs)[number]["id"];
 
@@ -88,7 +89,7 @@ export default async function UstalikPage({
         .not("topic_id", "is", null),
       supabase
         .from("profiles")
-        .select("high_school_track")
+        .select("high_school_track, extra_exams")
         .eq("id", user.id)
         .single(),
       supabase
@@ -130,12 +131,16 @@ export default async function UstalikPage({
     );
   }
 
-  // Dersleri lise bölümüne (track) göre filtrele: TYT herkese açık, AYT alan
-  // dersleri ve YDT (tracks={Dil}) yalnızca ilgili bölüme.
+  // Görünürlük: çekirdek sınavlar (TYT/AYT/YDT) lise bölümüne göre; ekstra
+  // sınavlar (AP) yalnız kullanıcı AYARLAR'dan açtıysa (opt-in).
   const track = profile?.high_school_track ?? null;
+  const extraExams: string[] = profile?.extra_exams ?? [];
+  const visibleTabs = examTabs.filter(
+    (t) => !t.extra || extraExams.includes(t.id),
+  );
   const allSubjects: SubjectRow[] = (subjectsRaw ?? []) as SubjectRow[];
   const subjects: SubjectRow[] = allSubjects.filter((s) =>
-    subjectForTrack(s.tracks, track),
+    subjectVisible(activeTab, s.tracks, track, extraExams),
   );
 
   const masteryFor = (t: TopicRow): MasteryInfo => {
@@ -200,7 +205,7 @@ export default async function UstalikPage({
 
       {/* Sekmeler */}
       <nav className="flex gap-1 overflow-x-auto border-b border-border">
-        {examTabs.map((t) => {
+        {visibleTabs.map((t) => {
           const isActive = t.id === activeTab;
           return (
             <Link

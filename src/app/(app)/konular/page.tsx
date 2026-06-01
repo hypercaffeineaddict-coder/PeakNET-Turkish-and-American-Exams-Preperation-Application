@@ -10,12 +10,13 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
-import { subjectForTrack } from "@/data/exam-subjects";
+import { subjectVisible } from "@/data/exam-subjects";
 
 const examTabs = [
-  { id: "AYT", label: "AYT", desc: "Alan Yeterlilik" },
-  { id: "TYT", label: "TYT", desc: "Temel Yeterlilik" },
-  { id: "YDT", label: "YDT", desc: "Yabancı Dil" },
+  { id: "AYT", label: "AYT", desc: "Alan Yeterlilik", extra: false },
+  { id: "TYT", label: "TYT", desc: "Temel Yeterlilik", extra: false },
+  { id: "YDT", label: "YDT", desc: "Yabancı Dil", extra: false },
+  { id: "AP", label: "AP", desc: "Advanced Placement", extra: true },
 ] as const;
 type ExamTab = (typeof examTabs)[number]["id"];
 
@@ -62,8 +63,6 @@ export default async function KonularPage({
   searchParams: Promise<{ tab?: string; q?: string; filter?: string }>;
 }) {
   const { tab, q, filter } = await searchParams;
-  const activeTab: ExamTab =
-    (examTabs.find((t) => t.id === tab)?.id ?? "AYT") as ExamTab;
   const activeFilter: FilterId =
     (filters.find((f) => f.id === filter)?.id ?? "all") as FilterId;
   const query = (q ?? "").trim().toLocaleLowerCase("tr-TR");
@@ -73,6 +72,24 @@ export default async function KonularPage({
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) redirect("/login");
+
+  // Önce profil: track + opt-in ekstra sınavlar (AP). Sekme doğrulaması buna bağlı.
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("high_school_track, extra_exams")
+    .eq("id", user.id)
+    .single();
+  const track = profile?.high_school_track ?? null;
+  const extraExams: string[] = profile?.extra_exams ?? [];
+
+  // Çekirdek sekmeler her zaman; ekstra (AP) yalnız kullanıcı açtıysa. Açık
+  // değilken ?tab=AP gelirse varsayılana (AYT) düş → sızıntı yok.
+  const tabAllowed = (id?: string) =>
+    examTabs.some((t) => t.id === id && (!t.extra || extraExams.includes(t.id)));
+  const activeTab: ExamTab = (tabAllowed(tab) ? tab : "AYT") as ExamTab;
+  const visibleTabs = examTabs.filter(
+    (t) => !t.extra || extraExams.includes(t.id),
+  );
 
   const { data: subjectsRaw } = await supabase
     .from("subjects")
@@ -85,29 +102,24 @@ export default async function KonularPage({
     .select("topic_id, status, confidence")
     .eq("user_id", user.id);
 
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("high_school_track")
-    .eq("id", user.id)
-    .single();
-
   const progressMap = new Map(
     (progressRows ?? []).map((p) => [p.topic_id, p]),
   );
 
-  // Dersleri öğrencinin lise bölümüne (track) göre ayır:
-  //   - MY: kendi alanına ait dersler (ana liste).
+  // Dersleri görünürlüğe göre ayır:
+  //   - MY: kullanıcıya ait dersler (ana liste). Çekirdek=track, ekstra=opt-in.
   //   - OTHER: track-kısıtlı ama başka alana ait dersler (göz atmak için, altta).
-  // TYT (tracks boş) herkese açıktır; AYT alan dersleri ile YDT (tracks={Dil})
-  // yalnızca ilgili bölüme aittir, gerisi "Diğer alanlar"da gözat amaçlı çıkar.
-  const track = profile?.high_school_track ?? null;
+  // TYT (tracks boş) herkese; AYT/YDT track'e; AP yalnız opt-in (otherSubjects'e
+  // düşmez çünkü açıkken görünür, kapalıyken sekme zaten yok).
   const allSubjects: SubjectRow[] = (subjectsRaw ?? []) as SubjectRow[];
   const subjects: SubjectRow[] = allSubjects.filter((s) =>
-    subjectForTrack(s.tracks, track),
+    subjectVisible(activeTab, s.tracks, track, extraExams),
   );
   const otherSubjects: SubjectRow[] = track
     ? allSubjects.filter(
-        (s) => !subjectForTrack(s.tracks, track) && (s.tracks?.length ?? 0) > 0,
+        (s) =>
+          !subjectVisible(activeTab, s.tracks, track, extraExams) &&
+          (s.tracks?.length ?? 0) > 0,
       )
     : [];
 
@@ -195,7 +207,7 @@ export default async function KonularPage({
 
       {/* Sekmeler */}
       <nav className="flex gap-1 overflow-x-auto border-b border-border">
-        {examTabs.map((t) => {
+        {visibleTabs.map((t) => {
           const isActive = t.id === activeTab;
           return (
             <Link

@@ -56,6 +56,7 @@ export default async function AyarlarPage({
           daily_goal_minutes: profile?.daily_goal_minutes ?? 60,
           strong_subjects: profile?.strong_subjects ?? [],
           weak_subjects: profile?.weak_subjects ?? [],
+          extra_exams: profile?.extra_exams ?? [],
         }}
         email={user.email ?? ""}
       />

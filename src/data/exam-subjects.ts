@@ -98,6 +98,28 @@ export function subjectForTrack(
   return !tracks?.length || !track || tracks.includes(track);
 }
 
+// Çekirdek YKS sınavları (her zaman, lise bölümüne göre).
+export const CORE_EXAMS = new Set(["TYT", "AYT", "YDT"]);
+
+// Opt-in farkındalıklı görünürlük: çekirdek sınavlar track'e göre; "ekstra"
+// sınavlar (AP, ileride SAT/MSÜ...) yalnızca kullanıcı AYARLAR'dan açtıysa
+// (profiles.extra_exams) görünür. Böylece ekstra dersler YKS öğrencisine sızmaz.
+export function subjectVisible(
+  examType: string,
+  tracks: string[] | null | undefined,
+  track: string | null,
+  extraExams: string[] | null | undefined,
+): boolean {
+  if (CORE_EXAMS.has(examType)) return subjectForTrack(tracks, track);
+  return !!extraExams?.includes(examType);
+}
+
+// Bir ekstra-sınav ailesinin meta verisi (etiket + açıklama). Onboarding/ayarlar
+// ve sekme başlıkları için tek kaynak.
+export const EXTRA_EXAMS: { id: string; label: string; desc: string }[] = [
+  { id: "AP", label: "AP", desc: "Advanced Placement (ABD üniversite düzeyi)" },
+];
+
 // Deneme listesinde kısa etiket + renk için (id -> {short, color})
 export const SUBJECT_DISPLAY: Record<string, { short: string; color: string }> = {
   matematik: { short: "Mat", color: "#3b82f6" },

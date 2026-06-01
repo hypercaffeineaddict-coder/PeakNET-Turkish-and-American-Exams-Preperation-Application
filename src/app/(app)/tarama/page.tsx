@@ -16,6 +16,7 @@ export default async function TaramaPage() {
     supabase
       .from("subjects")
       .select("*")
+      .in("exam_type", ["TYT", "AYT", "YDT"]) // çekirdek YKS; ekstra (AP) tarama dışı
       .order("exam_type")
       .order("display_order"),
     supabase
