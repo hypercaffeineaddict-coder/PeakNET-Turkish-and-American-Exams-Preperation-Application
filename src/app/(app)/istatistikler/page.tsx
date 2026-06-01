@@ -103,7 +103,7 @@ export default async function IstatistiklerPage() {
     topics: { id: string }[];
   };
   const relevantSubjects = ((subjects ?? []) as SubjRow[]).filter(
-    (s) => subjectForTrack(s.exam_type, s.tracks, track),
+    (s) => subjectForTrack(s.tracks, track),
   );
 
   // Haftalık özet

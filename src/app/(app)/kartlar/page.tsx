@@ -42,7 +42,7 @@ export default async function KartlarPage() {
 
   const track = profile?.high_school_track ?? null;
   const subjects = ((subjectsRaw ?? []) as SubjectRow[]).filter(
-    (s) => subjectForTrack(s.exam_type, s.tracks, track),
+    (s) => subjectForTrack(s.tracks, track),
   );
 
   const allCards = cards ?? [];

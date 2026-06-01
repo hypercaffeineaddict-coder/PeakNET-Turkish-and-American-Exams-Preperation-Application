@@ -62,7 +62,7 @@ export default async function PomodoroPage({
     tracks: string[] | null;
     topics: { id: string; name: string; display_order: number }[];
   }>).filter(
-    (s) => subjectForTrack(s.exam_type, s.tracks, track),
+    (s) => subjectForTrack(s.tracks, track),
   );
 
   const initialTopic = topic ?? "";

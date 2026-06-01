@@ -32,7 +32,7 @@ export default async function CozPage() {
     exam_type: string;
     tracks: string[] | null;
   }>).filter(
-    (s) => subjectForTrack(s.exam_type, s.tracks, track),
+    (s) => subjectForTrack(s.tracks, track),
   );
 
   const supportsImages = health.ok && health.supportsAttachments;

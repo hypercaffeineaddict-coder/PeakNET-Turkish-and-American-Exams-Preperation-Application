@@ -71,7 +71,7 @@ export default async function ProgramPage() {
   const goal = profile?.daily_goal_minutes ?? 60;
 
   const subjects = ((subjectsRaw ?? []) as SubjectRow[]).filter(
-    (s) => subjectForTrack(s.exam_type, s.tracks, track),
+    (s) => subjectForTrack(s.tracks, track),
   );
 
   const progressMap = new Map((progressRows ?? []).map((p) => [p.topic_id, p]));

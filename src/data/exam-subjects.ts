@@ -86,13 +86,16 @@ export function selfSubjects(track: string | null) {
 }
 
 // Bir ders bu lise bölümüne (track) görünür mü?
-// TYT/diğer sınavlar herkese; AYT track'e göre; tracks boşsa herkese.
+// Saf tracks-tabanlı: dersin `tracks` dizisi boşsa (TYT gibi) herkese açıktır;
+// doluysa (AYT alan dersleri ve YDT → `{Dil}`) yalnızca o bölümdeki öğrenciye
+// görünür. track bilinmiyorsa (onboarding öncesi) kısıtlama uygulanmaz.
+// NOT: Eskiden yalnız AYT süzülüyordu; bu YDT (İngilizce) derslerinin tüm
+// bölümlere sızmasına yol açıyordu. Artık karar tamamen `tracks` dizisine ait.
 export function subjectForTrack(
-  examType: string,
   tracks: string[] | null | undefined,
   track: string | null,
 ): boolean {
-  return examType !== "AYT" || !track || !tracks?.length || tracks.includes(track);
+  return !tracks?.length || !track || tracks.includes(track);
 }
 
 // Deneme listesinde kısa etiket + renk için (id -> {short, color})

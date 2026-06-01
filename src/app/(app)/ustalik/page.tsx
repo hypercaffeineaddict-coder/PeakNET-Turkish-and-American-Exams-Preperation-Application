@@ -130,11 +130,12 @@ export default async function UstalikPage({
     );
   }
 
-  // AYT derslerini lise bölümüne (track) göre filtrele; TYT herkese açık.
+  // Dersleri lise bölümüne (track) göre filtrele: TYT herkese açık, AYT alan
+  // dersleri ve YDT (tracks={Dil}) yalnızca ilgili bölüme.
   const track = profile?.high_school_track ?? null;
   const allSubjects: SubjectRow[] = (subjectsRaw ?? []) as SubjectRow[];
   const subjects: SubjectRow[] = allSubjects.filter((s) =>
-    subjectForTrack(activeTab, s.tracks, track),
+    subjectForTrack(s.tracks, track),
   );
 
   const masteryFor = (t: TopicRow): MasteryInfo => {
@@ -179,7 +180,10 @@ export default async function UstalikPage({
     .slice(0, 6);
 
   const buildUrl = (t: string) => `/ustalik?tab=${t}`;
-  const emptyTab = activeTab !== "AYT" && subjects.length === 0;
+  // Ana liste boş: ya müfredat hiç yok ("yakında"), ya da bu sınav öğrencinin
+  // bölümü dışı (örn. SAY öğrencisinde YDT) → ayrı, daha doğru mesaj.
+  const emptyTab = subjects.length === 0;
+  const notInTrack = emptyTab && allSubjects.length > 0;
 
   return (
     <div className="mx-auto max-w-6xl space-y-6">
@@ -221,11 +225,14 @@ export default async function UstalikPage({
         <div className="rounded-2xl border border-dashed border-border bg-card p-12 text-center">
           <Construction size={36} className="mx-auto text-muted-foreground" />
           <h2 className="mt-4 text-lg font-semibold">
-            {activeTab} müfredatı yakında
+            {notInTrack
+              ? `${activeTab} senin alanında değil`
+              : `${activeTab} müfredatı yakında`}
           </h2>
           <p className="mt-2 text-sm text-muted-foreground">
-            Bu sınav türü için müfredat henüz eklenmedi. TYT ve AYT
-            sekmelerinden devam edebilirsin.
+            {notInTrack
+              ? "Bu sınav türü lise bölümüne göre başka bir alana ait. Kendi alanının sekmelerinden devam edebilirsin."
+              : "Bu sınav türü için müfredat henüz eklenmedi. TYT ve AYT sekmelerinden devam edebilirsin."}
           </p>
         </div>
       ) : (

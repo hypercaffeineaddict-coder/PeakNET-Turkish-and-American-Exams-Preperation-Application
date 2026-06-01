@@ -126,7 +126,7 @@ export default async function PanelPage() {
   // TYT herkese; AYT derslerini lise bölümüne (track) göre filtrele.
   const track = profile?.high_school_track ?? null;
   const subjects: SubjectRow[] = ((subjectsRaw ?? []) as SubjectRow[]).filter(
-    (s) => subjectForTrack(s.exam_type, s.tracks, track),
+    (s) => subjectForTrack(s.tracks, track),
   );
   const progressMap = new Map((progressRows ?? []).map((p) => [p.topic_id, p]));
 

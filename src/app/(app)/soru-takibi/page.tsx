@@ -67,7 +67,7 @@ export default async function SoruTakibiPage({
 
   const curriculum = new Map<string, { color: string; topics: { id: string; name: string }[] }>();
   for (const s of ((subjectsRaw ?? []) as SRow[]).filter((s) =>
-    subjectForTrack(s.exam_type, s.tracks, track),
+    subjectForTrack(s.tracks, track),
   )) {
     const cur = curriculum.get(s.name) ?? { color: s.color ?? "#8b7cf6", topics: [] };
     for (const t of (s.topics ?? []).slice().sort((a, b) => a.display_order - b.display_order)) {

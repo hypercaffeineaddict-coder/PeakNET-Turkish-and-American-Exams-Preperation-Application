@@ -95,23 +95,21 @@ export default async function KonularPage({
     (progressRows ?? []).map((p) => [p.topic_id, p]),
   );
 
-  // AYT derslerini öğrencinin lise bölümüne (track) göre ayır:
-  //   - MY tracks: kendi alanına ait dersler (ana liste).
-  //   - OTHER: diğer alanların dersleri (göz atmak için, altta gizli).
-  // TYT/YDT'de herkese açık ders zaten subjectForTrack ile geçer.
+  // Dersleri öğrencinin lise bölümüne (track) göre ayır:
+  //   - MY: kendi alanına ait dersler (ana liste).
+  //   - OTHER: track-kısıtlı ama başka alana ait dersler (göz atmak için, altta).
+  // TYT (tracks boş) herkese açıktır; AYT alan dersleri ile YDT (tracks={Dil})
+  // yalnızca ilgili bölüme aittir, gerisi "Diğer alanlar"da gözat amaçlı çıkar.
   const track = profile?.high_school_track ?? null;
   const allSubjects: SubjectRow[] = (subjectsRaw ?? []) as SubjectRow[];
   const subjects: SubjectRow[] = allSubjects.filter((s) =>
-    subjectForTrack(activeTab, s.tracks, track),
+    subjectForTrack(s.tracks, track),
   );
-  const otherSubjects: SubjectRow[] =
-    activeTab === "AYT" && track
-      ? allSubjects.filter(
-          (s) =>
-            !subjectForTrack(activeTab, s.tracks, track) &&
-            (s.tracks?.length ?? 0) > 0,
-        )
-      : [];
+  const otherSubjects: SubjectRow[] = track
+    ? allSubjects.filter(
+        (s) => !subjectForTrack(s.tracks, track) && (s.tracks?.length ?? 0) > 0,
+      )
+    : [];
 
   // Topic filtre + arama yardımcısı (iki listede de kullanılır)
   const applyTopicFilter = (s: SubjectRow): SubjectRow => {
@@ -165,8 +163,10 @@ export default async function KonularPage({
     return qs ? `/konular?${qs}` : "/konular";
   };
 
-  // Bu sekme/track için hiç ders yoksa "yakında" göster (arama sonucu boşluğu hariç)
-  const noCurriculum = subjects.length === 0;
+  // Müfredat gerçekten yoksa "yakında". Sırf öğrencinin bölümü dışı olduğu için
+  // ana liste boşsa (örn. SAY öğrencisinde YDT) "Diğer alanlar" bölümü devreye
+  // girer, "yakında" gösterme.
+  const noCurriculum = allSubjects.length === 0;
 
   return (
     <div className="mx-auto max-w-6xl space-y-6">

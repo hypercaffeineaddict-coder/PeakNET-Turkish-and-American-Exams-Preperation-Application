@@ -35,7 +35,7 @@ export default async function SoruUretPage() {
 
   const track = profile?.high_school_track ?? null;
   const subjects = ((subjectsRaw ?? []) as SubjectRow[])
-    .filter((s) => subjectForTrack(s.exam_type, s.tracks, track))
+    .filter((s) => subjectForTrack(s.tracks, track))
     .map((s) => ({
       id: s.id,
       name: s.name,
