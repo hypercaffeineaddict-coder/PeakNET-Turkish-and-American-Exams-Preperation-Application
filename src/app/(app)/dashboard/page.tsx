@@ -19,6 +19,7 @@ import {
   Flag,
   PencilRuler,
   NotebookPen,
+  Crown,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { MotivationCard } from "@/components/motivation-card";
@@ -230,6 +231,7 @@ export default async function DashboardPage() {
             <QuickLink href="/rapor" icon={SparklesIcon} label="Haftalık koç" />
             <QuickLink href="/istatistikler" icon={TrendingUp} label="İstatistik" />
             <QuickLink href="/basarimlar" icon={Zap} label="Başarımlar" />
+            <QuickLink href="/satranc" icon={Crown} label="Satranç" />
           </div>
         </section>
 
