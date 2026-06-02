@@ -164,9 +164,10 @@ export function ProfileForm({
           Ekstra sınavlar
         </h2>
         <p className="text-xs text-muted-foreground">
-          YKS dışı sınav ailelerini aç. Açtığında Konular ve Ustalık&apos;ta ayrı
-          bir sekme olarak görünür; YKS akışına (panel, program, denemeler)
-          karışmaz.
+          Yurtdışı sınavları zaten sol menüdeki <strong>Yurtdışı</strong>{" "}
+          sekmesinde her zaman açık. Bunu işaretlersen seçtiğin aile{" "}
+          <strong>Konular ve Ustalık</strong> sekmelerine de eklenir (daha derin
+          entegrasyon). YKS akışına (panel, program, denemeler) yine karışmaz.
         </p>
         <div className="flex flex-col gap-2">
           {EXTRA_EXAMS.map((e) => (

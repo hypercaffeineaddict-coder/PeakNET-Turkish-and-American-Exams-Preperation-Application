@@ -20,6 +20,7 @@ import {
   PencilRuler,
   NotebookPen,
   Crown,
+  Globe,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { MotivationCard } from "@/components/motivation-card";
@@ -232,6 +233,7 @@ export default async function DashboardPage() {
             <QuickLink href="/istatistikler" icon={TrendingUp} label="İstatistik" />
             <QuickLink href="/basarimlar" icon={Zap} label="Başarımlar" />
             <QuickLink href="/satranc" icon={Crown} label="Satranç" />
+            <QuickLink href="/yurtdisi" icon={Globe} label="Yurtdışı" />
           </div>
         </section>
 
