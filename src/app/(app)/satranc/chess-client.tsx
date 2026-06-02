@@ -256,78 +256,137 @@ export function ChessClient() {
       {/* Tahta */}
       <div>
         <div className="relative mx-auto w-full max-w-[560px]">
+          {/* Ahşap/menekşe çerçeve */}
           <div
-            className="grid grid-cols-8 overflow-hidden rounded-2xl border border-border shadow-soft"
-            style={{ aspectRatio: "1 / 1" }}
+            className="rounded-2xl p-2.5 shadow-pop sm:p-3.5"
+            style={{ background: "linear-gradient(150deg, #4a3a6e 0%, #2a1f44 100%)" }}
           >
-            {rows.map((row, ri) =>
-              row.map((sq, fi) => {
-                const file = files[fi];
-                const rank = ranks[ri];
-                const square = `${file}${rank}`;
-                const isLight = (ri + fi) % 2 === 0;
-                const isSel = selected === square;
-                const isTarget = targetSet.has(square);
-                const isCapture = isTarget && !!sq;
-                const isLast = lastMove && (lastMove.from === square || lastMove.to === square);
-                const isCheck = checkSquare === square;
-                return (
-                  <button
-                    key={square}
-                    type="button"
-                    onClick={() => onSquareClick(square, sq ? { type: sq.type, color: sq.color } : null)}
-                    className="relative flex aspect-square items-center justify-center transition"
-                    style={{
-                      backgroundColor: isCheck
-                        ? "#ef4444aa"
-                        : isSel
-                          ? "#8b5cf6cc"
-                          : isLast
-                            ? isLight ? "#d9cdf0" : "#a78bca"
-                            : isLight ? "#ECE6F4" : "#9C89B8",
-                      cursor: isHumanTurn ? "pointer" : "default",
-                    }}
-                    aria-label={square}
-                  >
-                    {/* koordinat etiketi (kenar kareler) */}
-                    {fi === 0 && (
-                      <span className="pointer-events-none absolute left-0.5 top-0.5 text-[9px] font-semibold text-foreground/35">
-                        {rank}
-                      </span>
-                    )}
-                    {ri === 7 && (
-                      <span className="pointer-events-none absolute bottom-0.5 right-0.5 text-[9px] font-semibold text-foreground/35">
-                        {file}
-                      </span>
-                    )}
-                    {/* legal hedef göstergesi */}
-                    {isTarget && !sq && (
-                      <span className="pointer-events-none absolute h-3 w-3 rounded-full bg-foreground/25" />
-                    )}
-                    {isCapture && (
-                      <span className="pointer-events-none absolute inset-1 rounded-full ring-[3px] ring-foreground/30" />
-                    )}
-                    {/* taş */}
-                    {sq && (
-                      <span
-                        className="relative select-none leading-none"
-                        style={{
-                          fontSize: "min(7.5vw, 42px)",
-                          color: sq.color === "w" ? "#FFFFFF" : "#181022",
-                          textShadow:
-                            sq.color === "w"
-                              ? "0 1px 1px rgba(0,0,0,.45), 0 0 1px rgba(0,0,0,.6)"
-                              : "0 1px 1px rgba(255,255,255,.35)",
-                        }}
-                      >
-                        {GLYPH[sq.type]}
-                      </span>
-                    )}
-                  </button>
-                );
-              }),
-            )}
+            <div
+              className="grid grid-cols-8 overflow-hidden rounded-lg"
+              style={{ aspectRatio: "1 / 1", boxShadow: "inset 0 0 0 1px rgba(0,0,0,.4)" }}
+            >
+              {rows.map((row, ri) =>
+                row.map((sq, fi) => {
+                  const file = files[fi];
+                  const rank = ranks[ri];
+                  const square = `${file}${rank}`;
+                  const isLight = (ri + fi) % 2 === 0;
+                  const isSel = selected === square;
+                  const isTarget = targetSet.has(square);
+                  const isCapture = isTarget && !!sq;
+                  const isLast = lastMove && (lastMove.from === square || lastMove.to === square);
+                  const isCheck = checkSquare === square;
+                  const labelColor = isLight ? "#7C66A8" : "#EDE7F6";
+                  return (
+                    <button
+                      key={square}
+                      type="button"
+                      onClick={() => onSquareClick(square, sq ? { type: sq.type, color: sq.color } : null)}
+                      className="relative flex aspect-square items-center justify-center"
+                      style={{
+                        backgroundColor: isLight ? "#EDE7F6" : "#7C66A8",
+                        cursor: isHumanTurn ? "pointer" : "default",
+                      }}
+                      aria-label={square}
+                    >
+                      {/* son hamle vurgusu */}
+                      {isLast && (
+                        <span
+                          className="pointer-events-none absolute inset-0"
+                          style={{ backgroundColor: "rgba(250,204,21,.40)" }}
+                        />
+                      )}
+                      {/* seçili kare */}
+                      {isSel && (
+                        <span
+                          className="pointer-events-none absolute inset-0"
+                          style={{
+                            boxShadow: "inset 0 0 0 3px var(--primary)",
+                            backgroundColor: "rgba(139,92,246,.28)",
+                          }}
+                        />
+                      )}
+                      {/* şah glow */}
+                      {isCheck && (
+                        <span
+                          className="pointer-events-none absolute inset-0"
+                          style={{
+                            background:
+                              "radial-gradient(circle, rgba(239,68,68,.9) 0%, rgba(239,68,68,.12) 72%)",
+                          }}
+                        />
+                      )}
+                      {/* koordinat etiketleri (kenar kareler) */}
+                      {fi === 0 && (
+                        <span
+                          className="pointer-events-none absolute left-[3px] top-[1px] text-[9px] font-bold"
+                          style={{ color: labelColor }}
+                        >
+                          {rank}
+                        </span>
+                      )}
+                      {ri === 7 && (
+                        <span
+                          className="pointer-events-none absolute bottom-0 right-[3px] text-[9px] font-bold"
+                          style={{ color: labelColor }}
+                        >
+                          {file}
+                        </span>
+                      )}
+                      {/* legal hedef göstergesi */}
+                      {isTarget && !sq && (
+                        <span
+                          className="pointer-events-none absolute rounded-full"
+                          style={{ height: "30%", width: "30%", backgroundColor: "rgba(20,12,30,.26)" }}
+                        />
+                      )}
+                      {isCapture && (
+                        <span
+                          className="pointer-events-none absolute inset-[7%] rounded-full"
+                          style={{ boxShadow: "inset 0 0 0 4px rgba(20,12,30,.26)" }}
+                        />
+                      )}
+                      {/* taş */}
+                      {sq && (
+                        <span
+                          className="relative z-[1] select-none leading-none"
+                          style={{
+                            fontSize: "min(8.4vw, 48px)",
+                            color: sq.color === "w" ? "#FBFAFF" : "#221A33",
+                            WebkitTextStroke:
+                              sq.color === "w" ? "0.7px #2A2140" : "0.7px #B9A7E0",
+                            filter: "drop-shadow(0 2px 1.5px rgba(0,0,0,.4))",
+                          }}
+                        >
+                          {GLYPH[sq.type]}
+                        </span>
+                      )}
+                    </button>
+                  );
+                }),
+              )}
+            </div>
           </div>
+
+          {/* Oyun bitti afişi */}
+          {gameOver && status && (
+            <div className="pointer-events-none absolute inset-0 z-20 flex items-center justify-center">
+              <div
+                className={`rounded-2xl border px-6 py-4 text-center shadow-pop backdrop-blur-md ${
+                  status.tone === "win"
+                    ? "border-emerald-400/50 bg-emerald-500/20"
+                    : status.tone === "lose"
+                      ? "border-rose-400/50 bg-rose-500/20"
+                      : "border-border bg-card/80"
+                }`}
+              >
+                <div className="font-display text-lg font-bold">{status.text}</div>
+                <div className="mt-0.5 text-xs text-muted-foreground">
+                  Yeni oyun için yandaki butonları kullan
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Terfi seçici */}
           {promotion && (
