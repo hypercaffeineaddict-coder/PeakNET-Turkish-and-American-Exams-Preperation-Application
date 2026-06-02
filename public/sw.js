@@ -2,7 +2,7 @@
 // Statik varlıklar cache-first, sayfalar network-first (offline'da cache),
 // API/Supabase/Gemini her zaman network (cache'lenmez).
 
-const VERSION = "peaknet-v3";
+const VERSION = "peaknet-v4";
 const STATIC_CACHE = `${VERSION}-static`;
 const PAGE_CACHE = `${VERSION}-pages`;
 const OFFLINE_URL = "/offline.html";
