@@ -55,6 +55,64 @@ function materialDiff(chess: Chess): number {
   return w - b;
 }
 
+// Yenmiş (kayıp) taşlar: her renk için tahtadan eksik taş tipleri (değer sırası).
+function capturedPieces(chess: Chess): { w: string[]; b: string[] } {
+  const start: Record<string, number> = { p: 8, n: 2, b: 2, r: 2, q: 1 };
+  const cur: Record<Color, Record<string, number>> = {
+    w: { p: 0, n: 0, b: 0, r: 0, q: 0 },
+    b: { p: 0, n: 0, b: 0, r: 0, q: 0 },
+  };
+  for (const row of chess.board()) {
+    for (const sq of row) {
+      if (!sq || sq.type === "k") continue;
+      cur[sq.color][sq.type]++;
+    }
+  }
+  const missing: { w: string[]; b: string[] } = { w: [], b: [] };
+  for (const c of ["w", "b"] as const) {
+    for (const t of ["q", "r", "b", "n", "p"]) {
+      for (let i = 0; i < start[t] - cur[c][t]; i++) missing[c].push(t);
+    }
+  }
+  return missing;
+}
+
+// Yenmiş taş tepsisi (tahtanın üstünde/altında).
+function CapturedTray({
+  name,
+  pieces,
+  color,
+  lead,
+}: {
+  name: string;
+  pieces: string[];
+  color: Color;
+  lead: number;
+}) {
+  return (
+    <div className="mx-auto flex min-h-[24px] max-w-[560px] items-center gap-2 px-1">
+      <span className="text-xs font-medium text-muted-foreground">{name}</span>
+      <span className="flex items-center">
+        {pieces.map((t, i) => (
+          <span
+            key={i}
+            className="-ml-1 select-none text-base leading-none first:ml-0"
+            style={{
+              color: color === "w" ? "#FBFAFF" : "#2A2140",
+              WebkitTextStroke: color === "w" ? "0.4px #2A2140" : "0.4px #8B7CB0",
+            }}
+          >
+            {GLYPH[t]}
+          </span>
+        ))}
+      </span>
+      {lead > 0 && (
+        <span className="text-xs font-bold tabular-nums text-emerald-500">+{lead}</span>
+      )}
+    </div>
+  );
+}
+
 export function ChessClient() {
   const [elo, setElo] = useState(1000);
   const [humanColor, setHumanColor] = useState<Color>("w");
@@ -244,6 +302,9 @@ export function ChessClient() {
   const files = humanColor === "w" ? ["a", "b", "c", "d", "e", "f", "g", "h"] : ["h", "g", "f", "e", "d", "c", "b", "a"];
 
   const mat = materialDiff(chess);
+  const aiColor: Color = humanColor === "w" ? "b" : "w";
+  const captured = capturedPieces(chess);
+  const humanLead = humanColor === "w" ? mat : -mat;
   const checkSquare = chess.isCheck()
     ? (() => {
         for (const row of board) for (const sq of row) if (sq && sq.type === "k" && sq.color === turn) return sq.square;
@@ -255,6 +316,13 @@ export function ChessClient() {
     <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
       {/* Tahta */}
       <div>
+        {/* Üst tepsi: yapay zekanın yediği taşlar */}
+        <CapturedTray
+          name="Yapay zeka"
+          pieces={captured[humanColor]}
+          color={humanColor}
+          lead={-humanLead}
+        />
         <div className="relative mx-auto w-full max-w-[560px]">
           {/* Ahşap/menekşe çerçeve */}
           <div
@@ -408,6 +476,14 @@ export function ChessClient() {
             </div>
           )}
         </div>
+
+        {/* Alt tepsi: senin yediğin taşlar */}
+        <CapturedTray
+          name="Sen"
+          pieces={captured[aiColor]}
+          color={aiColor}
+          lead={humanLead}
+        />
 
         {/* Durum çubuğu */}
         <div className="mx-auto mt-3 flex max-w-[560px] items-center justify-between gap-3 text-sm">
