@@ -126,14 +126,13 @@ function negamax(chess: Chess, depth: number, alpha: number, beta: number, ply: 
   return best;
 }
 
-// ELO → maksimum derinlik, zaman bütçesi (ms), hata olasılığı, "yeterince iyi" marjı.
-function tuning(elo: number): { maxDepth: number; budget: number; blunder: number; margin: number } {
-  if (elo < 700) return { maxDepth: 1, budget: 150, blunder: 0.45, margin: 200 };
-  if (elo < 1000) return { maxDepth: 2, budget: 250, blunder: 0.3, margin: 140 };
-  if (elo < 1300) return { maxDepth: 2, budget: 400, blunder: 0.18, margin: 100 };
-  if (elo < 1600) return { maxDepth: 3, budget: 550, blunder: 0.08, margin: 60 };
-  if (elo < 1900) return { maxDepth: 3, budget: 700, blunder: 0.03, margin: 35 };
-  return { maxDepth: 4, budget: 900, blunder: 0, margin: 15 };
+// ELO → arama derinliği + zaman bütçesi. Asıl güç farkı "keskinlik" (sharpness)
+// ile hamle seçiminde uygulanır (pickMove sonunda).
+function tuning(elo: number): { maxDepth: number; budget: number } {
+  if (elo < 800) return { maxDepth: 1, budget: 200 };
+  if (elo < 1200) return { maxDepth: 2, budget: 350 };
+  if (elo < 1600) return { maxDepth: 3, budget: 550 };
+  return { maxDepth: 4, budget: 800 };
 }
 
 export type AIMove = { from: string; to: string; promotion?: string };
@@ -144,13 +143,7 @@ export function pickMove(fen: string, elo: number): AIMove | null {
   const legal = chess.moves({ verbose: true }) as Move[];
   if (legal.length === 0) return null;
 
-  const { maxDepth, budget, blunder, margin } = tuning(elo);
-
-  // Hata simülasyonu: bazen tamamen rastgele oyna (zayıf seviyelerde sık).
-  if (Math.random() < blunder) {
-    const m = legal[Math.floor(Math.random() * legal.length)];
-    return { from: m.from, to: m.to, promotion: m.promotion };
-  }
+  const { maxDepth, budget } = tuning(elo);
 
   // İteratif derinleşme: derinlik 1, 2, ... maxDepth. Her tur tüm kök hamleleri
   // TAM pencereyle (doğru skor → marj seçimi anlamlı) değerlendirir. Bütçe dolunca
@@ -177,10 +170,16 @@ export function pickMove(fen: string, elo: number): AIMove | null {
     }
   }
 
-  const bestScore = scored[0].score;
-  // En iyiye "margin" kadar yakın hamleler arasından rastgele seç (çeşitlilik +
-  // insansı kusur). Yüksek ELO'da margin küçük → neredeyse hep en iyi hamle.
-  const pool = scored.filter((s) => bestScore - s.score <= margin);
-  const chosen = pool[Math.floor(Math.random() * pool.length)].move;
+  // Güç = "keskinlik". scored en iyiden kötüye sıralı. Düşük ELO'da sharpness≈1
+  // → indeks neredeyse rastgele (kötü hamleler de seçilir → görünür şekilde zayıf);
+  // yüksek ELO'da sharpness büyük → random^sharpness ≈ 0 → hep en iyi hamle.
+  // Sürekli ölçek: her ELO değeri belirgin biçimde farklı bir oynanış verir.
+  const s = Math.min(1, Math.max(0, (elo - 400) / 1600));
+  const sharpness = 1 + s * 9;
+  const idx = Math.min(
+    scored.length - 1,
+    Math.floor(Math.pow(Math.random(), sharpness) * scored.length),
+  );
+  const chosen = scored[idx].move;
   return { from: chosen.from, to: chosen.to, promotion: chosen.promotion };
 }
