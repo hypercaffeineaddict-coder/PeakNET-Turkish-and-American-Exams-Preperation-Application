@@ -239,6 +239,8 @@ h1, h2 {
     border-left-color: #6a4fd6 !important;
   }
   .no-print { display: none !important; }
-  -webkit-print-color-adjust: exact;
-  print-color-adjust: exact;
+  html {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
 }
