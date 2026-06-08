@@ -4,6 +4,9 @@ import { useEffect, useState } from "react";
 import { Sparkles, Loader2, RefreshCw } from "lucide-react";
 import { toast } from "sonner";
 import { localDate } from "@/lib/dates";
+import type { getDict } from "@/lib/i18n";
+
+type Labels = ReturnType<typeof getDict>["weeklyCoach"];
 
 function weekKey() {
   const d = new Date();
@@ -33,7 +36,7 @@ function renderRich(text: string) {
   });
 }
 
-export function Coach({ aiReady }: { aiReady: boolean }) {
+export function Coach({ aiReady, labels }: { aiReady: boolean; labels: Labels }) {
   const [report, setReport] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [cached, setCached] = useState(false);
@@ -50,7 +53,7 @@ export function Coach({ aiReady }: { aiReady: boolean }) {
 
   async function generate() {
     if (!aiReady) {
-      toast.error("AI bağlantısı yok. GEMINI_API_KEY gerekli.");
+      toast.error(labels.errNoAI);
       return;
     }
     setLoading(true);
@@ -67,7 +70,7 @@ export function Coach({ aiReady }: { aiReady: boolean }) {
         localStorage.setItem(weekKey(), text);
       } catch {}
     } catch (e) {
-      toast.error("Rapor alınamadı: " + String(e).slice(0, 120));
+      toast.error(labels.errReportPrefix + String(e).slice(0, 120));
     } finally {
       setLoading(false);
     }
@@ -81,10 +84,9 @@ export function Coach({ aiReady }: { aiReady: boolean }) {
           <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-soft">
             <Sparkles size={22} />
           </span>
-          <h2 className="mt-4 font-display text-lg font-bold">Haftalık koçun hazır</h2>
+          <h2 className="mt-4 font-display text-lg font-bold">{labels.ctaTitle}</h2>
           <p className="mx-auto mt-1.5 max-w-md text-sm text-muted-foreground">
-            Bu haftaki soru çözümün, denemelerin ve çalışma ritmine bakıp kişisel
-            bir değerlendirme ve önümüzdeki hafta için öneriler çıkarayım.
+            {labels.ctaDesc}
           </p>
           <button
             type="button"
@@ -93,7 +95,7 @@ export function Coach({ aiReady }: { aiReady: boolean }) {
             className="mt-5 inline-flex items-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground shadow-pop transition hover:opacity-90 active:scale-[0.99] disabled:opacity-50"
           >
             {loading ? <Loader2 size={16} className="animate-spin" /> : <Sparkles size={16} />}
-            {loading ? "Hazırlanıyor..." : "Raporumu oluştur"}
+            {loading ? labels.generatingBtn : labels.generateBtn}
           </button>
         </div>
       </div>
@@ -105,10 +107,10 @@ export function Coach({ aiReady }: { aiReady: boolean }) {
       <header className="mb-4 flex items-center justify-between gap-3">
         <h2 className="flex items-center gap-2 text-sm font-semibold">
           <Sparkles size={16} className="text-primary" />
-          Haftalık koç raporu
+          {labels.reportTitle}
           {cached && (
             <span className="rounded-full bg-muted px-2 py-0.5 text-[10px] font-normal text-muted-foreground">
-              kayıtlı
+              {labels.cachedTag}
             </span>
           )}
         </h2>
@@ -119,7 +121,7 @@ export function Coach({ aiReady }: { aiReady: boolean }) {
           className="inline-flex items-center gap-1.5 rounded-lg border border-border px-3 py-1.5 text-xs font-medium transition hover:bg-muted disabled:opacity-50"
         >
           {loading ? <Loader2 size={13} className="animate-spin" /> : <RefreshCw size={13} />}
-          Yenile
+          {labels.refreshBtn}
         </button>
       </header>
       <div className="space-y-1 text-foreground">{renderRich(report)}</div>

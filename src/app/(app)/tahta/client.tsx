@@ -5,18 +5,18 @@ import { Sparkles, Loader2, PencilRuler } from "lucide-react";
 import { toast } from "sonner";
 import { BoardCanvas } from "@/components/board-canvas";
 import type { Board } from "@/lib/board";
+import type { getDict } from "@/lib/i18n";
 
+type Labels = ReturnType<typeof getDict>["drawingBoard"];
 type Item = { id: number; prompt: string; explanation: string; board: Board };
 
-const EXAMPLES = [
-  "y = x² − 4 grafiğini çiz",
-  "Birim çemberi çiz",
-  "Kenarları 3, 4, 5 olan dik üçgen",
-  "y = sin(x) grafiği (−6 ile 6 arası)",
-  "Merkez (1,2), yarıçap 3 olan çember",
-];
-
-export function TahtaClient({ aiReady }: { aiReady: boolean }) {
+export function TahtaClient({
+  aiReady,
+  labels,
+}: {
+  aiReady: boolean;
+  labels: Labels;
+}) {
   const [prompt, setPrompt] = useState("");
   const [loading, setLoading] = useState(false);
   const [items, setItems] = useState<Item[]>([]);
@@ -25,7 +25,7 @@ export function TahtaClient({ aiReady }: { aiReady: boolean }) {
     const p = text.trim();
     if (!p) return;
     if (!aiReady) {
-      toast.error("AI bağlantısı yok. GEMINI_API_KEY gerekli.");
+      toast.error(labels.errNoAI);
       return;
     }
     setLoading(true);
@@ -46,7 +46,7 @@ export function TahtaClient({ aiReady }: { aiReady: boolean }) {
       ]);
       setPrompt("");
     } catch (e) {
-      toast.error("Çizilemedi: " + String(e).slice(0, 120));
+      toast.error(labels.errDrawPrefix + String(e).slice(0, 120));
     } finally {
       setLoading(false);
     }
@@ -57,7 +57,7 @@ export function TahtaClient({ aiReady }: { aiReady: boolean }) {
       <section className="rounded-2xl border border-border bg-card p-5">
         <div className="flex items-end gap-2">
           <label className="flex-1 text-sm">
-            <span className="text-xs text-muted-foreground">Ne çizmemi istersin?</span>
+            <span className="text-xs text-muted-foreground">{labels.inputLabel}</span>
             <input
               value={prompt}
               onChange={(e) => setPrompt(e.target.value)}
@@ -67,7 +67,7 @@ export function TahtaClient({ aiReady }: { aiReady: boolean }) {
                   void draw(prompt);
                 }
               }}
-              placeholder="örn. y = x² − 2x − 3 parabolünü çiz"
+              placeholder={labels.inputPlaceholder}
               className="mt-1 w-full rounded-xl border border-border bg-background px-3.5 py-2.5 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/30"
             />
           </label>
@@ -78,11 +78,11 @@ export function TahtaClient({ aiReady }: { aiReady: boolean }) {
             className="inline-flex items-center gap-1.5 rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-soft transition hover:opacity-90 active:scale-[0.99] disabled:opacity-50"
           >
             {loading ? <Loader2 size={15} className="animate-spin" /> : <Sparkles size={15} />}
-            Çiz
+            {labels.drawBtn}
           </button>
         </div>
         <div className="mt-3 flex flex-wrap gap-1.5">
-          {EXAMPLES.map((ex) => (
+          {labels.examples.map((ex) => (
             <button
               key={ex}
               type="button"
@@ -101,17 +101,16 @@ export function TahtaClient({ aiReady }: { aiReady: boolean }) {
 
       {loading && (
         <div className="flex items-center justify-center gap-2 rounded-2xl border border-dashed border-border bg-card p-10 text-sm text-muted-foreground">
-          <Loader2 size={16} className="animate-spin" /> AI çiziyor...
+          <Loader2 size={16} className="animate-spin" /> {labels.drawing}
         </div>
       )}
 
       {items.length === 0 && !loading ? (
         <div className="rounded-2xl border border-dashed border-border bg-card p-12 text-center">
           <PencilRuler size={36} className="mx-auto text-muted-foreground" />
-          <h2 className="mt-4 text-lg font-semibold">Tahta boş</h2>
+          <h2 className="mt-4 text-lg font-semibold">{labels.emptyTitle}</h2>
           <p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground">
-            Bir fonksiyon grafiği, geometri şekli ya da koordinat düzlemi iste; AI
-            çizip göstersin. Yukarıdaki örneklerden birine tıklayabilirsin.
+            {labels.emptyDesc}
           </p>
         </div>
       ) : (
@@ -119,7 +118,7 @@ export function TahtaClient({ aiReady }: { aiReady: boolean }) {
           {items.map((it) => (
             <section key={it.id} className="space-y-2">
               <div className="text-xs text-muted-foreground">
-                <span className="font-medium text-foreground">“{it.prompt}”</span>
+                <span className="font-medium text-foreground">&ldquo;{it.prompt}&rdquo;</span>
               </div>
               <BoardCanvas board={it.board} />
               {it.explanation && (

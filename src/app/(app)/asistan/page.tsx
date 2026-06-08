@@ -3,6 +3,8 @@ import { Sparkles, AlertTriangle } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { aiHealth as ollamaHealth } from "@/lib/ai";
 import { AsistanChat } from "./chat";
+import { getDict } from "@/lib/i18n";
+import { getLocaleFromCookies } from "@/lib/i18n-server";
 
 export default async function AsistanPage() {
   const supabase = await createClient();
@@ -10,6 +12,11 @@ export default async function AsistanPage() {
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) redirect("/login");
+
+  const locale = await getLocaleFromCookies();
+  const dict = getDict(locale);
+  const t = dict.assistant;
+  const banner = dict.aiBanner;
 
   const [{ data: profile }, health] = await Promise.all([
     supabase
@@ -27,21 +34,18 @@ export default async function AsistanPage() {
       <header>
         <h1 className="flex items-center gap-2 text-3xl font-semibold tracking-tight">
           <Sparkles className="text-primary" size={26} />
-          AI Asistan
+          {t.title}
         </h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Çalışma planı, motivasyon, soru çözümü, konu seçimi — her şey için
-          buradan sor.
-        </p>
+        <p className="mt-1 text-sm text-muted-foreground">{t.subtitle}</p>
       </header>
 
       {!health.ok && (
         <div className="flex items-start gap-3 rounded-2xl border border-amber-500/30 bg-amber-500/5 p-4 text-sm">
           <AlertTriangle size={18} className="mt-0.5 shrink-0 text-amber-500" />
           <div>
-            <div className="font-medium text-amber-500">AI bağlantısı yok</div>
+            <div className="font-medium text-amber-500">{banner.notConnected}</div>
             <p className="mt-1 text-muted-foreground">
-              {health.error ?? "AI yapılandırması eksik. GEMINI_API_KEY'i kontrol et."}
+              {health.error ?? banner.notConnectedDesc}
             </p>
           </div>
         </div>
@@ -59,6 +63,7 @@ export default async function AsistanPage() {
           isExamStudent: profile?.is_exam_student ?? false,
         }}
         aiReady={health.ok && health.hasChatModel}
+        labels={t}
       />
     </div>
   );

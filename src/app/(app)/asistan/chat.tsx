@@ -2,7 +2,9 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Send, Loader2, Bot, User } from "lucide-react";
+import type { getDict } from "@/lib/i18n";
 
+type Labels = ReturnType<typeof getDict>["assistant"];
 type Message = { role: "user" | "assistant"; content: string };
 
 type Student = {
@@ -16,19 +18,14 @@ type Student = {
   isExamStudent: boolean;
 };
 
-const QUICK_PROMPTS = [
-  "Bu hafta için bana çalışma planı çıkar",
-  "Hangi konuya öncelik vermeliyim?",
-  "Sınav stresimi nasıl yönetebilirim?",
-  "Bugün için motivasyon ver",
-];
-
 export function AsistanChat({
   student,
   aiReady,
+  labels,
 }: {
   student: Student;
   aiReady: boolean;
+  labels: Labels;
 }) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
@@ -62,7 +59,10 @@ export function AsistanChat({
         const t = await res.text();
         setMessages((m) => [
           ...m,
-          { role: "assistant", content: `_Hata: ${t || res.status}_` },
+          {
+            role: "assistant",
+            content: `${labels.errorPrefix}${t || res.status}${labels.errorSuffix}`,
+          },
         ]);
         return;
       }
@@ -83,7 +83,10 @@ export function AsistanChat({
     } catch (err) {
       setMessages((m) => [
         ...m,
-        { role: "assistant", content: `_Bağlantı hatası: ${String(err)}_` },
+        {
+          role: "assistant",
+          content: `${labels.connectionErrorPrefix}${String(err)}${labels.connectionErrorSuffix}`,
+        },
       ]);
     } finally {
       setStreaming(false);
@@ -100,11 +103,12 @@ export function AsistanChat({
               <Bot size={24} className="text-primary" />
             </div>
             <p className="max-w-md text-sm text-muted-foreground">
-              Merhaba {student.name ?? ""}! Ben senin AI asistanınım. Plan, konu
-              tavsiyesi, motivasyon, ne istersen sor.
+              {labels.emptyGreetingPrefix}
+              {student.name ?? ""}
+              {labels.emptyGreetingSuffix}
             </p>
             <div className="grid w-full max-w-md gap-2 sm:grid-cols-2">
-              {QUICK_PROMPTS.map((p) => (
+              {labels.quickPrompts.map((p) => (
                 <button
                   key={p}
                   type="button"
@@ -125,7 +129,7 @@ export function AsistanChat({
         {streaming &&
           messages[messages.length - 1]?.role === "user" && (
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <Loader2 size={14} className="animate-spin" /> asistan yazıyor...
+              <Loader2 size={14} className="animate-spin" /> {labels.typing}
             </div>
           )}
         <div ref={bottomRef} />
@@ -142,9 +146,7 @@ export function AsistanChat({
               void send(input);
             }
           }}
-          placeholder={
-            aiReady ? "Mesaj yaz..." : "AI bağlandığında aktifleşir"
-          }
+          placeholder={aiReady ? labels.placeholder : labels.placeholderDisabled}
           disabled={!aiReady || streaming}
           rows={2}
           className="flex-1 resize-none rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary disabled:opacity-50"
@@ -155,7 +157,7 @@ export function AsistanChat({
           disabled={!aiReady || streaming || !input.trim()}
           className="inline-flex items-center gap-1 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition hover:opacity-90 disabled:opacity-50"
         >
-          <Send size={14} /> Gönder
+          <Send size={14} /> {labels.sendBtn}
         </button>
       </div>
     </div>
@@ -200,6 +202,8 @@ function Bubble({
   );
 }
 
+// System prompt TR'de — AI route'u localeDirective ile kullanicinin diline
+// zorlanmis cevap aliyor; profil alanlari (ad, ders) dile bagimsiz.
 function buildSystem(s: Student): string {
   const parts: string[] = [
     "Sen Türk lise öğrencisine YKS (TYT/AYT) yolculuğunda eşlik eden bilgili, sıcak ve disiplinli bir mentörsün.",
@@ -212,7 +216,7 @@ function buildSystem(s: Student): string {
     `- Geliştirmesi gereken dersler: ${s.weakSubjects.join(", ") || "—"}`,
     "",
     "Kurallar:",
-    "- Sade ve net Türkçe konuş.",
+    "- Sade ve net dilde konuş.",
     "- Liste yerine doğal akıcı paragraflar tercih et, ama gerektiğinde madde madde de yaz.",
     "- Cevapları kısa tut, gereksiz tekrar yapma.",
     "- LaTeX değil düz semboller kullan (x², √, ≤).",
