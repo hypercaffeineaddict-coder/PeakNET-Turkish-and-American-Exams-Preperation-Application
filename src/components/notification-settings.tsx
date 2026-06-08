@@ -3,6 +3,9 @@
 import { useEffect, useState } from "react";
 import { Bell, BellOff, Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import type { getDict } from "@/lib/i18n";
+
+type Labels = ReturnType<typeof getDict>["notifications"];
 
 const VAPID = (process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY ?? "").trim();
 
@@ -15,7 +18,7 @@ function urlBase64ToUint8Array(base64String: string) {
   return arr;
 }
 
-export function NotificationSettings() {
+export function NotificationSettings({ labels }: { labels: Labels }) {
   const [supported, setSupported] = useState(false);
   const [enabled, setEnabled] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -43,12 +46,12 @@ export function NotificationSettings() {
     setBusy(true);
     try {
       if (!VAPID) {
-        toast.error("Sunucuda bildirim anahtarı (VAPID) henüz tanımlı değil.");
+        toast.error(labels.errorVapid);
         return;
       }
       const perm = await Notification.requestPermission();
       if (perm !== "granted") {
-        toast.error("Bildirim izni verilmedi.");
+        toast.error(labels.errorDenied);
         return;
       }
       const reg = await navigator.serviceWorker.ready;
@@ -63,9 +66,9 @@ export function NotificationSettings() {
       });
       if (!res.ok) throw new Error((await res.text()).slice(0, 120));
       setEnabled(true);
-      toast.success("Bildirimler açıldı. Serin tehlikedeyse hatırlatırız.");
+      toast.success(labels.successEnable);
     } catch (e) {
-      toast.error("Bildirim açılamadı: " + String(e).slice(0, 120));
+      toast.error(labels.errorEnablePrefix + String(e).slice(0, 120));
     } finally {
       setBusy(false);
     }
@@ -85,9 +88,9 @@ export function NotificationSettings() {
         await sub.unsubscribe();
       }
       setEnabled(false);
-      toast.success("Bildirimler kapatıldı.");
+      toast.success(labels.successDisable);
     } catch (e) {
-      toast.error("Kapatılamadı: " + String(e).slice(0, 120));
+      toast.error(labels.errorDisablePrefix + String(e).slice(0, 120));
     } finally {
       setBusy(false);
     }
@@ -97,27 +100,22 @@ export function NotificationSettings() {
     <section className="rounded-2xl border border-border bg-card p-6">
       <header className="flex items-center gap-2 text-sm font-semibold">
         <Bell size={16} className="text-primary" />
-        Hatırlatma bildirimleri
+        {labels.title}
       </header>
-      <p className="mt-1.5 text-sm text-muted-foreground">
-        Streak&apos;in tehlikedeyken (gün bitmeden çalışmadıysan) telefonuna kısa
-        bir hatırlatma gönderelim. İstediğin an kapatabilirsin.
-      </p>
+      <p className="mt-1.5 text-sm text-muted-foreground">{labels.subtitle}</p>
 
       <div className="mt-4">
         {!ready ? (
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <Loader2 size={14} className="animate-spin" /> Kontrol ediliyor...
+            <Loader2 size={14} className="animate-spin" /> {labels.checking}
           </div>
         ) : !supported ? (
           <p className="rounded-xl bg-muted px-3.5 py-2.5 text-sm text-muted-foreground">
-            Bu cihaz/tarayıcı push bildirimini desteklemiyor. iOS&apos;ta uygulamayı
-            ana ekrana ekleyince çalışır.
+            {labels.unsupported}
           </p>
         ) : !VAPID ? (
           <p className="rounded-xl bg-amber-500/10 px-3.5 py-2.5 text-sm text-amber-600 dark:text-amber-400">
-            Bildirim altyapısı kurulu; sunucuda VAPID anahtarı tanımlanınca
-            aktifleşir.
+            {labels.vapidMissing}
           </p>
         ) : enabled ? (
           <button
@@ -127,7 +125,7 @@ export function NotificationSettings() {
             className="inline-flex items-center gap-2 rounded-xl border border-border bg-background px-4 py-2.5 text-sm font-medium transition hover:bg-muted disabled:opacity-50"
           >
             {busy ? <Loader2 size={15} className="animate-spin" /> : <BellOff size={15} />}
-            Bildirimleri kapat
+            {labels.disable}
           </button>
         ) : (
           <button
@@ -137,7 +135,7 @@ export function NotificationSettings() {
             className="inline-flex items-center gap-2 rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground shadow-soft transition hover:opacity-90 active:scale-[0.99] disabled:opacity-50"
           >
             {busy ? <Loader2 size={15} className="animate-spin" /> : <Bell size={15} />}
-            Bildirimleri aç
+            {labels.enable}
           </button>
         )}
       </div>

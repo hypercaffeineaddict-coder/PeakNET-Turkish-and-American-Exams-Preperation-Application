@@ -29,8 +29,12 @@ import { DailyPlanCard } from "./daily-plan";
 import { DailyQuests } from "./daily-quests";
 import { YKS_DATES, daysUntil } from "@/data/exam-date";
 import { levelForXp, effectiveStreak } from "@/lib/gamification";
+import { getDict, type Locale } from "@/lib/i18n";
+import { getLocaleFromCookies } from "@/lib/i18n-server";
 
-function SummitStrip({ totalXp }: { totalXp: number }) {
+type DashLabels = ReturnType<typeof getDict>["dashboard"];
+
+function SummitStrip({ totalXp, labels }: { totalXp: number; labels: DashLabels }) {
   const tytDays = daysUntil(YKS_DATES.TYT);
   const aytDays = daysUntil(YKS_DATES.AYT);
   const showCountdown = tytDays >= 0 || aytDays >= 0;
@@ -51,25 +55,22 @@ function SummitStrip({ totalXp }: { totalXp: number }) {
             </span>
             <div>
               <div className="text-[11px] font-semibold uppercase tracking-[0.12em] text-orange-500">
-                YKS&apos;ye kalan
+                {labels.countdownLabel}
               </div>
               <div className="flex items-baseline gap-2">
-                <span className="font-display text-4xl font-bold tabular-nums">
-                  {primary}
-                </span>
+                <span className="font-display text-4xl font-bold tabular-nums">{primary}</span>
                 <span className="text-sm text-muted-foreground">
-                  gün · {label}
+                  {labels.days} · {label}
                 </span>
               </div>
             </div>
           </div>
         )}
 
-        {/* Seviye ilerleme */}
         <div className="min-w-0 sm:w-64">
           <div className="mb-1.5 flex items-center justify-between text-xs">
             <span className="flex items-center gap-1.5 font-semibold text-primary">
-              <Zap size={13} className="fill-primary" /> Seviye {lv.level}
+              <Zap size={13} className="fill-primary" /> {labels.level} {lv.level}
             </span>
             <span className="tabular-nums text-muted-foreground">
               {lv.current}/{lv.needed} XP
@@ -82,7 +83,7 @@ function SummitStrip({ totalXp }: { totalXp: number }) {
             />
           </div>
           <div className="mt-1.5 text-[11px] text-muted-foreground">
-            Sonraki seviyeye {lv.nextLevelXp} XP
+            {labels.nextLevelPrefix} {lv.nextLevelXp} {labels.nextLevelSuffix}
           </div>
         </div>
       </div>
@@ -90,13 +91,18 @@ function SummitStrip({ totalXp }: { totalXp: number }) {
   );
 }
 
-const gradeLabel = (g?: number | null) => {
-  if (!g) return "—";
-  if (g === 13) return "Mezun";
-  return `${g}. sınıf`;
-};
+function formatGrade(grade: number | null | undefined, labels: DashLabels): string {
+  if (!grade) return labels.gradeEmpty;
+  if (grade === 13) return labels.gradeGraduated;
+  return `${grade}${labels.gradeClassSuffix}`;
+}
 
 export default async function DashboardPage() {
+  const locale: Locale = await getLocaleFromCookies();
+  const dict = getDict(locale);
+  const t = dict.dashboard;
+  const nav = dict.shell.nav;
+
   const supabase = await createClient();
   const {
     data: { user },
@@ -117,15 +123,15 @@ export default async function DashboardPage() {
 
   const secondaryStats = [
     {
-      label: "En uzun seri",
+      label: t.longestStreak,
       value: `${streak?.longest_streak ?? 0}`,
-      unit: "gün",
+      unit: t.days,
       icon: TrendingUp,
       color: "text-emerald-500",
       bg: "bg-emerald-500/10",
     },
     {
-      label: "Toplam seans",
+      label: t.totalSessions,
       value: `${sessionCount ?? 0}`,
       unit: "",
       icon: Clock,
@@ -133,9 +139,9 @@ export default async function DashboardPage() {
       bg: "bg-sky-500/10",
     },
     {
-      label: "Günlük hedef",
+      label: t.dailyGoal,
       value: `${profile?.daily_goal_minutes ?? 60}`,
-      unit: "dk",
+      unit: t.minutes,
       icon: Target,
       color: "text-primary",
       bg: "bg-primary/10",
@@ -147,33 +153,32 @@ export default async function DashboardPage() {
       <div className="space-y-6">
         <header className="animate-fade-up">
           <h1 className="font-display text-3xl font-bold tracking-tight">
-            Merhaba, {profile?.display_name ?? "öğrenci"}
+            {t.greetingPrefix} {profile?.display_name ?? t.studentFallback}
           </h1>
           <p className="mt-1 text-sm text-muted-foreground">
             {profile?.target_department && profile?.target_university ? (
               <>
-                Hedef:{" "}
+                {t.targetLabel}{" "}
                 <span className="font-medium text-foreground">
                   {profile.target_department}
                 </span>{" "}
                 · {profile.target_university}
               </>
             ) : (
-              "YKS yolculuğunda bugün de iyi bir gün olsun."
+              t.noTargetFallback
             )}
           </p>
         </header>
 
         <div className="animate-fade-up anim-d1">
-          <SummitStrip totalXp={profile?.total_xp ?? 0} />
+          <SummitStrip totalXp={profile?.total_xp ?? 0} labels={t} />
         </div>
 
-        {/* Streak hero + ikincil istatistikler */}
         <div className="animate-fade-up anim-d2 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           <div className="relative overflow-hidden rounded-2xl border border-orange-500/25 bg-gradient-to-br from-orange-500/15 to-card p-5 shadow-soft sm:col-span-2 lg:col-span-1">
             <div className="flex items-center justify-between">
               <span className="text-sm font-medium text-muted-foreground">
-                Güncel seri
+                {t.currentStreak}
               </span>
               <Flame
                 size={20}
@@ -184,7 +189,7 @@ export default async function DashboardPage() {
               <span className="font-display text-4xl font-bold tabular-nums text-orange-500">
                 {streakCount}
               </span>
-              <span className="text-sm text-muted-foreground">gün</span>
+              <span className="text-sm text-muted-foreground">{t.days}</span>
             </div>
           </div>
 
@@ -200,78 +205,75 @@ export default async function DashboardPage() {
                 </span>
               </div>
               <div className="mt-2 flex items-baseline gap-1.5">
-                <span className="font-display text-2xl font-bold tabular-nums">
-                  {value}
-                </span>
+                <span className="font-display text-2xl font-bold tabular-nums">{value}</span>
                 {unit && <span className="text-xs text-muted-foreground">{unit}</span>}
               </div>
             </div>
           ))}
         </div>
 
-        {/* Hızlı erişim */}
         <section className="animate-fade-up anim-d3">
           <h2 className="mb-2.5 text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground">
-            Hızlı erişim
+            {t.quickAccess}
           </h2>
           <div className="grid grid-cols-3 gap-2.5 sm:grid-cols-4 md:grid-cols-6">
-            <QuickLink href="/hedef" icon={Flag} label="Hedef" />
-            <QuickLink href="/panel" icon={CalendarDays} label="Panel" />
-            <QuickLink href="/konular" icon={ListChecks} label="Konular" />
-            <QuickLink href="/ustalik" icon={GraduationCap} label="Ustalık" />
-            <QuickLink href="/pomodoro" icon={Clock} label="Pomodoro" />
-            <QuickLink href="/coz" icon={CameraIcon} label="Soru çöz" />
-            <QuickLink href="/soru-takibi" icon={Target} label="Soru takibi" />
-            <QuickLink href="/tahta" icon={PencilRuler} label="Çizim tahtası" />
-            <QuickLink href="/notlar" icon={NotebookPen} label="AI notlar" />
-            <QuickLink href="/tarama" icon={ScanLineIcon} label="Tarama" />
-            <QuickLink href="/araclar" icon={Calculator} label="Araçlar" />
-            <QuickLink href="/denemeler" icon={FlaskConical} label="Denemeler" />
-            <QuickLink href="/yanlislar" icon={BookOpen} label="Yanlışlar" />
-            <QuickLink href="/asistan" icon={SparklesIcon} label="Asistan" />
-            <QuickLink href="/rapor" icon={SparklesIcon} label="Haftalık koç" />
-            <QuickLink href="/istatistikler" icon={TrendingUp} label="İstatistik" />
-            <QuickLink href="/basarimlar" icon={Zap} label="Başarımlar" />
-            <QuickLink href="/satranc" icon={Crown} label="Satranç" />
-            <QuickLink href="/yurtdisi" icon={Globe} label="Yurtdışı" />
+            <QuickLink href="/hedef" icon={Flag} label={nav.goal} />
+            <QuickLink href="/panel" icon={CalendarDays} label={nav.panel} />
+            <QuickLink href="/konular" icon={ListChecks} label={nav.topics} />
+            <QuickLink href="/ustalik" icon={GraduationCap} label={nav.mastery} />
+            <QuickLink href="/pomodoro" icon={Clock} label={nav.pomodoro} />
+            <QuickLink href="/coz" icon={CameraIcon} label={nav.solver} />
+            <QuickLink href="/soru-takibi" icon={Target} label={nav.questionLog} />
+            <QuickLink href="/tahta" icon={PencilRuler} label={nav.board} />
+            <QuickLink href="/notlar" icon={NotebookPen} label={nav.notes} />
+            <QuickLink href="/tarama" icon={ScanLineIcon} label={nav.scan} />
+            <QuickLink href="/araclar" icon={Calculator} label={nav.tools} />
+            <QuickLink href="/denemeler" icon={FlaskConical} label={nav.exams} />
+            <QuickLink href="/yanlislar" icon={BookOpen} label={nav.mistakes} />
+            <QuickLink href="/asistan" icon={SparklesIcon} label={nav.assistant} />
+            <QuickLink href="/rapor" icon={SparklesIcon} label={nav.coach} />
+            <QuickLink href="/istatistikler" icon={TrendingUp} label={nav.stats} />
+            <QuickLink href="/basarimlar" icon={Zap} label={nav.achievements} />
+            <QuickLink href="/satranc" icon={Crown} label={nav.chess} />
+            <QuickLink href="/yurtdisi" icon={Globe} label={nav.abroad} />
           </div>
         </section>
 
         <section className="animate-fade-up anim-d4 rounded-2xl border border-border bg-card p-6">
           <div className="flex items-center gap-2 text-sm font-semibold">
             <GraduationCap size={16} className="text-primary" />
-            Profilin
+            {t.profileTitle}
           </div>
           <dl className="mt-4 grid gap-4 text-sm sm:grid-cols-2">
             <div>
-              <dt className="text-xs text-muted-foreground">Sınıf</dt>
-              <dd className="mt-0.5 font-medium">{gradeLabel(profile?.grade)}</dd>
+              <dt className="text-xs text-muted-foreground">{t.profileGrade}</dt>
+              <dd className="mt-0.5 font-medium">{formatGrade(profile?.grade, t)}</dd>
             </div>
             <div>
-              <dt className="text-xs text-muted-foreground">Hedef üniversite</dt>
-              <dd className="mt-0.5 font-medium">{profile?.target_university || "—"}</dd>
+              <dt className="text-xs text-muted-foreground">{t.profileUniversity}</dt>
+              <dd className="mt-0.5 font-medium">{profile?.target_university || t.gradeEmpty}</dd>
             </div>
             <div>
-              <dt className="text-xs text-muted-foreground">Güçlü dersler</dt>
+              <dt className="text-xs text-muted-foreground">{t.profileStrong}</dt>
               <dd className="mt-0.5 font-medium capitalize">
                 {profile?.strong_subjects?.length
                   ? profile.strong_subjects.join(", ")
-                  : "—"}
+                  : t.gradeEmpty}
               </dd>
             </div>
             <div>
-              <dt className="text-xs text-muted-foreground">Geliştirilecek</dt>
+              <dt className="text-xs text-muted-foreground">{t.profileWeak}</dt>
               <dd className="mt-0.5 font-medium capitalize">
                 {profile?.weak_subjects?.length
                   ? profile.weak_subjects.join(", ")
-                  : "—"}
+                  : t.gradeEmpty}
               </dd>
             </div>
           </dl>
         </section>
 
         <div className="animate-fade-up anim-d5">
-          <DailyPlanCard aiReady={health.ok && health.hasChatModel} />
+          <DailyPlanCard aiReady={health.ok && health.hasChatModel} labels={dict.dashWidgets.plan} />
         </div>
       </div>
 
@@ -286,10 +288,8 @@ export default async function DashboardPage() {
             <LanguagesIcon size={18} />
           </span>
           <div className="flex-1">
-            <div className="text-sm font-semibold">Diller</div>
-            <div className="text-xs text-muted-foreground">
-              JP · CN · FR · RU — yan beceri
-            </div>
+            <div className="text-sm font-semibold">{t.languagesTitle}</div>
+            <div className="text-xs text-muted-foreground">{t.languagesSubtitle}</div>
           </div>
           <ArrowRight
             size={16}

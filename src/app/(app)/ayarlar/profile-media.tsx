@@ -5,6 +5,9 @@ import { useRouter } from "next/navigation";
 import { Camera, Loader2, ImagePlus, User as UserIcon, Check } from "lucide-react";
 import { toast } from "sonner";
 import { updateProfileMedia } from "./actions";
+import type { getDict } from "@/lib/i18n";
+
+type Labels = ReturnType<typeof getDict>["profileMedia"];
 
 const MAX_BYTES = 8 * 1024 * 1024;
 const OK_TYPES = ["image/png", "image/jpeg", "image/webp", "image/gif"];
@@ -34,8 +37,6 @@ function fileToScaledDataUrl(
         return;
       }
       ctx.drawImage(img, 0, 0, w, h);
-      // webp dene; desteklenmiyorsa (ör. Safari) png yerine jpeg'e düş —
-      // aksi halde dev bir PNG data URL oluşur.
       let out = canvas.toDataURL("image/webp", quality);
       if (!out.startsWith("data:image/webp")) {
         out = canvas.toDataURL("image/jpeg", quality);
@@ -55,11 +56,13 @@ export function ProfileMedia({
   initialBanner,
   initialBio,
   displayName,
+  labels,
 }: {
   initialAvatar: string | null;
   initialBanner: string | null;
   initialBio: string;
   displayName: string;
+  labels: Labels;
 }) {
   const router = useRouter();
   const [avatar, setAvatar] = useState(initialAvatar);
@@ -72,16 +75,15 @@ export function ProfileMedia({
 
   async function upload(kind: "avatar" | "banner", file: File) {
     if (!OK_TYPES.includes(file.type)) {
-      toast.error("PNG / JPG / WebP / GIF yükle.");
+      toast.error(labels.errInvalidType);
       return;
     }
     if (file.size > MAX_BYTES) {
-      toast.error("Görsel 5 MB'tan küçük olmalı.");
+      toast.error(labels.errTooBig);
       return;
     }
     setBusy(kind);
     try {
-      // Avatar küçük (256px), banner geniş (1280x480) — DB satırı şişmesin.
       const url =
         kind === "avatar"
           ? await fileToScaledDataUrl(file, 256, 256, 0.85)
@@ -93,21 +95,15 @@ export function ProfileMedia({
       if (res?.error) {
         const missingCol =
           /does not exist|could not find .*column|schema cache/i.test(res.error);
-        toast.error(
-          missingCol
-            ? "Profil kolonları eksik. Ayarlar SQL'ini (3 satır) bir kez çalıştır."
-            : res.error,
-        );
+        toast.error(missingCol ? labels.errMissingCol : res.error);
         return;
       }
       if (kind === "avatar") setAvatar(url);
       else setBanner(url);
-      toast.success(
-        kind === "avatar" ? "Profil resmi güncellendi." : "Banner güncellendi.",
-      );
-      router.refresh(); // header'daki avatar anında güncellensin
+      toast.success(kind === "avatar" ? labels.successAvatar : labels.successBanner);
+      router.refresh();
     } catch (e) {
-      toast.error(`Hata: ${String(e)}`);
+      toast.error(labels.errPrefix + String(e));
     } finally {
       setBusy(null);
     }
@@ -126,7 +122,6 @@ export function ProfileMedia({
 
   return (
     <section className="overflow-hidden rounded-2xl border border-border bg-card">
-      {/* Banner */}
       <div className="relative">
         <div
           className="h-32 w-full bg-gradient-to-r from-primary/30 via-primary/10 to-orange-500/20 bg-cover bg-center"
@@ -139,7 +134,7 @@ export function ProfileMedia({
           className="absolute right-3 top-3 inline-flex items-center gap-1.5 rounded-lg bg-black/50 px-3 py-1.5 text-xs font-medium text-white backdrop-blur transition hover:bg-black/60 disabled:opacity-60"
         >
           {busy === "banner" ? <Loader2 size={13} className="animate-spin" /> : <ImagePlus size={13} />}
-          Banner
+          {labels.banner}
         </button>
         <input
           ref={bannerRef}
@@ -149,7 +144,6 @@ export function ProfileMedia({
           onChange={(e) => e.target.files?.[0] && upload("banner", e.target.files[0])}
         />
 
-        {/* Avatar */}
         <div className="absolute -bottom-10 left-6">
           <div className="relative h-20 w-20 overflow-hidden rounded-full border-4 border-card bg-muted">
             {avatar ? (
@@ -165,7 +159,7 @@ export function ProfileMedia({
               onClick={() => avatarRef.current?.click()}
               disabled={busy === "avatar"}
               className="absolute inset-0 flex items-center justify-center bg-black/0 text-white opacity-0 transition hover:bg-black/40 hover:opacity-100"
-              aria-label="Profil resmi değiştir"
+              aria-label={labels.avatarChange}
             >
               {busy === "avatar" ? <Loader2 size={16} className="animate-spin" /> : <Camera size={16} />}
             </button>
@@ -181,15 +175,15 @@ export function ProfileMedia({
       </div>
 
       <div className="px-6 pb-6 pt-12">
-        <div className="text-base font-semibold">{displayName || "Öğrenci"}</div>
+        <div className="text-base font-semibold">{displayName || labels.studentFallback}</div>
         <label className="mt-3 block text-sm">
-          <span className="text-xs text-muted-foreground">Hakkında (bio)</span>
+          <span className="text-xs text-muted-foreground">{labels.bioLabel}</span>
           <textarea
             value={bio}
             onChange={(e) => setBio(e.target.value)}
             maxLength={280}
             rows={2}
-            placeholder="Kendini birkaç kelimeyle anlat…"
+            placeholder={labels.bioPlaceholder}
             className="mt-1 w-full resize-none rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary"
           />
           <span className="text-[11px] text-muted-foreground">{bio.length}/280</span>
@@ -201,7 +195,7 @@ export function ProfileMedia({
           className="mt-2 inline-flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition hover:opacity-90 disabled:opacity-50"
         >
           {busy === "bio" ? <Loader2 size={14} className="animate-spin" /> : bioSaved ? <Check size={14} /> : null}
-          {bioSaved ? "Kaydedildi" : "Bio kaydet"}
+          {bioSaved ? labels.bioSaved : labels.bioSave}
         </button>
       </div>
     </section>

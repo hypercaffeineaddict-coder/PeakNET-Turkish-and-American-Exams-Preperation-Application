@@ -2,6 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { Download, X } from "lucide-react";
+import type { getDict } from "@/lib/i18n";
+
+type Labels = ReturnType<typeof getDict>["installPrompt"];
 
 type BIPEvent = Event & {
   prompt: () => Promise<void>;
@@ -12,7 +15,7 @@ const DISMISS_KEY = "pwa-install-dismissed";
 
 // PWA "uygulamayı yükle" istemi — beforeinstallprompt'ı yakalar, şık bir
 // banner gösterir. Reddedilirse bir daha gösterilmez (localStorage).
-export function InstallPrompt() {
+export function InstallPrompt({ labels }: { labels: Labels }) {
   const [evt, setEvt] = useState<BIPEvent | null>(null);
   const [show, setShow] = useState(false);
 
@@ -21,7 +24,6 @@ export function InstallPrompt() {
     try {
       if (localStorage.getItem(DISMISS_KEY)) return;
     } catch {}
-    // Zaten standalone (yüklü) çalışıyorsa gösterme
     if (window.matchMedia?.("(display-mode: standalone)").matches) return;
 
     const handler = (e: Event) => {
@@ -59,22 +61,20 @@ export function InstallPrompt() {
         <Download size={18} className="text-primary" />
       </div>
       <div className="min-w-0 flex-1">
-        <div className="text-sm font-semibold">PeakNET&apos;i yükle</div>
-        <div className="text-xs text-muted-foreground">
-          Ana ekrana ekle — daha hızlı aç, çevrimdışı çalış.
-        </div>
+        <div className="text-sm font-semibold">{labels.title}</div>
+        <div className="text-xs text-muted-foreground">{labels.subtitle}</div>
       </div>
       <button
         type="button"
         onClick={install}
         className="shrink-0 rounded-lg bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground transition hover:opacity-90"
       >
-        Yükle
+        {labels.install}
       </button>
       <button
         type="button"
         onClick={dismiss}
-        aria-label="Kapat"
+        aria-label={labels.close}
         className="shrink-0 rounded-lg p-1 text-muted-foreground transition hover:bg-muted hover:text-foreground"
       >
         <X size={16} />

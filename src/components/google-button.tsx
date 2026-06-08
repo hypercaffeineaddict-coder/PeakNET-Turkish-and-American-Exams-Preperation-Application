@@ -7,7 +7,15 @@ import { createClient } from "@/lib/supabase/client";
 
 const SUPABASE_URL = (process.env.NEXT_PUBLIC_SUPABASE_URL ?? "").trim();
 
-export function GoogleButton({ label = "Google ile devam et" }: { label?: string }) {
+export function GoogleButton({
+  label = "Google ile devam et",
+  errorNotEnabled = "Google ile giriş şu an aktif değil. E-posta ile giriş yapabilirsin.",
+  errorPrefix = "Google girişi başlatılamadı: ",
+}: {
+  label?: string;
+  errorNotEnabled?: string;
+  errorPrefix?: string;
+}) {
   const [busy, setBusy] = useState(false);
   // null = bilinmiyor, true = göster, false = provider etkin değil → gizle
   const [enabled, setEnabled] = useState<boolean | null>(null);
@@ -44,11 +52,7 @@ export function GoogleButton({ label = "Google ile devam et" }: { label?: string
       if (error) {
         setBusy(false);
         const notEnabled = /not enabled|unsupported provider/i.test(error.message);
-        toast.error(
-          notEnabled
-            ? "Google ile giriş şu an aktif değil. E-posta ile giriş yapabilirsin."
-            : `Google girişi başlatılamadı: ${error.message}`,
-        );
+        toast.error(notEnabled ? errorNotEnabled : `${errorPrefix}${error.message}`);
       }
       // başarılıysa Google'a yönleniyoruz; busy kalsın
     } catch {

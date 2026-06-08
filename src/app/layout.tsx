@@ -6,6 +6,8 @@ import { Toaster } from "sonner";
 import { ThemeProvider } from "@/components/theme-provider";
 import { SwRegister } from "@/components/sw-register";
 import { OnlineStatus } from "@/components/online-status";
+import { localeDir } from "@/lib/i18n";
+import { getLocaleFromCookies } from "@/lib/i18n-server";
 import "./globals.css";
 
 const display = Space_Grotesk({
@@ -41,10 +43,13 @@ export const viewport: Viewport = {
   viewportFit: "cover",
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const locale = await getLocaleFromCookies();
+
   return (
     <html
-      lang="tr"
+      lang={locale}
+      dir={localeDir(locale)}
       suppressHydrationWarning
       className={`${GeistSans.variable} ${GeistMono.variable} ${display.variable} h-full antialiased`}
     >

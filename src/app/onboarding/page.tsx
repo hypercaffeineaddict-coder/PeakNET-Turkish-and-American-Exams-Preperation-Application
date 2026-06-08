@@ -14,22 +14,8 @@ import { MotivationCard } from "@/components/motivation-card";
 import { TrackSubjects } from "./track-subjects";
 import { universities } from "@/data/universities";
 import { departments } from "@/data/departments";
-
-const grades = [
-  { value: 9, label: "9. sınıf" },
-  { value: 10, label: "10. sınıf" },
-  { value: 11, label: "11. sınıf" },
-  { value: 12, label: "12. sınıf" },
-  { value: 13, label: "Mezun" },
-];
-
-const goals = [
-  { value: 30, label: "30 dk" },
-  { value: 60, label: "1 sa" },
-  { value: 120, label: "2 sa" },
-  { value: 180, label: "3 sa" },
-  { value: 300, label: "5 sa" },
-];
+import { getDict } from "@/lib/i18n";
+import { getLocaleFromCookies } from "@/lib/i18n-server";
 
 export default async function OnboardingPage({
   searchParams,
@@ -37,6 +23,8 @@ export default async function OnboardingPage({
   searchParams: Promise<{ error?: string }>;
 }) {
   const { error } = await searchParams;
+  const locale = await getLocaleFromCookies();
+  const t = getDict(locale).onboarding;
   const supabase = await createClient();
   const {
     data: { user },
@@ -51,6 +39,21 @@ export default async function OnboardingPage({
 
   if (profile?.onboarding_completed_at) redirect("/dashboard");
 
+  const grades = [
+    { value: 9, label: t.gradeLabels.g9 },
+    { value: 10, label: t.gradeLabels.g10 },
+    { value: 11, label: t.gradeLabels.g11 },
+    { value: 12, label: t.gradeLabels.g12 },
+    { value: 13, label: t.gradeLabels.g13 },
+  ];
+  const goals = [
+    { value: 30, label: t.goalLabels.m30 },
+    { value: 60, label: t.goalLabels.m60 },
+    { value: 120, label: t.goalLabels.m120 },
+    { value: 180, label: t.goalLabels.m180 },
+    { value: 300, label: t.goalLabels.m300 },
+  ];
+
   return (
     <div className="relative min-h-screen">
       <div className="absolute right-4 top-4">
@@ -62,15 +65,12 @@ export default async function OnboardingPage({
           <div className="mb-8">
             <span className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1 text-xs text-muted-foreground">
               <Sparkles size={12} className="text-primary" />
-              Hoş geldin
+              {t.pill}
             </span>
             <h1 className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">
-              Önce seni biraz tanıyalım
+              {t.title}
             </h1>
-            <p className="mt-2 text-sm text-muted-foreground">
-              Bu bilgiler programını ve önerilen konuları şekillendirecek.
-              Sonradan ayarlardan değiştirebilirsin.
-            </p>
+            <p className="mt-2 text-sm text-muted-foreground">{t.subtitle}</p>
           </div>
 
           <form action={saveOnboarding} className="space-y-6">
@@ -78,14 +78,14 @@ export default async function OnboardingPage({
             <section className="rounded-2xl border border-border bg-card p-6">
               <header className="mb-4 flex items-center gap-2 text-sm font-semibold">
                 <User size={16} className="text-primary" />
-                Sana nasıl hitap edelim?
+                {t.sectionName}
               </header>
               <input
                 name="display_name"
                 type="text"
                 required
                 defaultValue={profile?.display_name ?? ""}
-                placeholder="Adın"
+                placeholder={t.namePlaceholder}
                 className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/30"
               />
             </section>
@@ -94,7 +94,7 @@ export default async function OnboardingPage({
             <section className="rounded-2xl border border-border bg-card p-6">
               <header className="mb-4 flex items-center gap-2 text-sm font-semibold">
                 <GraduationCap size={16} className="text-primary" />
-                Hangi sınıftasın?
+                {t.sectionGrade}
               </header>
               <div className="flex flex-wrap gap-2">
                 {grades.map((g) => (
@@ -125,12 +125,10 @@ export default async function OnboardingPage({
                 <div className="flex-1">
                   <div className="flex items-center gap-2 text-sm font-medium">
                     <Trophy size={14} className="text-orange-500" />
-                    Sınava hazırlanıyorum
+                    {t.examStudentLabel}
                   </div>
                   <p className="mt-1 text-xs text-muted-foreground">
-                    İşaretlersen sınav-odaklı program: yoğun tekrar, deneme analizi,
-                    konu önceliği geriye doğru sayım. İşaretlemezsen sınıf
-                    müfredatına göre normal program.
+                    {t.examStudentDesc}
                   </p>
                 </div>
               </label>
@@ -141,22 +139,29 @@ export default async function OnboardingPage({
               defaultTrack={profile?.high_school_track ?? null}
               defaultStrong={profile?.strong_subjects ?? []}
               defaultWeak={profile?.weak_subjects ?? []}
+              labels={{
+                sectionTrack: t.sectionTrack,
+                sectionSubjects: t.sectionSubjects,
+                strongHeader: t.strongHeader,
+                weakHeader: t.weakHeader,
+                tracks: t.tracks,
+              }}
             />
 
             {/* Hedef + üniversite autocomplete */}
             <section className="rounded-2xl border border-border bg-card p-6">
               <header className="mb-4 flex items-center gap-2 text-sm font-semibold">
                 <Target size={16} className="text-primary" />
-                Hedefin
+                {t.sectionGoal}
               </header>
               <div className="grid gap-3 sm:grid-cols-2">
                 <label className="text-sm">
-                  <span className="text-muted-foreground">Hedef üniversite</span>
+                  <span className="text-muted-foreground">{t.goalUni}</span>
                   <input
                     name="target_university"
                     type="text"
                     list="university-list"
-                    placeholder="yazmaya başla, listeden seç"
+                    placeholder={t.goalPlaceholder}
                     defaultValue={profile?.target_university ?? ""}
                     className="mt-1 w-full rounded-xl border border-border bg-background px-3 py-2 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/30"
                   />
@@ -167,12 +172,12 @@ export default async function OnboardingPage({
                   </datalist>
                 </label>
                 <label className="text-sm">
-                  <span className="text-muted-foreground">Hedef bölüm</span>
+                  <span className="text-muted-foreground">{t.goalDept}</span>
                   <input
                     name="target_department"
                     type="text"
                     list="department-list"
-                    placeholder="yazmaya başla, listeden seç"
+                    placeholder={t.goalPlaceholder}
                     defaultValue={profile?.target_department ?? ""}
                     className="mt-1 w-full rounded-xl border border-border bg-background px-3 py-2 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/30"
                   />
@@ -189,7 +194,7 @@ export default async function OnboardingPage({
             <section className="rounded-2xl border border-border bg-card p-6">
               <header className="mb-4 flex items-center gap-2 text-sm font-semibold">
                 <Clock size={16} className="text-primary" />
-                Günlük çalışma hedefin
+                {t.sectionDailyGoal}
               </header>
               <div className="flex flex-wrap gap-2">
                 {goals.map((g) => (
@@ -209,9 +214,7 @@ export default async function OnboardingPage({
                   </label>
                 ))}
               </div>
-              <p className="mt-3 text-xs text-muted-foreground">
-                Streak ateşini söndürmemek için günde en az 25 dk yeterli.
-              </p>
+              <p className="mt-3 text-xs text-muted-foreground">{t.streakHint}</p>
             </section>
 
             {error && (
@@ -225,7 +228,7 @@ export default async function OnboardingPage({
                 type="submit"
                 className="rounded-xl bg-primary px-6 py-2.5 text-sm font-semibold text-primary-foreground shadow-soft transition hover:opacity-90 active:scale-[0.99]"
               >
-                Programımı oluştur →
+                {t.submit}
               </button>
             </div>
           </form>
@@ -234,13 +237,11 @@ export default async function OnboardingPage({
         <aside className="space-y-4 lg:sticky lg:top-6 lg:self-start">
           <MotivationCard />
           <div className="rounded-2xl border border-border bg-card p-5">
-            <h3 className="text-sm font-semibold">Neden bu sorular?</h3>
+            <h3 className="text-sm font-semibold">{t.asideTitle}</h3>
             <ul className="mt-3 space-y-2 text-xs text-muted-foreground">
-              <li>• Sınıf + sınav öğrencisi → programın yoğunluğu</li>
-              <li>• Lise bölümü → hangi derslere ne kadar ağırlık verileceği</li>
-              <li>• Hedef bölüm → dashboard'da motivasyon olarak görünür</li>
-              <li>• Günlük hedef → streak ve günlük görev</li>
-              <li>• Zayıf dersler → üstte gözükür, daha sık tekrar önerilir</li>
+              {t.asideItems.map((item) => (
+                <li key={item}>{item}</li>
+              ))}
             </ul>
           </div>
         </aside>

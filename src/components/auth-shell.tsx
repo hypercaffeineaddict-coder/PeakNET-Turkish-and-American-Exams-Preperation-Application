@@ -2,20 +2,21 @@ import Link from "next/link";
 import { Flame, Sparkles, TrendingUp } from "lucide-react";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Logo } from "@/components/logo";
+import type { getDict } from "@/lib/i18n";
 
-const points = [
-  { icon: Sparkles, text: "AI öğretmen, soru çözücü ve deneme simülasyonu" },
-  { icon: TrendingUp, text: "Ustalık haritası: zayıf konunu gör, oraya yüklen" },
-  { icon: Flame, text: "Streak, XP ve günlük görevlerle her gün devam et" },
-];
+type AuthLabels = ReturnType<typeof getDict>["auth"];
+
+const BRAND_ICONS = [Sparkles, TrendingUp, Flame];
 
 export function AuthShell({
   title,
   subtitle,
+  labels,
   children,
 }: {
   title: string;
   subtitle: string;
+  labels: AuthLabels;
   children: React.ReactNode;
 }) {
   return (
@@ -36,25 +37,26 @@ export function AuthShell({
 
         <div className="relative space-y-8">
           <h2 className="font-display text-4xl font-bold leading-[1.1] tracking-tight">
-            Zirveye giden yol,
+            {labels.brandTagline1}
             <br />
-            her gün bir adım.
+            {labels.brandTagline2}
           </h2>
           <ul className="space-y-4">
-            {points.map(({ icon: Icon, text }) => (
-              <li key={text} className="flex items-start gap-3 text-sm text-muted-foreground">
-                <span className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                  <Icon size={15} />
-                </span>
-                <span className="pt-1">{text}</span>
-              </li>
-            ))}
+            {labels.brandPoints.map((text, i) => {
+              const Icon = BRAND_ICONS[i] ?? Sparkles;
+              return (
+                <li key={text} className="flex items-start gap-3 text-sm text-muted-foreground">
+                  <span className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                    <Icon size={15} />
+                  </span>
+                  <span className="pt-1">{text}</span>
+                </li>
+              );
+            })}
           </ul>
         </div>
 
-        <p className="relative text-xs text-muted-foreground">
-          Bilimle, sabırla, disiplinle. TYT · AYT · YDT.
-        </p>
+        <p className="relative text-xs text-muted-foreground">{labels.brandFooter}</p>
       </aside>
 
       {/* Form panel */}

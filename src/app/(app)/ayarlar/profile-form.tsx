@@ -16,21 +16,11 @@ import { updateProfile } from "./actions";
 import { universities } from "@/data/universities";
 import { departments } from "@/data/departments";
 import { selfSubjects, EXTRA_EXAMS } from "@/data/exam-subjects";
+import type { getDict } from "@/lib/i18n";
 
-const grades = [
-  { value: 9, label: "9. sınıf" },
-  { value: 10, label: "10. sınıf" },
-  { value: 11, label: "11. sınıf" },
-  { value: 12, label: "12. sınıf" },
-  { value: 13, label: "Mezun" },
-];
-
-const tracks = [
-  { value: "MF", label: "Sayısal (MF)" },
-  { value: "TM", label: "Eşit Ağırlık (TM)" },
-  { value: "Sozel", label: "Sözel" },
-  { value: "Dil", label: "Dil" },
-];
+type ProfileFormLabels = ReturnType<typeof getDict>["profileForm"];
+type GradeOption = { value: number; label: string };
+type TrackOption = { value: string; label: string };
 
 const goals = [30, 60, 120, 180, 300];
 
@@ -50,9 +40,15 @@ type Profile = {
 export function ProfileForm({
   profile,
   email,
+  labels,
+  grades,
+  tracks,
 }: {
   profile: Profile;
   email: string;
+  labels: ProfileFormLabels;
+  grades: GradeOption[];
+  tracks: TrackOption[];
 }) {
   const [pending, startTransition] = useTransition();
   const [savedAt, setSavedAt] = useState<number | null>(null);
@@ -71,7 +67,7 @@ export function ProfileForm({
             toast.error(res.error);
           } else {
             setSavedAt(Date.now());
-            toast.success("Profil güncellendi");
+            toast.success(labels.toastSuccess);
           }
         })
       }
@@ -80,12 +76,15 @@ export function ProfileForm({
       <section className="rounded-2xl border border-border bg-card p-6">
         <h2 className="flex items-center gap-2 text-sm font-semibold">
           <User size={16} className="text-primary" />
-          Profil
+          {labels.title}
         </h2>
-        <p className="mt-1 text-xs text-muted-foreground">E-posta: {email}</p>
+        <p className="mt-1 text-xs text-muted-foreground">
+          {labels.emailPrefix}
+          {email}
+        </p>
         <div className="mt-4 space-y-3">
           <label className="block text-sm">
-            <span className="text-muted-foreground">İsim</span>
+            <span className="text-muted-foreground">{labels.nameLabel}</span>
             <input
               name="display_name"
               required
@@ -99,10 +98,10 @@ export function ProfileForm({
       <section className="rounded-2xl border border-border bg-card p-6 space-y-4">
         <h2 className="flex items-center gap-2 text-sm font-semibold">
           <GraduationCap size={16} className="text-primary" />
-          Sınıf & lise bölümü
+          {labels.sectionGradeTrack}
         </h2>
         <div>
-          <span className="text-xs text-muted-foreground">Sınıf</span>
+          <span className="text-xs text-muted-foreground">{labels.gradeLabel}</span>
           <div className="mt-1 flex flex-wrap gap-2">
             {grades.map((g) => (
               <label
@@ -129,14 +128,14 @@ export function ProfileForm({
             className="mt-0.5 accent-orange-500"
           />
           <div className="text-sm">
-            <div className="font-medium">Sınava hazırlanıyorum</div>
+            <div className="font-medium">{labels.examStudentLabel}</div>
             <div className="text-xs text-muted-foreground">
-              İşaretlersen sınav-odaklı program devrede.
+              {labels.examStudentShort}
             </div>
           </div>
         </label>
         <div>
-          <span className="text-xs text-muted-foreground">Lise bölümü</span>
+          <span className="text-xs text-muted-foreground">{labels.trackLabel}</span>
           <div className="mt-1 grid gap-2 sm:grid-cols-2">
             {tracks.map((t) => (
               <label
@@ -161,14 +160,9 @@ export function ProfileForm({
       <section className="rounded-2xl border border-border bg-card p-6 space-y-3">
         <h2 className="flex items-center gap-2 text-sm font-semibold">
           <Award size={16} className="text-primary" />
-          Ekstra sınavlar
+          {labels.extraExamsTitle}
         </h2>
-        <p className="text-xs text-muted-foreground">
-          Yurtdışı sınavları zaten sol menüdeki <strong>Yurtdışı</strong>{" "}
-          sekmesinde her zaman açık. Bunu işaretlersen seçtiğin aile{" "}
-          <strong>Konular ve Ustalık</strong> sekmelerine de eklenir (daha derin
-          entegrasyon). YKS akışına (panel, program, denemeler) yine karışmaz.
-        </p>
+        <p className="text-xs text-muted-foreground">{labels.extraExamsDesc}</p>
         <div className="flex flex-col gap-2">
           {EXTRA_EXAMS.map((e) => (
             <label
@@ -194,11 +188,11 @@ export function ProfileForm({
       <section className="rounded-2xl border border-border bg-card p-6 space-y-3">
         <h2 className="flex items-center gap-2 text-sm font-semibold">
           <Target size={16} className="text-primary" />
-          Hedef
+          {labels.targetTitle}
         </h2>
         <div className="grid gap-3 sm:grid-cols-2">
           <label className="text-sm">
-            <span className="text-muted-foreground">Üniversite</span>
+            <span className="text-muted-foreground">{labels.universityLabel}</span>
             <input
               name="target_university"
               list="university-list"
@@ -212,11 +206,11 @@ export function ProfileForm({
             </datalist>
           </label>
           <label className="text-sm">
-            <span className="text-muted-foreground">Bölüm</span>
+            <span className="text-muted-foreground">{labels.departmentLabel}</span>
             <input
               name="target_department"
               list="department-list"
-              placeholder="yazmaya başla, listeden seç"
+              placeholder={labels.departmentPlaceholder}
               defaultValue={profile.target_department}
               className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 outline-none focus:border-primary"
             />
@@ -232,7 +226,7 @@ export function ProfileForm({
       <section className="rounded-2xl border border-border bg-card p-6 space-y-3">
         <h2 className="flex items-center gap-2 text-sm font-semibold">
           <Clock size={16} className="text-primary" />
-          Günlük çalışma hedefi
+          {labels.dailyGoalTitle}
         </h2>
         <div className="flex flex-wrap gap-2">
           {goals.map((g) => (
@@ -247,7 +241,7 @@ export function ProfileForm({
                 className="hidden"
                 defaultChecked={profile.daily_goal_minutes === g}
               />
-              {g} dk
+              {g} {labels.minutesUnit}
             </label>
           ))}
         </div>
@@ -256,12 +250,12 @@ export function ProfileForm({
       <section className="rounded-2xl border border-border bg-card p-6 space-y-4">
         <h2 className="flex items-center gap-2 text-sm font-semibold">
           <Sparkles size={16} className="text-primary" />
-          Dersler
+          {labels.subjectsTitle}
         </h2>
         <div className="grid gap-4 sm:grid-cols-2">
           <div>
             <div className="mb-2 text-xs font-medium uppercase tracking-wider text-emerald-500">
-              Güçlü olduğun
+              {labels.strongHeader}
             </div>
             <div className="flex flex-wrap gap-2">
               {subjects.map((s) => (
@@ -283,7 +277,7 @@ export function ProfileForm({
           </div>
           <div>
             <div className="mb-2 text-xs font-medium uppercase tracking-wider text-rose-500">
-              Geliştirmen gereken
+              {labels.weakHeader}
             </div>
             <div className="flex flex-wrap gap-2">
               {subjects.map((s) => (
@@ -315,7 +309,7 @@ export function ProfileForm({
       <div className="flex items-center justify-end gap-3">
         {savedAt && !pending && (
           <span className="inline-flex items-center gap-1 text-sm text-emerald-500">
-            <Check size={14} /> Kaydedildi
+            <Check size={14} /> {labels.saved}
           </span>
         )}
         <button
@@ -324,7 +318,7 @@ export function ProfileForm({
           className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-6 py-2 text-sm font-medium text-primary-foreground transition hover:opacity-90 disabled:opacity-60"
         >
           {pending && <Loader2 size={14} className="animate-spin" />}
-          Profili kaydet
+          {labels.submit}
         </button>
       </div>
     </form>

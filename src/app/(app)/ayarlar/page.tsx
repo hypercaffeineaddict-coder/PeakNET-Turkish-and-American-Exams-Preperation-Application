@@ -7,6 +7,8 @@ import { DeleteAccountForm } from "./delete-form";
 import { OfflineSettings } from "./offline-settings";
 import { ProfileMedia } from "./profile-media";
 import { NotificationSettings } from "@/components/notification-settings";
+import { getDict } from "@/lib/i18n";
+import { getLocaleFromCookies } from "@/lib/i18n-server";
 
 export default async function AyarlarPage({
   searchParams,
@@ -14,6 +16,9 @@ export default async function AyarlarPage({
   searchParams: Promise<{ danger_error?: string }>;
 }) {
   const { danger_error } = await searchParams;
+  const locale = await getLocaleFromCookies();
+  const dict = getDict(locale);
+  const t = dict.settings;
   const supabase = await createClient();
   const {
     data: { user },
@@ -31,11 +36,9 @@ export default async function AyarlarPage({
       <header>
         <h1 className="flex items-center gap-2 text-3xl font-semibold tracking-tight">
           <Settings className="text-primary" size={26} />
-          Ayarlar
+          {t.title}
         </h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Profil bilgilerini güncelle, şifreni değiştir veya hesabını sil.
-        </p>
+        <p className="mt-1 text-sm text-muted-foreground">{t.subtitle}</p>
       </header>
 
       <ProfileMedia
@@ -43,6 +46,7 @@ export default async function AyarlarPage({
         initialBanner={profile?.banner_url ?? null}
         initialBio={profile?.bio ?? ""}
         displayName={profile?.display_name ?? ""}
+        labels={dict.profileMedia}
       />
 
       <ProfileForm
@@ -59,15 +63,33 @@ export default async function AyarlarPage({
           extra_exams: profile?.extra_exams ?? [],
         }}
         email={user.email ?? ""}
+        labels={dict.profileForm}
+        grades={[
+          { value: 9, label: dict.onboarding.gradeLabels.g9 },
+          { value: 10, label: dict.onboarding.gradeLabels.g10 },
+          { value: 11, label: dict.onboarding.gradeLabels.g11 },
+          { value: 12, label: dict.onboarding.gradeLabels.g12 },
+          { value: 13, label: dict.onboarding.gradeLabels.g13 },
+        ]}
+        tracks={[
+          { value: "MF", label: dict.onboarding.tracks.MF.label },
+          { value: "TM", label: dict.onboarding.tracks.TM.label },
+          { value: "Sozel", label: dict.onboarding.tracks.Sozel.label },
+          { value: "Dil", label: dict.onboarding.tracks.Dil.label },
+        ]}
       />
 
-      <PasswordForm />
+      <PasswordForm labels={dict.passwordForm} />
 
-      <NotificationSettings />
+      <NotificationSettings labels={dict.notifications} />
 
-      <OfflineSettings />
+      <OfflineSettings labels={dict.offlineSettings} />
 
-      <DeleteAccountForm email={user.email ?? ""} initialError={danger_error} />
+      <DeleteAccountForm
+        email={user.email ?? ""}
+        initialError={danger_error}
+        labels={dict.deleteForm}
+      />
     </div>
   );
 }

@@ -37,72 +37,79 @@ import {
 } from "lucide-react";
 import { FocusPlayer } from "@/components/focus-player";
 import { Logo } from "@/components/logo";
+import type { getDict } from "@/lib/i18n";
 
 type NavItem = { href: string; label: string; icon: React.ElementType };
+type ShellLabels = ReturnType<typeof getDict>["shell"];
 
-const navGroups: { title: string | null; items: NavItem[] }[] = [
-  {
-    title: null,
-    items: [{ href: "/dashboard", label: "Genel bakış", icon: LayoutDashboard }],
-  },
-  {
-    title: "Çalışma",
-    items: [
-      { href: "/hedef", label: "Hedef", icon: Flag },
-      { href: "/panel", label: "Panel", icon: CalendarDays },
-      { href: "/konular", label: "Konular", icon: ListChecks },
-      { href: "/ustalik", label: "Ustalık", icon: GraduationCap },
-      { href: "/program", label: "Program", icon: ClipboardList },
-      { href: "/pomodoro", label: "Pomodoro", icon: Clock },
-    ],
-  },
-  {
-    title: "Ölç & pratik",
-    items: [
-      { href: "/soru-takibi", label: "Soru takibi", icon: Target },
-      { href: "/denemeler", label: "Denemeler", icon: FlaskConical },
-      { href: "/deneme-sim", label: "Deneme sim.", icon: Timer },
-      { href: "/tarama", label: "Tarama testi", icon: ScanLine },
-      { href: "/coz", label: "Soru çözücü", icon: Camera },
-      { href: "/tahta", label: "Çizim tahtası", icon: PencilRuler },
-      { href: "/notlar", label: "AI notlar", icon: NotebookPen },
-      { href: "/soru-uret", label: "Soru üret", icon: Wand2 },
-    ],
-  },
-  {
-    title: "Tekrar",
-    items: [
-      { href: "/yanlislar", label: "Yanlış defteri", icon: BookOpen },
-      { href: "/kartlar", label: "Tekrar kartları", icon: Layers },
-    ],
-  },
-  {
-    title: "İlerleme",
-    items: [
-      { href: "/rapor", label: "Haftalık koç", icon: Sparkles },
-      { href: "/istatistikler", label: "İstatistikler", icon: BarChart3 },
-      { href: "/basarimlar", label: "Başarımlar", icon: Trophy },
-      { href: "/araclar", label: "YKS araçları", icon: Calculator },
-      { href: "/asistan", label: "AI asistan", icon: Sparkles },
-    ],
-  },
-  {
-    title: "Ekstra",
-    items: [
-      { href: "/diller", label: "Diller", icon: Languages },
-      { href: "/yurtdisi", label: "Yurtdışı", icon: Globe },
-      { href: "/muzik", label: "Müzik", icon: Music },
-      { href: "/satranc", label: "Satranç", icon: Crown },
-      { href: "/paylas", label: "Paylaş", icon: Share2 },
-      { href: "/ayarlar", label: "Ayarlar", icon: Settings },
-    ],
-  },
-];
+function navGroups(labels: ShellLabels): { title: string | null; items: NavItem[] }[] {
+  const n = labels.nav;
+  return [
+    {
+      title: null,
+      items: [{ href: "/dashboard", label: n.dashboard, icon: LayoutDashboard }],
+    },
+    {
+      title: labels.groups.study,
+      items: [
+        { href: "/hedef", label: n.goal, icon: Flag },
+        { href: "/panel", label: n.panel, icon: CalendarDays },
+        { href: "/konular", label: n.topics, icon: ListChecks },
+        { href: "/ustalik", label: n.mastery, icon: GraduationCap },
+        { href: "/program", label: n.program, icon: ClipboardList },
+        { href: "/pomodoro", label: n.pomodoro, icon: Clock },
+      ],
+    },
+    {
+      title: labels.groups.practice,
+      items: [
+        { href: "/soru-takibi", label: n.questionLog, icon: Target },
+        { href: "/denemeler", label: n.exams, icon: FlaskConical },
+        { href: "/deneme-sim", label: n.mockSim, icon: Timer },
+        { href: "/tarama", label: n.scan, icon: ScanLine },
+        { href: "/coz", label: n.solver, icon: Camera },
+        { href: "/tahta", label: n.board, icon: PencilRuler },
+        { href: "/notlar", label: n.notes, icon: NotebookPen },
+        { href: "/soru-uret", label: n.generate, icon: Wand2 },
+      ],
+    },
+    {
+      title: labels.groups.review,
+      items: [
+        { href: "/yanlislar", label: n.mistakes, icon: BookOpen },
+        { href: "/kartlar", label: n.cards, icon: Layers },
+      ],
+    },
+    {
+      title: labels.groups.progress,
+      items: [
+        { href: "/rapor", label: n.coach, icon: Sparkles },
+        { href: "/istatistikler", label: n.stats, icon: BarChart3 },
+        { href: "/basarimlar", label: n.achievements, icon: Trophy },
+        { href: "/araclar", label: n.tools, icon: Calculator },
+        { href: "/asistan", label: n.assistant, icon: Sparkles },
+      ],
+    },
+    {
+      title: labels.groups.extra,
+      items: [
+        { href: "/diller", label: n.languages, icon: Languages },
+        { href: "/yurtdisi", label: n.abroad, icon: Globe },
+        { href: "/muzik", label: n.music, icon: Music },
+        { href: "/satranc", label: n.chess, icon: Crown },
+        { href: "/paylas", label: n.share, icon: Share2 },
+        { href: "/ayarlar", label: n.settings, icon: Settings },
+      ],
+    },
+  ];
+}
 
 export function Sidebar({
   logoutAction,
+  labels,
 }: {
   logoutAction: (formData: FormData) => Promise<void>;
+  labels: ShellLabels;
 }) {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
@@ -129,7 +136,7 @@ export function Sidebar({
         type="button"
         onClick={() => setOpen(true)}
         className="fixed left-3 top-3 z-30 inline-flex h-9 w-9 items-center justify-center rounded-xl border border-border bg-card/90 text-foreground shadow-soft backdrop-blur transition hover:border-primary/40 lg:hidden"
-        aria-label="Menüyü aç"
+        aria-label={labels.openMenu}
       >
         <Menu size={18} />
       </button>
@@ -160,14 +167,14 @@ export function Sidebar({
             type="button"
             onClick={() => setOpen(false)}
             className="rounded-lg p-1 text-muted-foreground transition hover:bg-muted hover:text-foreground lg:hidden"
-            aria-label="Menüyü kapat"
+            aria-label={labels.closeMenu}
           >
             <X size={16} />
           </button>
         </div>
 
         <nav className="flex flex-1 flex-col gap-5 overflow-y-auto px-3 pb-2">
-          {navGroups.map((group, gi) => (
+          {navGroups(labels).map((group, gi) => (
             <div key={gi} className="flex flex-col gap-0.5">
               {group.title && (
                 <div className="px-3 pb-1.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground/70">
@@ -229,7 +236,7 @@ export function Sidebar({
             className="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-sm text-muted-foreground transition hover:bg-rose-500/10 hover:text-rose-500"
           >
             <LogOut size={17} />
-            Çıkış
+            {labels.logout}
           </button>
         </form>
       </aside>

@@ -9,28 +9,39 @@ import {
   FlaskConical,
   GraduationCap,
 } from "lucide-react";
+import type { getDict } from "@/lib/i18n";
 
-const items = [
-  { href: "/dashboard", label: "Ana", icon: LayoutDashboard },
-  { href: "/konular", label: "Konular", icon: ListChecks },
-  { href: "/pomodoro", label: "Odak", icon: Clock },
-  { href: "/denemeler", label: "Deneme", icon: FlaskConical },
-  { href: "/ustalik", label: "Ustalık", icon: GraduationCap },
-];
+type NavLabels = ReturnType<typeof getDict>["shell"]["nav"];
+
+function items(labels: NavLabels) {
+  return [
+    { href: "/dashboard", label: labels.home, icon: LayoutDashboard },
+    { href: "/konular", label: labels.topics, icon: ListChecks },
+    { href: "/pomodoro", label: labels.focus, icon: Clock },
+    { href: "/denemeler", label: labels.exam, icon: FlaskConical },
+    { href: "/ustalik", label: labels.mastery, icon: GraduationCap },
+  ];
+}
 
 // Mobil/tablet için alt sekme çubuğu — native uygulama hissi.
 // Tam menü için kenar çubuğu (hamburger) hâlâ açılır.
-export function MobileNav() {
+export function MobileNav({
+  labels,
+  bottomNavLabel,
+}: {
+  labels: NavLabels;
+  bottomNavLabel: string;
+}) {
   const pathname = usePathname();
 
   return (
     <nav
       className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-card/85 backdrop-blur-xl lg:hidden"
       style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
-      aria-label="Alt gezinme"
+      aria-label={bottomNavLabel}
     >
       <div className="grid grid-cols-5">
-        {items.map(({ href, label, icon: Icon }) => {
+        {items(labels).map(({ href, label, icon: Icon }) => {
           const isActive =
             pathname === href || pathname.startsWith(href + "/");
           return (

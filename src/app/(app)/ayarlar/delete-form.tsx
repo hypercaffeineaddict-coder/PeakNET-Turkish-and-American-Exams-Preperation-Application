@@ -3,13 +3,18 @@
 import { useState } from "react";
 import { Trash2, AlertTriangle } from "lucide-react";
 import { deleteAccount } from "./actions";
+import type { getDict } from "@/lib/i18n";
+
+type Labels = ReturnType<typeof getDict>["deleteForm"];
 
 export function DeleteAccountForm({
   email,
   initialError,
+  labels,
 }: {
   email: string;
   initialError?: string;
+  labels: Labels;
 }) {
   const Icon = AlertTriangle;
   const [confirmInput, setConfirmInput] = useState("");
@@ -22,21 +27,18 @@ export function DeleteAccountForm({
     >
       <h2 className="flex items-center gap-2 text-sm font-semibold text-rose-500">
         <Icon size={16} />
-        Tehlikeli bölge
+        {labels.title}
       </h2>
-      <p className="text-xs text-muted-foreground">
-        Hesabını silersen profil, streak, çalışma seansları, denemeler, yanlışlar
-        ve yüklediğin tüm dosyalar geri dönülmez şekilde silinir.
-      </p>
+      <p className="text-xs text-muted-foreground">{labels.warning}</p>
       <p className="text-xs">
-        Onaylamak için e-postanı yaz:{" "}
+        {labels.confirmPrompt}{" "}
         <span className="font-mono text-foreground">{email}</span>
       </p>
       <input
         name="confirm"
         value={confirmInput}
         onChange={(e) => setConfirmInput(e.target.value)}
-        placeholder="E-postanı yaz"
+        placeholder={labels.placeholder}
         className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-rose-500"
       />
       {initialError && (
@@ -51,7 +53,7 @@ export function DeleteAccountForm({
           className="inline-flex items-center gap-1.5 rounded-lg border border-rose-500/40 bg-rose-500/10 px-4 py-2 text-sm font-medium text-rose-500 transition hover:bg-rose-500/20 disabled:opacity-40"
         >
           <Trash2 size={14} />
-          Hesabımı sil
+          {labels.submit}
         </button>
       </div>
     </form>

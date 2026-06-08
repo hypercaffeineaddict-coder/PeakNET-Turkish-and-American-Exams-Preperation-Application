@@ -2,8 +2,17 @@
 
 import { useState } from "react";
 import { Sparkles, Loader2, RefreshCw } from "lucide-react";
+import type { getDict } from "@/lib/i18n";
 
-export function DailyPlanCard({ aiReady }: { aiReady: boolean }) {
+type PlanLabels = ReturnType<typeof getDict>["dashWidgets"]["plan"];
+
+export function DailyPlanCard({
+  aiReady,
+  labels,
+}: {
+  aiReady: boolean;
+  labels: PlanLabels;
+}) {
   const [plan, setPlan] = useState<string>("");
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -19,19 +28,8 @@ export function DailyPlanCard({ aiReady }: { aiReady: boolean }) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           messages: [
-            {
-              role: "system",
-              content: `Sen bir Türk lise öğrencisinin YKS koçusun. Aşağıdaki bağlamda kişisel günlük çalışma önerisi ver:
-- 4-6 cümle. Konuşma diliyle, dostça ama net.
-- Sabah/öğle/akşam 3 mini-blok öner (her biri 1 cümle).
-- Hangi konuda Pomodoro önereceğini bir konu adı vererek söyle.
-- Bir küçük motive edici cümleyle bitir.
-- Liste/markdown kullanma; düz paragraf yaz.`,
-            },
-            {
-              role: "user",
-              content: "Bugün için günlük çalışma önerimi hazırla.",
-            },
+            { role: "system", content: labels.aiSystem },
+            { role: "user", content: labels.aiUser },
           ],
         }),
       });
@@ -54,7 +52,7 @@ export function DailyPlanCard({ aiReady }: { aiReady: boolean }) {
       <div className="flex items-start justify-between gap-3">
         <h2 className="flex items-center gap-2 text-sm font-semibold">
           <Sparkles size={16} className="text-primary" />
-          Günün önerisi
+          {labels.title}
         </h2>
         <button
           type="button"
@@ -69,14 +67,12 @@ export function DailyPlanCard({ aiReady }: { aiReady: boolean }) {
           ) : (
             <Sparkles size={12} />
           )}
-          {plan ? "Yeniden öner" : "Plan oluştur"}
+          {plan ? labels.regenerate : labels.generate}
         </button>
       </div>
 
       {!aiReady && !plan && (
-        <p className="mt-3 text-xs text-muted-foreground">
-          AI bağlantısı yok. .env.local'da Gemini API key eklenmesi gerekiyor.
-        </p>
+        <p className="mt-3 text-xs text-muted-foreground">{labels.noAI}</p>
       )}
 
       {error && (
@@ -86,14 +82,11 @@ export function DailyPlanCard({ aiReady }: { aiReady: boolean }) {
       )}
 
       {plan ? (
-        <p className="mt-4 whitespace-pre-wrap text-sm leading-relaxed">
-          {plan}
-        </p>
+        <p className="mt-4 whitespace-pre-wrap text-sm leading-relaxed">{plan}</p>
       ) : (
         !error && (
           <p className="mt-3 text-sm text-muted-foreground">
-            Profiline ve geçmiş çalışmana göre kişisel günlük plan üretir.{" "}
-            {aiReady && '"Plan oluştur" düğmesine bas.'}
+            {labels.description} {aiReady && labels.cta}
           </p>
         )
       )}

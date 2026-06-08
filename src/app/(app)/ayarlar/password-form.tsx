@@ -3,8 +3,11 @@
 import { useState, useTransition } from "react";
 import { Loader2, Check, KeyRound } from "lucide-react";
 import { changePassword } from "./actions";
+import type { getDict } from "@/lib/i18n";
 
-export function PasswordForm() {
+type Labels = ReturnType<typeof getDict>["passwordForm"];
+
+export function PasswordForm({ labels }: { labels: Labels }) {
   const Icon = KeyRound;
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
@@ -28,10 +31,10 @@ export function PasswordForm() {
     >
       <h2 className="flex items-center gap-2 text-sm font-semibold">
         <Icon size={16} className="text-primary" />
-        Şifre değiştir
+        {labels.title}
       </h2>
       <label className="block text-sm">
-        <span className="text-muted-foreground">Yeni şifre (en az 6 karakter)</span>
+        <span className="text-muted-foreground">{labels.hint}</span>
         <input
           id="new-password-input"
           name="new_password"
@@ -50,7 +53,7 @@ export function PasswordForm() {
       <div className="flex items-center justify-end gap-3">
         {changed && !pending && (
           <span className="inline-flex items-center gap-1 text-sm text-emerald-500">
-            <Check size={14} /> Şifre güncellendi
+            <Check size={14} /> {labels.changed}
           </span>
         )}
         <button
@@ -59,7 +62,7 @@ export function PasswordForm() {
           className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-background px-5 py-2 text-sm font-medium transition hover:bg-muted disabled:opacity-60"
         >
           {pending && <Loader2 size={14} className="animate-spin" />}
-          Şifreyi değiştir
+          {labels.submit}
         </button>
       </div>
     </form>

@@ -1,5 +1,7 @@
 import { CheckCircle2, Circle, Clock, Flame, Brain, Target } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
+import { getDict } from "@/lib/i18n";
+import { getLocaleFromCookies } from "@/lib/i18n-server";
 
 // Bugünün görevleri — bugünkü veriden hesaplanır, kalıcılık gerektirmez.
 // XP zaten ilgili eylemler (pomodoro/tarama/deneme) tarafından veriliyor;
@@ -10,6 +12,9 @@ export async function DailyQuests() {
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) return null;
+
+  const locale = await getLocaleFromCookies();
+  const t = getDict(locale).dashWidgets.quests;
 
   const today = new Date();
   today.setHours(0, 0, 0, 0);
@@ -48,27 +53,27 @@ export async function DailyQuests() {
   const quests = [
     {
       icon: Flame,
-      label: "Bugün çalışmaya başla",
+      label: t.startToday,
       done: sess.length > 0,
-      hint: `${sess.length} seans`,
+      hint: `${sess.length} ${t.sessionsLabel}`,
     },
     {
       icon: Clock,
-      label: `Günlük hedefi tamamla (${goal} dk)`,
+      label: `${t.hitGoal} (${goal} ${t.minutes})`,
       done: minutes >= goal,
-      hint: `${minutes}/${goal} dk`,
+      hint: `${minutes}/${goal} ${t.minutes}`,
     },
     {
       icon: Target,
-      label: "1 Pomodoro tamamla",
+      label: t.completePomodoro,
       done: pomos >= 1,
-      hint: `${pomos} pomodoro`,
+      hint: `${pomos} ${t.pomoLabel}`,
     },
     {
       icon: Brain,
-      label: "AI ile pratik yap (test / tarama / soru)",
+      label: t.practiceAI,
       done: practiced,
-      hint: practiced ? "tamam" : "henüz yok",
+      hint: practiced ? t.doneHint : t.pendingHint,
     },
   ];
 
@@ -81,7 +86,7 @@ export async function DailyQuests() {
       <div className="flex items-center justify-between">
         <h2 className="flex items-center gap-2 text-sm font-semibold">
           <CheckCircle2 size={16} className="text-emerald-500" />
-          Bugünün görevleri
+          {t.title}
         </h2>
         <span className="text-xs text-muted-foreground">
           {doneCount}/{quests.length}
@@ -117,7 +122,7 @@ export async function DailyQuests() {
 
       {allDone && (
         <p className="mt-3 rounded-lg bg-emerald-500/10 px-3 py-2 text-xs text-emerald-600 dark:text-emerald-400">
-          🎉 Bugünün tüm görevlerini tamamladın! Streak güvende.
+          {t.allDone}
         </p>
       )}
     </section>

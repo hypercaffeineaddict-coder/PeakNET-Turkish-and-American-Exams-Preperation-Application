@@ -3,8 +3,10 @@
 import { useEffect, useState } from "react";
 import { CloudDownload, Trash2, WifiOff, CheckCircle2, Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import type { getDict } from "@/lib/i18n";
 
-// Offline'da kullanilabilir olmasi istenen ana sayfalar (dinamik [id] sayfalari haric)
+type Labels = ReturnType<typeof getDict>["offlineSettings"];
+
 const ROUTES = [
   "/dashboard",
   "/panel",
@@ -25,7 +27,7 @@ const ROUTES = [
 
 const PAGE_CACHE = "peaknet-v1-pages";
 
-export function OfflineSettings() {
+export function OfflineSettings({ labels }: { labels: Labels }) {
   const [swReady, setSwReady] = useState<boolean | null>(null);
   const [cachedCount, setCachedCount] = useState<number | null>(null);
   const [busy, setBusy] = useState(false);
@@ -41,7 +43,6 @@ export function OfflineSettings() {
       try {
         const c = await caches.open(PAGE_CACHE);
         const keys = await c.keys();
-        // Yalnizca sayfa (HTML) girislerini say — RSC'leri haric tut
         const pages = keys.filter((r) => !r.url.includes("_rsc"));
         setCachedCount(pages.length);
       } catch {
@@ -56,9 +57,7 @@ export function OfflineSettings() {
 
   async function prepareOffline() {
     if (!("serviceWorker" in navigator) || !navigator.serviceWorker.controller) {
-      toast.error(
-        "Çevrimdışı önbellek için uygulamayı bir kez normal açman gerekir (service worker aktif değil).",
-      );
+      toast.error(labels.errSwNotReady);
       return;
     }
     setBusy(true);
@@ -75,7 +74,7 @@ export function OfflineSettings() {
     }
     setBusy(false);
     await refreshStatus();
-    toast.success(`${ok}/${ROUTES.length} sayfa çevrimdışı için indirildi.`);
+    toast.success(`${ok}/${ROUTES.length}${labels.successSuffix}`);
   }
 
   async function clearCache() {
@@ -86,9 +85,9 @@ export function OfflineSettings() {
         keys.filter((k) => k.includes("-pages")).map((k) => caches.delete(k)),
       );
       await refreshStatus();
-      toast.success("Çevrimdışı sayfa önbelleği temizlendi.");
+      toast.success(labels.successCacheCleared);
     } catch {
-      toast.error("Önbellek temizlenemedi.");
+      toast.error(labels.errCacheClear);
     }
   }
 
@@ -96,12 +95,9 @@ export function OfflineSettings() {
     <section className="rounded-2xl border border-border bg-card p-6">
       <div className="flex items-center gap-2">
         <WifiOff size={18} className="text-primary" />
-        <h2 className="text-lg font-semibold">Çevrimdışı kullanım</h2>
+        <h2 className="text-lg font-semibold">{labels.title}</h2>
       </div>
-      <p className="mt-1 text-sm text-muted-foreground">
-        Ana sayfaları önceden indir; internet olmadan da açılsınlar. AI ve canlı
-        veriler için bağlantı gerekir.
-      </p>
+      <p className="mt-1 text-sm text-muted-foreground">{labels.description}</p>
 
       <div className="mt-4 flex flex-wrap items-center gap-3 text-sm">
         <span className="flex items-center gap-1.5">
@@ -112,15 +108,16 @@ export function OfflineSettings() {
           )}
           <span className="text-muted-foreground">
             {swReady === null
-              ? "Durum kontrol ediliyor…"
+              ? labels.statusChecking
               : swReady
-                ? "Çevrimdışı destek aktif"
-                : "Çevrimdışı destek henüz hazır değil (sayfayı yenile)"}
+                ? labels.statusReady
+                : labels.statusNotReady}
           </span>
         </span>
         {cachedCount != null && (
           <span className="rounded-full bg-muted px-2.5 py-0.5 text-xs text-muted-foreground">
-            {cachedCount} sayfa hazır
+            {cachedCount}
+            {labels.pagesReadySuffix}
           </span>
         )}
       </div>
@@ -134,7 +131,7 @@ export function OfflineSettings() {
             />
           </div>
           <div className="mt-1.5 text-xs text-muted-foreground">
-            İndiriliyor… {progress}/{ROUTES.length}
+            {labels.downloading} {progress}/{ROUTES.length}
           </div>
         </div>
       )}
@@ -151,7 +148,7 @@ export function OfflineSettings() {
           ) : (
             <CloudDownload size={15} />
           )}
-          {busy ? "İndiriliyor…" : "Offline'a hazırla"}
+          {busy ? labels.downloading : labels.prepareBtn}
         </button>
         <button
           type="button"
@@ -160,7 +157,7 @@ export function OfflineSettings() {
           className="inline-flex items-center gap-2 rounded-lg border border-border px-4 py-2 text-sm font-medium text-muted-foreground transition hover:bg-muted hover:text-foreground disabled:opacity-50"
         >
           <Trash2 size={15} />
-          Önbelleği temizle
+          {labels.clearBtn}
         </button>
       </div>
     </section>
