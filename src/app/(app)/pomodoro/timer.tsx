@@ -44,6 +44,9 @@ type RunState = {
   pomoCount: number;
   subjectId: string;
   topicId: string;
+  // Tab kapalıyken biten ODAK seansının kredilenmesi için orijinal süre (sn).
+  // Eski rs'de yok → undefined → varsayılan olarak güncel ayar kullanılır.
+  workSec?: number;
 };
 function saveRunState(s: RunState | null) {
   try {
@@ -115,7 +118,8 @@ export function PomodoroTimer({
 
     const rs = loadRunState();
     if (rs) {
-      const remaining = Math.max(0, Math.floor((rs.endsAt - Date.now()) / 1000));
+      const elapsed = Date.now() - rs.endsAt; // pozitif → geçmiş
+      const remaining = Math.max(0, Math.floor(-elapsed / 1000));
       if (remaining > 0) {
         setMode(rs.mode);
         setSeconds(remaining);
@@ -127,8 +131,27 @@ export function PomodoroTimer({
         setRunning(true);
         return;
       }
-      // Süre geçmiş — sıfırla
+      // Süre tab kapalıyken bitmiş.
       saveRunState(null);
+      // Yakın zamanda biten ODAK seansını kaydet (kullanıcı kısa molaya çıkmış).
+      // 60 dk içinde dönen kullanıcının pomodoro kredisini kaybetme. Daha geç
+      // dönüşler kaydedilmez (oturum şüpheli / bayat).
+      const GRACE_MS = 60 * 60 * 1000;
+      if (rs.mode === "work" && elapsed <= GRACE_MS) {
+        const usedSec = rs.workSec ?? d.work * 60;
+        const fd = new FormData();
+        fd.set("duration_seconds", String(usedSec));
+        fd.set("pomodoros", "1");
+        if (rs.subjectId) fd.set("subject_id", rs.subjectId);
+        if (rs.topicId) fd.set("topic_id", rs.topicId);
+        void recordSession(fd).then((res) => {
+          if (res?.ok) {
+            setPomoCount((c) => c + 1);
+            setSavedMsg(`${Math.round(usedSec / 60)} dk kaydedildi 🔥 (sekme kapalıyken tamamlandı)`);
+            setTimeout(() => setSavedMsg(null), 5000);
+          }
+        });
+      }
     }
     setSeconds(d.work * 60);
   }, []);
@@ -142,7 +165,7 @@ export function PomodoroTimer({
   useEffect(() => {
     if (running) {
       const endsAt = Date.now() + seconds * 1000;
-      saveRunState({ mode, endsAt, pomoCount, subjectId, topicId });
+      saveRunState({ mode, endsAt, pomoCount, subjectId, topicId, workSec: durations.work * 60 });
     } else {
       saveRunState(null);
     }
