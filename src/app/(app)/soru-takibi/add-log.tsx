@@ -5,12 +5,13 @@ import { useRouter } from "next/navigation";
 import { Plus, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { addQuestionLog } from "./actions";
+import { localDate } from "@/lib/dates";
 
 type Subject = { name: string; color: string; topics: { id: string; name: string }[] };
 
 export function AddLog({ subjects }: { subjects: Subject[] }) {
   const router = useRouter();
-  const today = new Date().toISOString().slice(0, 10);
+  const today = localDate();
   const [subject, setSubject] = useState(subjects[0]?.name ?? "");
   const [topicId, setTopicId] = useState("");
   const [correct, setCorrect] = useState(0);

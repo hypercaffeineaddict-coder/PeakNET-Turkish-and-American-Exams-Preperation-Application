@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { awardXp, XP } from "@/lib/gamification";
+import { localDate } from "@/lib/dates";
 
 export async function createMistake(formData: FormData) {
   const supabase = await createClient();
@@ -34,7 +35,7 @@ export async function createMistake(formData: FormData) {
     ease: 2.5,
     interval_days: 1,
     repetitions: 0,
-    next_review_at: new Date().toISOString().slice(0, 10),
+    next_review_at: localDate(),
   });
   if (error) {
     redirect(`/yanlislar?error=${encodeURIComponent(error.message)}`);
@@ -91,7 +92,7 @@ export async function reviewMistake(formData: FormData) {
       ease,
       interval_days: interval,
       repetitions: reps,
-      next_review_at: next.toISOString().slice(0, 10),
+      next_review_at: localDate(next),
     })
     .eq("id", id)
     .eq("user_id", user.id);

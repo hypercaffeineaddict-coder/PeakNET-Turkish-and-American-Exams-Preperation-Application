@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { awardXp } from "@/lib/gamification";
+import { localDate } from "@/lib/dates";
 
 export async function addQuestionLog(
   formData: FormData,
@@ -22,9 +23,7 @@ export async function addQuestionLog(
   if (correct + wrong + blank === 0) return { error: "En az bir soru gir" };
 
   const dateRaw = String(formData.get("log_date") || "");
-  const log_date = /^\d{4}-\d{2}-\d{2}$/.test(dateRaw)
-    ? dateRaw
-    : new Date().toISOString().slice(0, 10);
+  const log_date = /^\d{4}-\d{2}-\d{2}$/.test(dateRaw) ? dateRaw : localDate();
 
   const topicId = String(formData.get("topic_id") || "").trim() || null;
 

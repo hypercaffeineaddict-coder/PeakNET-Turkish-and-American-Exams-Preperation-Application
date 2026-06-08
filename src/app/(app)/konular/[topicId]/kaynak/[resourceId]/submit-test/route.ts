@@ -1,6 +1,7 @@
 import { NextRequest } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { awardXp, XP } from "@/lib/gamification";
+import { localDate } from "@/lib/dates";
 
 export const runtime = "nodejs";
 
@@ -79,7 +80,7 @@ export async function POST(req: NextRequest) {
         ease: 2.5,
         interval_days: 1,
         repetitions: 0,
-        next_review_at: new Date().toISOString().slice(0, 10),
+        next_review_at: localDate(),
       }));
     if (rows.length > 0) {
       const { error } = await supabase.from("mistakes").insert(rows);

@@ -2,6 +2,7 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { awardXp, XP } from "@/lib/gamification";
+import { localDate } from "@/lib/dates";
 
 type WrongItem = {
   stem: string;
@@ -38,7 +39,7 @@ export async function saveTaramaWrongs(
     ease: 2.5,
     interval_days: 1,
     repetitions: 0,
-    next_review_at: new Date().toISOString().slice(0, 10),
+    next_review_at: localDate(),
   }));
 
   const { error } = await supabase.from("mistakes").insert(rows);

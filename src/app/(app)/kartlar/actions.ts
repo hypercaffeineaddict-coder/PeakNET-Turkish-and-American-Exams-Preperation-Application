@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
+import { localDate } from "@/lib/dates";
 
 // SM-2 aralıklı tekrar. quality: 2=Tekrar, 3=Zor, 4=İyi, 5=Kolay
 export async function reviewCard(id: string, quality: number) {
@@ -45,7 +46,7 @@ export async function reviewCard(id: string, quality: number) {
       ease,
       interval_days: interval,
       repetitions: reps,
-      next_review_at: next.toISOString().slice(0, 10),
+      next_review_at: localDate(next),
     })
     .eq("id", id)
     .eq("user_id", user.id);

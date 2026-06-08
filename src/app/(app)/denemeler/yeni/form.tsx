@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Plus, X } from "lucide-react";
 import { examSubjects } from "@/data/exam-subjects";
+import { localDate } from "@/lib/dates";
 
 type Row = { d: number; y: number; total: number };
 type Custom = { id: string; name: string; total: number; d: number; y: number };
@@ -23,7 +24,7 @@ export function NetForm({
   const [customs, setCustoms] = useState<Custom[]>([]);
 
   const subjects = examSubjects(examType, track);
-  const today = new Date().toISOString().slice(0, 10);
+  const today = localDate();
 
   const rowOf = (sid: string, fallbackTotal: number): Row =>
     values[sid] ?? { d: 0, y: 0, total: fallbackTotal };

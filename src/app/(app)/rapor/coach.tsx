@@ -3,12 +3,13 @@
 import { useEffect, useState } from "react";
 import { Sparkles, Loader2, RefreshCw } from "lucide-react";
 import { toast } from "sonner";
+import { localDate } from "@/lib/dates";
 
 function weekKey() {
   const d = new Date();
   const day = (d.getDay() + 6) % 7; // Pazartesi = 0
   d.setDate(d.getDate() - day);
-  return `coach-${d.toISOString().slice(0, 10)}`;
+  return `coach-${localDate(d)}`;
 }
 
 // **kalın** desteğiyle basit metin render

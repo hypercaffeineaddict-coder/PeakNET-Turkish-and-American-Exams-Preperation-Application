@@ -1,3 +1,5 @@
+import { localDate } from "@/lib/dates";
+
 // Server component — interactive değil
 export function Heatmap({
   dailyMinutes,
@@ -11,7 +13,7 @@ export function Heatmap({
   for (let i = 364; i >= 0; i--) {
     const d = new Date(today);
     d.setDate(today.getDate() - i);
-    const key = d.toISOString().slice(0, 10);
+    const key = localDate(d);
     days.push({ date: d, key, minutes: dailyMinutes[key] ?? 0 });
   }
 

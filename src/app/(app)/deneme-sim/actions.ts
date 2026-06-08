@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { awardXp, XP } from "@/lib/gamification";
+import { localDate } from "@/lib/dates";
 
 type Totals = Record<string, { d: number; y: number; b: number; net: number }>;
 
@@ -17,7 +18,7 @@ export async function saveMockExam(
   } = await supabase.auth.getUser();
   if (!user) return { error: "Oturum yok" };
 
-  const today = new Date().toISOString().slice(0, 10);
+  const today = localDate();
   const name = `AI Deneme · ${examType} (${today})`;
 
   const { error } = await supabase.from("exams").insert({

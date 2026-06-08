@@ -10,6 +10,7 @@ import {
 import { createClient } from "@/lib/supabase/server";
 import { subjectForTrack } from "@/data/exam-subjects";
 import { effectiveStreak } from "@/lib/gamification";
+import { localDate } from "@/lib/dates";
 import { Heatmap } from "./heatmap";
 import { SubjectTimePie } from "./subject-pie";
 import { TopicStatusBars } from "./topic-status";
@@ -124,7 +125,7 @@ export default async function IstatistiklerPage() {
   // Heatmap için günlük toplama
   const dailyMinutes = new Map<string, number>();
   for (const s of sessionsYear ?? []) {
-    const d = new Date(s.started_at).toISOString().slice(0, 10);
+    const d = localDate(new Date(s.started_at));
     dailyMinutes.set(
       d,
       (dailyMinutes.get(d) ?? 0) + Math.round(s.duration_seconds / 60),

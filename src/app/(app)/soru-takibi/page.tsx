@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { Target, Trash2, AlertTriangle } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { examSubjects, subjectForTrack } from "@/data/exam-subjects";
+import { localDate } from "@/lib/dates";
 import { AddLog } from "./add-log";
 import { deleteQuestionLog } from "./actions";
 
@@ -90,7 +91,7 @@ export default async function SoruTakibiPage({
 
   const today = new Date();
   today.setHours(0, 0, 0, 0);
-  const todayStr = today.toISOString().slice(0, 10);
+  const todayStr = localDate(today);
 
   let logsQuery = supabase
     .from("question_logs")
@@ -99,7 +100,7 @@ export default async function SoruTakibiPage({
   if (rangeDays !== null) {
     const start = new Date(today);
     start.setDate(start.getDate() - (rangeDays - 1));
-    logsQuery = logsQuery.gte("log_date", start.toISOString().slice(0, 10));
+    logsQuery = logsQuery.gte("log_date", localDate(start));
   }
   const { data: logsRaw, error } = await logsQuery
     .order("log_date", { ascending: false })
@@ -124,7 +125,7 @@ export default async function SoruTakibiPage({
   for (let i = 6; i >= 0; i--) {
     const d = new Date(today);
     d.setDate(d.getDate() - i);
-    const ds = d.toISOString().slice(0, 10);
+    const ds = localDate(d);
     const dayLogs = logs.filter((l) => l.log_date === ds);
     days.push({
       label: d.toLocaleDateString("tr-TR", { weekday: "short" }),

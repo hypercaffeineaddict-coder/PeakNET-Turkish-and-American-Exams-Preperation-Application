@@ -3,6 +3,7 @@ import { Layers } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { subjectForTrack } from "@/data/exam-subjects";
 import { aiHealth } from "@/lib/ai";
+import { localDate } from "@/lib/dates";
 import { KartlarClient } from "./client";
 
 export const metadata = { title: "Tekrar Kartları · PeakNET" };
@@ -22,7 +23,7 @@ export default async function KartlarPage() {
   } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  const today = new Date().toISOString().slice(0, 10);
+  const today = localDate();
 
   const [{ data: cards }, { data: subjectsRaw }, { data: profile }, health] =
     await Promise.all([

@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { BookOpen, Trash2, RotateCcw } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
+import { localDate } from "@/lib/dates";
 import {
   createMistake,
   deleteMistake,
@@ -40,7 +41,7 @@ export default async function YanlislarPage({
   } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  const today = new Date().toISOString().slice(0, 10);
+  const today = localDate();
 
   const [{ data: dueRaw }, { data: allRaw }, { data: topics }] =
     await Promise.all([
