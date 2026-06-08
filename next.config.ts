@@ -12,11 +12,19 @@ const supabaseHost = (() => {
   }
 })();
 
+const scriptSrc = [
+  "'self'",
+  "'unsafe-inline'",
+  ...(process.env.NODE_ENV !== "production" ? ["'unsafe-eval'"] : []),
+  "https://sdk.scdn.co",
+  "https://open.spotifycdn.com",
+].join(" ");
+
 const csp = [
   // default-src kısıtlı; her tür için özel allow listesi.
   `default-src 'self'`,
   // Next.js client bundle inline init script + Spotify Web Playback SDK.
-  `script-src 'self' 'unsafe-inline' 'unsafe-eval' https://sdk.scdn.co https://open.spotifycdn.com`,
+  `script-src ${scriptSrc}`,
   // Tailwind v4 inline style + React jsx-runtime için unsafe-inline gerekli.
   `style-src 'self' 'unsafe-inline'`,
   // Görseller: data URL (avatar/banner DB'de), blob (önizleme),

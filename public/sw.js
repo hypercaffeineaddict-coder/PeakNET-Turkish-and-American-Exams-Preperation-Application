@@ -2,13 +2,47 @@
 // Statik varlıklar cache-first, sayfalar network-first (offline'da cache),
 // API/Supabase/Gemini her zaman network (cache'lenmez).
 
-const VERSION = "peaknet-v4";
+const VERSION = "peaknet-v5";
 const STATIC_CACHE = `${VERSION}-static`;
 const PAGE_CACHE = `${VERSION}-pages`;
 const OFFLINE_URL = "/offline.html";
 
-// Auth/dinamik rotalar cache'lenmez (gizlilik + tazelik)
-const NO_CACHE_PATHS = ["/login", "/signup", "/onboarding", "/auth"];
+// Auth/dinamik rotalar cache'lenmez (gizlilik + tazelik).
+// Uygulama rotalari kullaniciya ozel HTML/RSC tasiyabildigi icin local cache'e yazma.
+const NO_CACHE_PATHS = [
+  "/login",
+  "/signup",
+  "/onboarding",
+  "/auth",
+  "/dashboard",
+  "/panel",
+  "/konular",
+  "/denemeler",
+  "/istatistikler",
+  "/ayarlar",
+  "/program",
+  "/pomodoro",
+  "/notlar",
+  "/rapor",
+  "/asistan",
+  "/coz",
+  "/soru-uret",
+  "/soru-takibi",
+  "/tarama",
+  "/yanlislar",
+  "/ustalik",
+  "/hedef",
+  "/kartlar",
+  "/tahta",
+  "/basarimlar",
+  "/paylas",
+  "/araclar",
+  "/muzik",
+  "/diller",
+  "/yurtdisi",
+  "/satranc",
+  "/deneme-sim",
+];
 
 const PRECACHE = [OFFLINE_URL, "/manifest.json", "/icon.svg", "/icon-maskable.svg"];
 
@@ -37,6 +71,9 @@ self.addEventListener("activate", (event) => {
 // Yeni SW'yi hemen aktive et (sayfadan postMessage ile)
 self.addEventListener("message", (event) => {
   if (event.data === "SKIP_WAITING") self.skipWaiting();
+  if (event.data === "CLEAR_PRIVATE_CACHE") {
+    event.waitUntil(caches.delete(PAGE_CACHE));
+  }
 });
 
 self.addEventListener("fetch", (event) => {
@@ -77,7 +114,7 @@ async function cacheFirst(request) {
     const res = await fetch(request);
     if (res.ok) cache.put(request, res.clone());
     return res;
-  } catch (err) {
+  } catch {
     return hit || Response.error();
   }
 }
@@ -86,9 +123,9 @@ async function networkFirstPage(request) {
   const cache = await caches.open(PAGE_CACHE);
   try {
     const res = await fetch(request);
-    if (res.ok) cache.put(request, res.clone());
+    if (res.ok && isPublicPage(request)) cache.put(request, res.clone());
     return res;
-  } catch (err) {
+  } catch {
     const hit = await cache.match(request);
     if (hit) return hit;
     return (await caches.match(OFFLINE_URL)) || Response.error();
@@ -100,11 +137,18 @@ async function staleWhileRevalidate(request) {
   const hit = await cache.match(request);
   const fetchPromise = fetch(request)
     .then((res) => {
-      if (res.ok) cache.put(request, res.clone());
+      if (res.ok && isPublicPage(request)) cache.put(request, res.clone());
       return res;
     })
     .catch(() => hit);
   return hit || fetchPromise;
+}
+
+function isPublicPage(request) {
+  const url = new URL(request.url);
+  if (url.origin !== self.location.origin) return false;
+  if (url.pathname === OFFLINE_URL) return true;
+  return false;
 }
 
 // ---------- Web Push (hatırlatma bildirimleri) ----------
