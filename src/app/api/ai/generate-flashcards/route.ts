@@ -2,6 +2,9 @@ import { NextRequest } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { generateJson, friendlyAIError } from "@/lib/ai";
 import { consumeAIQuota } from "@/lib/ai/rate-limit";
+import { localeDirective } from "@/lib/i18n";
+import { getLocaleFromCookies } from "@/lib/i18n-server";
+import { localDate } from "@/lib/dates";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -39,7 +42,8 @@ export async function POST(req: NextRequest) {
     (topic as { subjects?: { name?: string } }).subjects?.name ?? "";
   const n = Math.max(4, Math.min(15, count));
 
-  const system = `Sen YKS'ye hazırlanan öğrenci için aralıklı tekrar (flashcard) kartları hazırlayan bir öğretmensin. Sadece istenen JSON'u döndür.`;
+  const langDir = localeDirective(await getLocaleFromCookies());
+  const system = `${langDir}Sen YKS'ye hazırlanan öğrenci için aralıklı tekrar (flashcard) kartları hazırlayan bir öğretmensin. Sadece istenen JSON'u döndür.`;
 
   const userPrompt = `${subjectName} - ${topic.name} konusundan ${n} adet tekrar kartı (flashcard) üret.
 
@@ -69,7 +73,7 @@ SADECE şu JSON'u dön (markdown yok):
     );
   }
 
-  const today = new Date().toISOString().slice(0, 10);
+  const today = localDate();
   const rows = cards.map((c) => ({
     user_id: user.id,
     topic_id: topicId,

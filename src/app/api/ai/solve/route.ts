@@ -2,6 +2,8 @@ import { NextRequest } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { generateText, friendlyAIError, type Attachment } from "@/lib/ai";
 import { consumeAIQuota } from "@/lib/ai/rate-limit";
+import { localeDirective } from "@/lib/i18n";
+import { getLocaleFromCookies } from "@/lib/i18n-server";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -79,7 +81,8 @@ export async function POST(req: NextRequest) {
     filename: file.name,
   };
 
-  const system = `Sen YKS hazırlanan Türk lise öğrencisine soru çözen kıdemli bir öğretmensin.${topicContext}
+  const langDir = localeDirective(await getLocaleFromCookies());
+  const system = `${langDir}Sen YKS hazırlanan Türk lise öğrencisine soru çözen kıdemli bir öğretmensin.${topicContext}
 
 İş akışın:
 1. Önce görseldeki soruyu KENDİ KELİMELERİNLE özetle (1-2 cümle). Görselde yazılı her şeyi okudun mu, formüller doğru mu netleştir.

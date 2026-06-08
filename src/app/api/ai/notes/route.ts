@@ -2,6 +2,8 @@ import { NextRequest } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { generateText, friendlyAIError, type ChatMessage } from "@/lib/ai";
 import { consumeAIQuota } from "@/lib/ai/rate-limit";
+import { localeDirective } from "@/lib/i18n";
+import { getLocaleFromCookies } from "@/lib/i18n-server";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -41,8 +43,9 @@ export async function POST(req: NextRequest) {
     );
   }
 
+  const langDir = localeDirective(await getLocaleFromCookies());
   const messages: ChatMessage[] = [
-    { role: "system", content: baseSystem(length) },
+    { role: "system", content: langDir + baseSystem(length) },
     {
       role: "user",
       content: `Konu/istek: ${topic.slice(0, 300)}\n\nBu konunun notunu yukarıdaki yapıda hazırla.`,

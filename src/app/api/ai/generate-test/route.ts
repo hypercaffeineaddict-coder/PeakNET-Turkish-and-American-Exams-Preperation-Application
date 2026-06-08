@@ -2,6 +2,8 @@ import { NextRequest } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { generateJson, friendlyAIError } from "@/lib/ai";
 import { consumeAIQuota } from "@/lib/ai/rate-limit";
+import { localeDirective } from "@/lib/i18n";
+import { getLocaleFromCookies } from "@/lib/i18n-server";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -40,7 +42,8 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const system = `Sen YKS'ye hazırlanan Türk lise öğrencisi için ÖSYM tarzı çoktan seçmeli soru üreten bir öğretmensin. Sadece istenen JSON formatını döndür, başka hiçbir şey yazma.`;
+  const langDir = localeDirective(await getLocaleFromCookies());
+  const system = `${langDir}Sen YKS'ye hazırlanan Türk lise öğrencisi için ÖSYM tarzı çoktan seçmeli soru üreten bir öğretmensin. Sadece istenen JSON formatını döndür, başka hiçbir şey yazma.`;
 
   const userPrompt = `${topic.subjects?.name} - ${topic.name} konusundan ${Math.max(3, Math.min(10, count))} adet ÖSYM tarzı 5 şıklı çoktan seçmeli soru üret.
 

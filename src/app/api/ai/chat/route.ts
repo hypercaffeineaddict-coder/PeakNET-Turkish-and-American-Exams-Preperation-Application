@@ -2,6 +2,8 @@ import { NextRequest } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { generateText, friendlyAIError, type ChatMessage, type Attachment } from "@/lib/ai";
 import { consumeAIQuota } from "@/lib/ai/rate-limit";
+import { localeDirective } from "@/lib/i18n";
+import { getLocaleFromCookies } from "@/lib/i18n-server";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -111,9 +113,15 @@ export async function POST(req: NextRequest) {
     });
   }
 
+  // Dil yönergesi: kullanıcının seçtiği dilde cevap ver (TR varsayılan = no-op).
+  const langDir = localeDirective(await getLocaleFromCookies());
+  const finalMessages: ChatMessage[] = langDir
+    ? [{ role: "system", content: langDir }, ...body.messages]
+    : body.messages;
+
   try {
     const text = await generateText(
-      body.messages,
+      finalMessages,
       attachments.length > 0 ? attachments : undefined,
     );
     return new Response(text, {

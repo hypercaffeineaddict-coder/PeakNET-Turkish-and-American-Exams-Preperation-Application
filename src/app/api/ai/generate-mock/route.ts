@@ -3,6 +3,8 @@ import { createClient } from "@/lib/supabase/server";
 import { generateJson, friendlyAIError } from "@/lib/ai";
 import { consumeAIQuota } from "@/lib/ai/rate-limit";
 import { examSubjects } from "@/data/exam-subjects";
+import { localeDirective } from "@/lib/i18n";
+import { getLocaleFromCookies } from "@/lib/i18n-server";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -57,7 +59,8 @@ export async function POST(req: NextRequest) {
     .map((p) => `- ${p.name} (subjectId: "${p.id}"): ${p.count} soru`)
     .join("\n");
 
-  const system = `Sen YKS ${examType} için ÖSYM tarzı deneme sınavı hazırlayan bir öğretmensin. Sadece istenen JSON'u döndür.`;
+  const langDir = localeDirective(await getLocaleFromCookies());
+  const system = `${langDir}Sen YKS ${examType} için ÖSYM tarzı deneme sınavı hazırlayan bir öğretmensin. Sadece istenen JSON'u döndür.`;
 
   const userPrompt = `${examType} denemesi için aşağıdaki derslerden belirtilen sayıda ÖSYM tarzı 5 şıklı (A-E) soru üret:
 

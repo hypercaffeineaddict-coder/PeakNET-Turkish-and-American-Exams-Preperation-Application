@@ -2,6 +2,9 @@ import { NextRequest } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { generateText, friendlyAIError, type ChatMessage } from "@/lib/ai";
 import { consumeAIQuota } from "@/lib/ai/rate-limit";
+import { localeDirective } from "@/lib/i18n";
+import { getLocaleFromCookies } from "@/lib/i18n-server";
+import { localDate } from "@/lib/dates";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -30,8 +33,8 @@ export async function POST(req: NextRequest) {
   today.setHours(0, 0, 0, 0);
   const weekAgo = new Date(today);
   weekAgo.setDate(weekAgo.getDate() - 6);
-  const weekAgoStr = weekAgo.toISOString().slice(0, 10);
-  const weekAgoIso = weekAgo.toISOString();
+  const weekAgoStr = localDate(weekAgo); // date kolonu için yerel tarih
+  const weekAgoIso = weekAgo.toISOString(); // timestamptz için ISO (tz-safe)
 
   const [{ data: profile }, { data: streak }, { data: qlogs }, { data: sessions }, { data: exams }] =
     await Promise.all([
@@ -110,10 +113,12 @@ export async function POST(req: NextRequest) {
       : "Kayıtlı deneme yok.",
   ];
 
+  const langDir = localeDirective(await getLocaleFromCookies());
   const system: ChatMessage = {
     role: "system",
     content:
-      "Sen Türk YKS öğrencisine eşlik eden sıcak, dürüst ve disiplinli bir çalışma koçusun. Verilere dayanarak kısa bir haftalık değerlendirme yaz. Düz akıcı Türkçe; abartı yok, somut ol. En fazla 200 kelime. Şu yapı: (1) bu haftanın kısa değerlendirmesi (iyi giden + dikkat çeken), (2) 'Önümüzdeki hafta' başlığıyla 3 net, uygulanabilir öneri. İsabet oranı düşük ve az çözülen dersleri önceliklendir. Veri azsa nazikçe daha çok kayıt tutmaya teşvik et. Markdown başlık (#) kullanma, kalın için ** kullanabilirsin.",
+      langDir +
+      "Sen Türk YKS öğrencisine eşlik eden sıcak, dürüst ve disiplinli bir çalışma koçusun. Verilere dayanarak kısa bir haftalık değerlendirme yaz. Düz akıcı dilde; abartı yok, somut ol. En fazla 200 kelime. Şu yapı: (1) bu haftanın kısa değerlendirmesi (iyi giden + dikkat çeken), (2) 'Önümüzdeki hafta' başlığıyla 3 net, uygulanabilir öneri. İsabet oranı düşük ve az çözülen dersleri önceliklendir. Veri azsa nazikçe daha çok kayıt tutmaya teşvik et. Markdown başlık (#) kullanma, kalın için ** kullanabilirsin.",
   };
   const userMsg: ChatMessage = {
     role: "user",

@@ -2,6 +2,8 @@ import { NextRequest } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { generateJson, friendlyAIError } from "@/lib/ai";
 import { consumeAIQuota } from "@/lib/ai/rate-limit";
+import { localeDirective } from "@/lib/i18n";
+import { getLocaleFromCookies } from "@/lib/i18n-server";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -46,7 +48,8 @@ export async function POST(req: NextRequest) {
     .join(", ");
   const n = Math.max(5, Math.min(20, count));
 
-  const system = `Sen ${subject.exam_type} sınavına hazırlanan öğrenciler için ÖSYM tarzı tarama (tanı) testi hazırlayan bir öğretmensin. Tarama testi: bir dersin farklı konularına yayılmış, öğrencinin hangi konularda zayıf olduğunu ölçen test. Sadece istenen JSON'u döndür.`;
+  const langDir = localeDirective(await getLocaleFromCookies());
+  const system = `${langDir}Sen ${subject.exam_type} sınavına hazırlanan öğrenciler için ÖSYM tarzı tarama (tanı) testi hazırlayan bir öğretmensin. Tarama testi: bir dersin farklı konularına yayılmış, öğrencinin hangi konularda zayıf olduğunu ölçen test. Sadece istenen JSON'u döndür.`;
 
   const userPrompt = `${subject.name} (${subject.exam_type}) dersinden ${n} soruluk bir TARAMA TESTİ hazırla.
 

@@ -3,6 +3,8 @@ import { createClient } from "@/lib/supabase/server";
 import { generateJson, friendlyAIError, type ChatMessage } from "@/lib/ai";
 import { consumeAIQuota } from "@/lib/ai/rate-limit";
 import { normalizeBoard } from "@/lib/board";
+import { localeDirective } from "@/lib/i18n";
+import { getLocaleFromCookies } from "@/lib/i18n-server";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -64,8 +66,9 @@ export async function POST(req: NextRequest) {
     );
   }
 
+  const langDir = localeDirective(await getLocaleFromCookies());
   const messages: ChatMessage[] = [
-    { role: "system", content: SYSTEM },
+    { role: "system", content: langDir + SYSTEM },
     { role: "user", content: prompt.slice(0, 500) },
   ];
 
