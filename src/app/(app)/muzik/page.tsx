@@ -1,3 +1,5 @@
+import { getDict } from "@/lib/i18n";
+import { getLocaleFromCookies } from "@/lib/i18n-server";
 import { redirect } from "next/navigation";
 import { Music } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
@@ -6,6 +8,8 @@ import { MuzikClient } from "./client";
 export const metadata = { title: "Müzik · PeakNET" };
 
 export default async function MuzikPage() {
+  const locale = await getLocaleFromCookies();
+  const dict = getDict(locale);
   const supabase = await createClient();
   const {
     data: { user },

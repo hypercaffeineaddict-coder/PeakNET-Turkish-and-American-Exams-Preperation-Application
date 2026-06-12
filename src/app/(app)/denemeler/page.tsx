@@ -1,3 +1,5 @@
+import { getDict } from "@/lib/i18n";
+import { getLocaleFromCookies } from "@/lib/i18n-server";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { FlaskConical, Plus, Trash2, TrendingUp } from "lucide-react";
@@ -9,6 +11,8 @@ type SubjectTotal = { d: number; y: number; b: number; net: number; name?: strin
 type Totals = Record<string, SubjectTotal>;
 
 export default async function DenemelerPage() {
+  const locale = await getLocaleFromCookies();
+  const dict = getDict(locale);
   const supabase = await createClient();
   const {
     data: { user },

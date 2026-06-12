@@ -402,12 +402,56 @@ export const dict = {
       errNoAI: "AI bağlantısı yok. GEMINI_API_KEY gerekli.",
       errDrawPrefix: "Çizilemedi: ",
     },
+    tools: {
+      pageTitle: "YKS Araçları · PeakNET",
+      title: "YKS Araçları",
+      subtitle: "Net hesapla, tahmini puanını ve sıralamanı gör, hedefin için gereken neti öğren.",
+      quickNet: {
+        title: "Hızlı net hesabı (tek test / branda)",
+        description: "Standart YKS dışı bir testin (GİS, branda, mini sınav) netini anında hesapla. <strong>Net = D − Y/4</strong>. Soru sayısı opsiyonel.",
+        totalLabel: "Soru sayısı (ops.)",
+        correctLabel: "Doğru",
+        wrongLabel: "Yanlış",
+        netLabel: "Net",
+        emptyLabel: "Boş",
+        accuracyLabel: "İsabet",
+        invalid: "geçersiz",
+      },
+      scoreTypes: {
+        say: "SAY",
+        ea: "EA",
+        soz: "SÖZ",
+        tyd: "TYT",
+      },
+      table: {
+        subject: "Ders",
+        correct: "Doğru",
+        wrong: "Yanlış",
+        net: "Net",
+        totalNet: "Toplam net",
+      },
+      results: {
+        title: "Tahmini sonuç",
+        totalNet: "Toplam net",
+        estimatedScore: "Tahmini puan",
+        estimatedRank: "Tahmini sıralama",
+      },
+      target: {
+        title: "Hedef analizi",
+        targetRankLabel: "Hedef sıralaman",
+        targetRankPlaceholder: "örn. 5000",
+        requiredScore: "Gereken puan",
+        difference: "Fark",
+        onTrack: "Bu tempoyla hedefe ulaşıyorsun!",
+      },
+      disclaimer: "Puan ve sıralama değerleri geçmiş yıl eğilimlerine dayalı <strong>kaba tahminlerdir</strong>; ÖSYM&#39;nin gerçek standart puan hesabı dışarıdan birebir yapılamaz. Kesin tercih kararı için güncel YÖK Atlas ve ÖSYM verilerini kullan. OBP/diploma katkısı bu hesaba dahil değildir.",
+    },
   },
   en: {
     landing: {
       login: "Log in",
       start: "Start",
-      pill: "TYT · AYT · YDT — one smart system for every YKS track",
+      pill: "TYT · AYT · YDT — a smart system for all YKS tracks",
       title1: "Your YKS journey,",
       title2: "one step every day.",
       subtitle:
@@ -754,6 +798,50 @@ export const dict = {
       emptyDesc: "Ask for a function graph, geometry shape, or coordinate plane; the AI draws and shows it. Click any example above to start.",
       errNoAI: "AI not connected. GEMINI_API_KEY required.",
       errDrawPrefix: "Couldn't draw: ",
+    },
+    tools: {
+      pageTitle: "YKS Tools · PeakNET",
+      title: "YKS Tools",
+      subtitle: "Calculate net, see estimated score & ranking, learn required net for your target.",
+      quickNet: {
+        title: "Quick net (single test / brand)",
+        description: "Instantly calculate net for non-standard YKS tests (GİS, brand, mini). <strong>Net = D − Y/4</strong>. Question count optional.",
+        totalLabel: "Q count (opt.)",
+        correctLabel: "Correct",
+        wrongLabel: "Wrong",
+        netLabel: "Net",
+        emptyLabel: "Blank",
+        accuracyLabel: "Accuracy",
+        invalid: "invalid",
+      },
+      scoreTypes: {
+        say: "SAY",
+        ea: "EA",
+        soz: "VERBAL",
+        tyd: "TYT",
+      },
+      table: {
+        subject: "Subject",
+        correct: "Correct",
+        wrong: "Wrong",
+        net: "Net",
+        totalNet: "Total net",
+      },
+      results: {
+        title: "Estimated result",
+        totalNet: "Total net",
+        estimatedScore: "Estimated score",
+        estimatedRank: "Estimated rank",
+      },
+      target: {
+        title: "Target analysis",
+        targetRankLabel: "Your target rank",
+        targetRankPlaceholder: "e.g. 5000",
+        requiredScore: "Required score",
+        difference: "Difference",
+        onTrack: "You're on track to hit your target!",
+      },
+      disclaimer: "Scores and ranks are <strong>rough estimates</strong> based on past trends; ÖSYM&#39;s exact formula cannot be replicated. For final decisions, use current YÖK Atlas and ÖSYM data. OBP/diploma not included.",
     },
   },
   de: {
@@ -1102,6 +1190,50 @@ export const dict = {
       errNoAI: "Keine KI-Verbindung. GEMINI_API_KEY erforderlich.",
       errDrawPrefix: "Konnte nicht gezeichnet werden: ",
     },
+    tools: {
+      pageTitle: "YKS-Tools · PeakNET",
+      title: "YKS-Tools",
+      subtitle: "Net berechnen, geschätzten Score & Rang sehen, nötiges Net für Ziel erfahren.",
+      quickNet: {
+        title: "Schnelles Net (Einzeltest / Brand)",
+        description: "Net für nicht-standard YKS-Tests (GİS, Brand, Mini) sofort berechnen. <strong>Net = R − F/4</strong>. Aufgabenanzahl optional.",
+        totalLabel: "Aufg.-Anzahl (opt.)",
+        correctLabel: "Richtig",
+        wrongLabel: "Falsch",
+        netLabel: "Net",
+        emptyLabel: "Leer",
+        accuracyLabel: "Trefferquote",
+        invalid: "ungültig",
+      },
+      scoreTypes: {
+        say: "SAY",
+        ea: "EA",
+        soz: "SÖZ",
+        tyd: "TYT",
+      },
+      table: {
+        subject: "Fach",
+        correct: "Richtig",
+        wrong: "Falsch",
+        net: "Net",
+        totalNet: "Gesamt-Net",
+      },
+      results: {
+        title: "Geschätztes Ergebnis",
+        totalNet: "Gesamt-Net",
+        estimatedScore: "Geschätzter Score",
+        estimatedRank: "Geschätzter Rang",
+      },
+      target: {
+        title: "Zielanalyse",
+        targetRankLabel: "Dein Zielrang",
+        targetRankPlaceholder: "z. B. 5000",
+        requiredScore: "Benötigter Score",
+        difference: "Differenz",
+        onTrack: "Du bist auf Kurs für dein Ziel!",
+      },
+      disclaimer: "Scores und Ränge sind <strong>grobe Schätzungen</strong> basierend auf Vorjahren; die exakte ÖSYM-Formel ist nicht nachbildbar. Für finale Entscheidungen aktuelle YÖK Atlas & ÖSYM Daten nutzen. OBP/Diploma nicht enthalten.",
+    },
   },
   ar: {
     landing: {
@@ -1449,7 +1581,51 @@ export const dict = {
       errNoAI: "لا يوجد اتصال بالذكاء الاصطناعي. يلزم GEMINI_API_KEY.",
       errDrawPrefix: "تعذّر الرسم: ",
     },
-  },
+    tools: {
+      pageTitle: "أدوات YKS · PeakNET",
+      title: "أدوات YKS",
+      subtitle: "احسب النقاط، واعرض التقديرات للنتيجة والترتيب، وتعرف على النقاط المطلوبة لهدفك.",
+      quickNet: {
+        title: "حساب سريع للنقاط (اختبار منفرد / تجريب)",
+        description: "احسب نقاط الاختبارات غير القياسية لـ YKS (GİS، علامة تجارية، مصغر) فورًا. <strong>النقاط = ص − خ/4</strong>. عدد الأسئلة اختياري.",
+        totalLabel: "عدد الأسئلة (اختياري)",
+        correctLabel: "صحيح",
+        wrongLabel: "خطأ",
+        netLabel: "النقاط",
+        emptyLabel: "متروك",
+        accuracyLabel: "دقة",
+        invalid: "غير صالح",
+      },
+      scoreTypes: {
+        say: "SAY",
+        ea: "EA",
+        soz: "سوزيل",
+        tyd: "TYT",
+      },
+      table: {
+        subject: "المادة",
+        correct: "صحيح",
+        wrong: "خطأ",
+        net: "النقاط",
+        totalNet: "إجمالي النقاط",
+      },
+      results: {
+        title: "النتيجة التقديرية",
+        totalNet: "إجمالي النقاط",
+        estimatedScore: "النتيجة التقديرية",
+        estimatedRank: "الترتيب التقديري",
+      },
+      target: {
+        title: "تحليل الهدف",
+        targetRankLabel: "ترتيبك المستهدف",
+        targetRankPlaceholder: "مثال 5000",
+        requiredScore: "الدرجة المطلوبة",
+        difference: "الفرق",
+        onTrack: "أنت على الطريق الصحيح لتحقيق هدفك!",
+      },
+      disclaimer: "الدرجات والترتيبات <strong>تقديرات تقريبية</strong> بناءً على الاتجاهات السابقة؛ لا يمكن استنساخ صيغة ÖSYM الدقيقة. للقرارات النهائية، استخدم YÖK Atlas وÖSYM الحاليين. OBP/الدبلوم غير مشمول.",
+    },
+  }
 } as const;
 
 export function getDict(locale: Locale) {
@@ -1468,5 +1644,5 @@ const LANG_NAME: Record<Locale, string> = {
 
 export function localeDirective(locale: Locale): string {
   if (locale === "tr") return "";
-  return `IMPORTANT — RESPOND IN ${LANG_NAME[locale].toUpperCase()}: every word of your reply must be in ${LANG_NAME[locale]}, even if the source material, system prompt, or user input is in another language. Translate Turkish exam terminology naturally (e.g. YKS, TYT, AYT stay as acronyms; subject names like "Türkçe", "Edebiyat" may stay in Turkish if they're proper exam topics). Keep markdown formatting if requested.\n\n`;
+  return `IMPORTANT — RESPOND IN ${LANG_NAME[locale].toUpperCase()}: every word of your reply must be in ${LANG_NAME[locale]}, even if the source material, system prompt, or user input is in another language. Translate Turkish exam terminology naturally (e.g. YKS, TYT, AYT stay as acronyms; subject names like "Türkçe", "Edebiyat" may stay in Turkish if they're proper exam topics). Keep markdown formatting if requested.`;
 }

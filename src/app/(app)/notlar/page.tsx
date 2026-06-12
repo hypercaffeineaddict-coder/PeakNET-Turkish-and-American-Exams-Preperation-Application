@@ -1,3 +1,5 @@
+import { getDict } from "@/lib/i18n";
+import { getLocaleFromCookies } from "@/lib/i18n-server";
 import { redirect } from "next/navigation";
 import { NotebookPen, AlertTriangle } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
@@ -7,6 +9,8 @@ import { NotlarClient } from "./client";
 export const metadata = { title: "Notlar · PeakNET" };
 
 export default async function NotlarPage() {
+  const locale = await getLocaleFromCookies();
+  const dict = getDict(locale);
   const supabase = await createClient();
   const {
     data: { user },

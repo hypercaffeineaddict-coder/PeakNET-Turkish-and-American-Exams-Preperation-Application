@@ -1,3 +1,5 @@
+import { getDict } from "@/lib/i18n";
+import { getLocaleFromCookies } from "@/lib/i18n-server";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import {
@@ -62,6 +64,8 @@ export default async function KonularPage({
 }: {
   searchParams: Promise<{ tab?: string; q?: string; filter?: string }>;
 }) {
+  const locale = await getLocaleFromCookies();
+  const dict = getDict(locale);
   const { tab, q, filter } = await searchParams;
   const activeFilter: FilterId =
     (filters.find((f) => f.id === filter)?.id ?? "all") as FilterId;

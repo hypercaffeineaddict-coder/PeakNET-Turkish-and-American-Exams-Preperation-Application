@@ -1,3 +1,5 @@
+import { getDict } from "@/lib/i18n";
+import { getLocaleFromCookies } from "@/lib/i18n-server";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import {
@@ -40,6 +42,8 @@ type SubjectRow = {
 };
 
 export default async function PanelPage() {
+  const locale = await getLocaleFromCookies();
+  const dict = getDict(locale);
   const supabase = await createClient();
   const {
     data: { user },

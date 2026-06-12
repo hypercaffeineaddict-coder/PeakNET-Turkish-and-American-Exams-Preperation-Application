@@ -14,8 +14,8 @@ const KEY = (process.env.GEMINI_API_KEY ?? "").trim();
 
 // Anahtarı URL query'sinde TAŞIMA — header ile gönder. Böylece anahtar hiçbir
 // hata mesajı, log satırı veya proxy erişim kaydındaki URL'de görünmez.
-function authHeaders(extra?: Record<string, string>): Record<string, string> {
-  return { "x-goog-api-key": KEY, ...(extra ?? {}) };
+function authHeaders(apiKey: string, extra?: Record<string, string>): Record<string, string> {
+  return { "x-goog-api-key": apiKey || KEY, ...(extra ?? {}) };
 }
 
 // Son savunma: bir metinde anahtar ya da key= query'si geçerse maskele.
@@ -29,23 +29,24 @@ export function isConfigured(): boolean {
   return KEY.length > 0;
 }
 
-export async function geminiHealth(): Promise<{
+export async function geminiHealth(apiKey?: string): Promise<{
   ok: boolean;
   models: string[];
   hasChatModel: boolean;
   error?: string;
 }> {
-  if (!KEY) {
+  const activeKey = apiKey || KEY;
+  if (!activeKey) {
     return {
       ok: false,
       models: [],
       hasChatModel: false,
-      error: "GEMINI_API_KEY env değişkeni tanımlı değil",
+      error: "GEMINI_API_KEY env değişkeni tanımlı değil ve kullanıcı anahtarı yok",
     };
   }
   try {
     const res = await fetch(`${API_BASE}/models/${MODEL}`, {
-      headers: authHeaders(),
+      headers: authHeaders(activeKey),
       signal: AbortSignal.timeout(4000),
     });
     if (!res.ok) {
@@ -84,8 +85,10 @@ export type Attachment = {
 export async function generateJson(
   messages: ChatMessage[],
   attachments?: Attachment[],
+  apiKey?: string
 ): Promise<string> {
-  if (!KEY) throw new Error("GEMINI_API_KEY tanımlı değil");
+  const activeKey = apiKey || KEY;
+  if (!activeKey) throw new Error("GEMINI_API_KEY tanımlı değil");
 
   const systemMessages = messages.filter((m) => m.role === "system");
   const chatMessages = messages.filter((m) => m.role !== "system");
@@ -122,7 +125,7 @@ export async function generateJson(
   const url = `${API_BASE}/models/${MODEL}:generateContent`;
   const res = await fetch(url, {
     method: "POST",
-    headers: authHeaders({ "Content-Type": "application/json" }),
+    headers: authHeaders(activeKey, { "Content-Type": "application/json" }),
     body: JSON.stringify(body),
   });
   if (!res.ok) {
@@ -154,8 +157,10 @@ export async function generateJson(
 export async function generateText(
   messages: ChatMessage[],
   attachments?: Attachment[],
+  apiKey?: string
 ): Promise<string> {
-  if (!KEY) throw new Error("GEMINI_API_KEY tanımlı değil");
+  const activeKey = apiKey || KEY;
+  if (!activeKey) throw new Error("GEMINI_API_KEY tanımlı değil");
 
   const systemMessages = messages.filter((m) => m.role === "system");
   const chatMessages = messages.filter((m) => m.role !== "system");
@@ -188,7 +193,7 @@ export async function generateText(
   const url = `${API_BASE}/models/${MODEL}:generateContent`;
   const res = await fetch(url, {
     method: "POST",
-    headers: authHeaders({ "Content-Type": "application/json" }),
+    headers: authHeaders(activeKey, { "Content-Type": "application/json" }),
     body: JSON.stringify(body),
   });
   if (!res.ok) {

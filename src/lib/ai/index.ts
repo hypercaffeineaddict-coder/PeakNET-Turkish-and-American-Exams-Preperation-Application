@@ -3,6 +3,7 @@
 
 import * as gemini from "./gemini";
 import * as ollama from "./ollama";
+import { getUserApiKeys } from "./byok";
 
 export type { ChatMessage } from "./ollama";
 export type { Attachment } from "./gemini";
@@ -17,11 +18,13 @@ export type AIHealth = {
 };
 
 export async function aiHealth(): Promise<AIHealth> {
-  if (gemini.isConfigured()) {
-    const h = await gemini.geminiHealth();
+  const userKeys = await getUserApiKeys();
+  const geminiKey = userKeys.gemini || process.env.GEMINI_API_KEY;
+  if (geminiKey) {
+    const h = await gemini.geminiHealth(geminiKey);
     return { ...h, provider: "gemini", supportsAttachments: true };
   }
-  const h = await ollama.ollamaHealth();
+  const h = await ollama.ollamaHealth(userKeys.ollamaUrl);
   return { ...h, provider: "ollama", supportsAttachments: false };
 }
 
@@ -30,11 +33,13 @@ export async function generateJson(
   messages: import("./ollama").ChatMessage[],
   attachments?: import("./gemini").Attachment[],
 ): Promise<string> {
-  if (gemini.isConfigured()) {
-    return gemini.generateJson(messages, attachments);
+  const userKeys = await getUserApiKeys();
+  const geminiKey = userKeys.gemini || process.env.GEMINI_API_KEY;
+  if (geminiKey) {
+    return gemini.generateJson(messages, attachments, geminiKey);
   }
   // Ollama fallback: stream'i topla
-  const stream = await ollama.streamChat(messages, { json: true });
+  const stream = await ollama.streamChat(messages, { json: true, baseUrl: userKeys.ollamaUrl });
   const reader = stream.getReader();
   const decoder = new TextDecoder();
   let acc = "";
@@ -51,11 +56,13 @@ export async function generateText(
   messages: import("./ollama").ChatMessage[],
   attachments?: import("./gemini").Attachment[],
 ): Promise<string> {
-  if (gemini.isConfigured()) {
-    return gemini.generateText(messages, attachments);
+  const userKeys = await getUserApiKeys();
+  const geminiKey = userKeys.gemini || process.env.GEMINI_API_KEY;
+  if (geminiKey) {
+    return gemini.generateText(messages, attachments, geminiKey);
   }
   // Ollama fallback: stream'i topla
-  const stream = await ollama.streamChat(messages, {});
+  const stream = await ollama.streamChat(messages, { baseUrl: userKeys.ollamaUrl });
   const reader = stream.getReader();
   const decoder = new TextDecoder();
   let acc = "";

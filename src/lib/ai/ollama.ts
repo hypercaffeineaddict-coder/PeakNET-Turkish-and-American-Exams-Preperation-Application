@@ -8,14 +8,15 @@ export type ChatMessage = {
 const BASE = process.env.OLLAMA_BASE_URL ?? "http://localhost:11434";
 const CHAT_MODEL = process.env.OLLAMA_CHAT_MODEL ?? "qwen2.5:7b";
 
-export async function ollamaHealth(): Promise<{
+export async function ollamaHealth(baseUrl?: string): Promise<{
   ok: boolean;
   models: string[];
   hasChatModel: boolean;
   error?: string;
 }> {
+  const activeBase = baseUrl || BASE;
   try {
-    const res = await fetch(`${BASE}/api/tags`, {
+    const res = await fetch(`${activeBase}/api/tags`, {
       signal: AbortSignal.timeout(2500),
     });
     if (!res.ok) return { ok: false, models: [], hasChatModel: false, error: `HTTP ${res.status}` };
@@ -33,9 +34,10 @@ export async function ollamaHealth(): Promise<{
 
 export async function streamChat(
   messages: ChatMessage[],
-  opts?: { json?: boolean },
+  opts?: { json?: boolean; baseUrl?: string },
 ): Promise<ReadableStream<Uint8Array>> {
-  const res = await fetch(`${BASE}/api/chat`, {
+  const activeBase = opts?.baseUrl || BASE;
+  const res = await fetch(`${activeBase}/api/chat`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({

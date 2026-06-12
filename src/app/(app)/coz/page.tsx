@@ -1,3 +1,5 @@
+import { getDict } from "@/lib/i18n";
+import { getLocaleFromCookies } from "@/lib/i18n-server";
 import { redirect } from "next/navigation";
 import { Camera, AlertTriangle } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
@@ -6,6 +8,8 @@ import { aiHealth } from "@/lib/ai";
 import { SolveClient } from "./client";
 
 export default async function CozPage() {
+  const locale = await getLocaleFromCookies();
+  const dict = getDict(locale);
   const supabase = await createClient();
   const {
     data: { user },

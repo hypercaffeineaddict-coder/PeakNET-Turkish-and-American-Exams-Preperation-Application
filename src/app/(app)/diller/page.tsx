@@ -1,3 +1,5 @@
+import { getDict } from "@/lib/i18n";
+import { getLocaleFromCookies } from "@/lib/i18n-server";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Languages, ChevronRight } from "lucide-react";
@@ -13,6 +15,8 @@ const DIFFICULTY_LABEL: Record<number, string> = {
 };
 
 export default async function DillerPage() {
+  const locale = await getLocaleFromCookies();
+  const dict = getDict(locale);
   const supabase = await createClient();
   const {
     data: { user },

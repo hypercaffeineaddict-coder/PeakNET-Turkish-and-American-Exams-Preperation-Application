@@ -1,3 +1,5 @@
+import { getDict } from "@/lib/i18n";
+import { getLocaleFromCookies } from "@/lib/i18n-server";
 import { redirect } from "next/navigation";
 import { Timer, AlertTriangle } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
@@ -7,6 +9,8 @@ import { DenemeSimClient } from "./client";
 export const metadata = { title: "Deneme Simülasyonu · PeakNET" };
 
 export default async function DenemeSimPage() {
+  const locale = await getLocaleFromCookies();
+  const dict = getDict(locale);
   const supabase = await createClient();
   const {
     data: { user },

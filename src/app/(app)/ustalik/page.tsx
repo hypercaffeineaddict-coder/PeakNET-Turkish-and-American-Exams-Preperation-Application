@@ -1,3 +1,5 @@
+import { getDict } from "@/lib/i18n";
+import { getLocaleFromCookies } from "@/lib/i18n-server";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import {
@@ -56,6 +58,8 @@ export default async function UstalikPage({
 }: {
   searchParams: Promise<{ tab?: string }>;
 }) {
+  const locale = await getLocaleFromCookies();
+  const dict = getDict(locale);
   const { tab } = await searchParams;
   const activeTab: ExamTab = (examTabs.find((t) => t.id === tab)?.id ??
     "AYT") as ExamTab;

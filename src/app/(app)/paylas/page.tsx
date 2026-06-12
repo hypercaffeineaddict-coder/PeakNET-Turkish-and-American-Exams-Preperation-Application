@@ -1,3 +1,5 @@
+import { getDict } from "@/lib/i18n";
+import { getLocaleFromCookies } from "@/lib/i18n-server";
 import { redirect } from "next/navigation";
 import { Share2 } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
@@ -8,6 +10,8 @@ import { PaylasClient } from "./client";
 export const metadata = { title: "Paylaş · PeakNET" };
 
 export default async function PaylasPage() {
+  const locale = await getLocaleFromCookies();
+  const dict = getDict(locale);
   const supabase = await createClient();
   const {
     data: { user },

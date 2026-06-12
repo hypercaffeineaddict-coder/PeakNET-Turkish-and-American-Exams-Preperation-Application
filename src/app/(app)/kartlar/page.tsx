@@ -1,3 +1,5 @@
+import { getDict } from "@/lib/i18n";
+import { getLocaleFromCookies } from "@/lib/i18n-server";
 import { redirect } from "next/navigation";
 import { Layers } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
@@ -17,6 +19,8 @@ type SubjectRow = {
 };
 
 export default async function KartlarPage() {
+  const locale = await getLocaleFromCookies();
+  const dict = getDict(locale);
   const supabase = await createClient();
   const {
     data: { user },

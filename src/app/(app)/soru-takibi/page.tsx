@@ -1,3 +1,5 @@
+import { getDict } from "@/lib/i18n";
+import { getLocaleFromCookies } from "@/lib/i18n-server";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Target, Trash2, AlertTriangle } from "lucide-react";
@@ -33,6 +35,8 @@ export default async function SoruTakibiPage({
 }: {
   searchParams: Promise<{ aralik?: string }>;
 }) {
+  const locale = await getLocaleFromCookies();
+  const dict = getDict(locale);
   const { aralik } = await searchParams;
   const activeRange: RangeId =
     (RANGES.find((r) => r.id === aralik)?.id ?? "30") as RangeId;

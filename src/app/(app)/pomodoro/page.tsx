@@ -1,3 +1,5 @@
+import { getDict } from "@/lib/i18n";
+import { getLocaleFromCookies } from "@/lib/i18n-server";
 import { redirect } from "next/navigation";
 import { Clock, Flame } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
@@ -9,6 +11,8 @@ export default async function PomodoroPage({
 }: {
   searchParams: Promise<{ topic?: string }>;
 }) {
+  const locale = await getLocaleFromCookies();
+  const dict = getDict(locale);
   const { topic } = await searchParams;
 
   const supabase = await createClient();

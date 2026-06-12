@@ -1,3 +1,5 @@
+import { getDict } from "@/lib/i18n";
+import { getLocaleFromCookies } from "@/lib/i18n-server";
 import { redirect } from "next/navigation";
 import { Trophy, Zap, Medal, Crown } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
@@ -15,6 +17,8 @@ type LeaderRow = {
 };
 
 export default async function BasarimlarPage() {
+  const locale = await getLocaleFromCookies();
+  const dict = getDict(locale);
   const supabase = await createClient();
   const {
     data: { user },

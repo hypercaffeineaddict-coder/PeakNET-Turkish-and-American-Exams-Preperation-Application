@@ -44,7 +44,7 @@ function getInitialConfig(): ThemeConfig {
   return defaultConfig;
 }
 
-function applyTheme(config: ThemeConfig) {
+function applyTheme(config: ThemeConfig, isDark: boolean) {
   const root = document.documentElement;
   
   // Apply color scheme
@@ -321,7 +321,6 @@ function applyTheme(config: ThemeConfig) {
   };
 
   // Apply color scheme variables
-  const isDark = config.mode === "dark" || (config.mode === "system" && window.matchMedia("(prefers-color-scheme: dark)").matches);
   const colors = schemes[config.scheme][isDark ? "dark" : "light"];
   Object.entries(colors).forEach(([key, value]) => {
     root.style.setProperty(key, value);
@@ -347,22 +346,38 @@ function applyTheme(config: ThemeConfig) {
   root.style.setProperty("--radius", radiusValues[config.radius]);
 }
 
+import { useTheme } from "next-themes";
+
 export function ThemeContextProvider({ children }: { children: ReactNode }) {
   const [config, setConfig] = useState<ThemeConfig>(defaultConfig);
   const [mounted, setMounted] = useState(false);
+  const { theme, setTheme, resolvedTheme } = useTheme();
 
   useEffect(() => {
     setMounted(true);
     const initial = getInitialConfig();
+    
+    // Sync initial mode with next-themes if it differs
+    if (initial.mode !== theme && initial.mode !== "system") {
+      setTheme(initial.mode);
+    }
+    
     setConfig(initial);
-    applyTheme(initial);
   }, []);
+
+  useEffect(() => {
+    if (mounted) {
+      applyTheme(config, resolvedTheme === "dark");
+    }
+  }, [config, resolvedTheme, mounted]);
 
   const updateConfig = (updates: Partial<ThemeConfig>) => {
     const newConfig = { ...config, ...updates };
     setConfig(newConfig);
     localStorage.setItem(storageKey, JSON.stringify(newConfig));
-    applyTheme(newConfig);
+    if (updates.mode) {
+      setTheme(updates.mode);
+    }
   };
 
   const value = { config, updateConfig, mounted };

@@ -1,3 +1,5 @@
+import { getDict } from "@/lib/i18n";
+import { getLocaleFromCookies } from "@/lib/i18n-server";
 import { Crown } from "lucide-react";
 import { ChessClient } from "./chess-client";
 

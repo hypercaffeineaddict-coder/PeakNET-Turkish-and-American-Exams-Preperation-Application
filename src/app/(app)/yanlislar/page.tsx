@@ -1,3 +1,5 @@
+import { getDict } from "@/lib/i18n";
+import { getLocaleFromCookies } from "@/lib/i18n-server";
 import { redirect } from "next/navigation";
 import { BookOpen, Trash2, RotateCcw } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
@@ -33,6 +35,8 @@ export default async function YanlislarPage({
 }: {
   searchParams: Promise<{ error?: string }>;
 }) {
+  const locale = await getLocaleFromCookies();
+  const dict = getDict(locale);
   const { error } = await searchParams;
 
   const supabase = await createClient();

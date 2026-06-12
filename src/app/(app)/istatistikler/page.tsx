@@ -1,3 +1,5 @@
+import { getDict } from "@/lib/i18n";
+import { getLocaleFromCookies } from "@/lib/i18n-server";
 import { redirect } from "next/navigation";
 import {
   BarChart3,
@@ -18,6 +20,8 @@ import { TopMistakes } from "./top-mistakes";
 import { NetTrendChart } from "./net-trend";
 
 export default async function IstatistiklerPage() {
+  const locale = await getLocaleFromCookies();
+  const dict = getDict(locale);
   const supabase = await createClient();
   const {
     data: { user },

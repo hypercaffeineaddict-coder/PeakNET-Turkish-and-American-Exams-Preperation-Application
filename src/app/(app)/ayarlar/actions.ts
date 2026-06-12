@@ -110,3 +110,27 @@ export async function deleteAccount(formData: FormData) {
   await supabase.auth.signOut();
   redirect("/login?deleted=1");
 }
+
+export async function updateApiKeys(data: {
+  gemini?: string;
+  openai?: string;
+  anthropic?: string;
+  ollamaUrl?: string;
+}): Promise<{ ok?: boolean; error?: string }> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { error: "Oturum yok" };
+
+  const patch: Record<string, string> = {};
+  if (data.gemini !== undefined) patch.gemini = data.gemini.trim();
+  if (data.openai !== undefined) patch.openai = data.openai.trim();
+  if (data.anthropic !== undefined) patch.anthropic = data.anthropic.trim();
+  if (data.ollamaUrl !== undefined) patch.ollamaUrl = data.ollamaUrl.trim();
+
+  const { error } = await supabase.from("profiles").update({ api_keys: patch }).eq("id", user.id);
+  if (error) return { error: error.message };
+  revalidatePath("/ayarlar");
+  return { ok: true };
+}
