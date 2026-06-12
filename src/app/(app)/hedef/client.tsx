@@ -197,9 +197,25 @@ export function HedefClient({ dict, exams,
           <div className="flex items-start justify-between gap-3">
             <div>
               {(targetDepartment || targetUniversity) && (
-                <div className="mb-1 text-sm text-muted-foreground">
-                  {targetDepartment}
-                  {targetUniversity ? ` · ${targetUniversity}` : ""}
+                <div className="mb-3 space-y-1.5">
+                  {targetDepartment && (
+                    <div className="flex flex-wrap items-center gap-1.5">
+                      {targetDepartment.split(",").map((dept) => (
+                        <span key={dept.trim()} className="rounded-md bg-primary/10 px-2 py-0.5 text-xs font-semibold text-primary border border-primary/20">
+                          {dept.trim()}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                  {targetUniversity && (
+                    <div className="flex flex-wrap items-center gap-1.5">
+                      {targetUniversity.split(",").map((uni) => (
+                        <span key={uni.trim()} className="rounded-md bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground border border-border">
+                          {uni.trim()}
+                        </span>
+                      ))}
+                    </div>
+                  )}
                 </div>
               )}
               <div className="flex items-baseline gap-2">

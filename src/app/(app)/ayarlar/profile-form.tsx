@@ -192,7 +192,7 @@ export function ProfileForm({
         </h2>
         <div className="grid gap-3 sm:grid-cols-2">
           <label className="text-sm">
-            <span className="text-muted-foreground">{labels.universityLabel}</span>
+            <span className="text-muted-foreground">{labels.universityLabel} (Virgülle ayırabilirsiniz. Yurtdışı dahil)</span>
             <input
               name="target_university"
               list="university-list"
@@ -206,7 +206,7 @@ export function ProfileForm({
             </datalist>
           </label>
           <label className="text-sm">
-            <span className="text-muted-foreground">{labels.departmentLabel}</span>
+            <span className="text-muted-foreground">{labels.departmentLabel} (Birden fazla bölüm girebilirsiniz)</span>
             <input
               name="target_department"
               list="department-list"

@@ -155,8 +155,8 @@ export default async function OnboardingPage({
                 {t.sectionGoal}
               </header>
               <div className="grid gap-3 sm:grid-cols-2">
-                <label className="text-sm">
-                  <span className="text-muted-foreground">{t.goalUni}</span>
+                <label className="text-sm font-medium text-foreground">
+                  Hedef Üniversiteler <span className="text-muted-foreground font-normal text-xs ml-1">(Virgülle ayırabilirsiniz. Yurtdışı dahil)</span>
                   <input
                     name="target_university"
                     type="text"
@@ -171,8 +171,8 @@ export default async function OnboardingPage({
                     ))}
                   </datalist>
                 </label>
-                <label className="text-sm">
-                  <span className="text-muted-foreground">{t.goalDept}</span>
+                <label className="text-sm font-medium text-foreground">
+                  Hedef Bölümler <span className="text-muted-foreground font-normal text-xs ml-1">(Birden fazla bölüm girebilirsiniz)</span>
                   <input
                     name="target_department"
                     type="text"
@@ -215,6 +215,57 @@ export default async function OnboardingPage({
                 ))}
               </div>
               <p className="mt-3 text-xs text-muted-foreground">{t.streakHint}</p>
+            </section>
+
+            {/* AI API Key Seçiimi */}
+            <section className="rounded-2xl border border-border bg-card p-6">
+              <header className="mb-4 flex items-center gap-2 text-sm font-semibold">
+                <Sparkles size={16} className="text-primary" />
+                Yapay Zeka (Gemini) Tercihi
+              </header>
+              <div className="flex flex-col gap-3">
+                <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-border bg-background p-4 transition has-[:checked]:border-primary has-[:checked]:bg-primary/5">
+                  <input
+                    type="radio"
+                    name="api_preference"
+                    value="system"
+                    defaultChecked
+                    className="mt-1 accent-primary"
+                  />
+                  <div className="flex-1">
+                    <div className="text-sm font-medium">Sistem API'sini Kullan</div>
+                    <p className="text-xs text-muted-foreground">Sistemin paylaşımlı API limitlerine takılabilirsiniz. Düşük hız ve kısıtlı erişim.</p>
+                  </div>
+                </label>
+                <label className="group flex flex-col cursor-pointer gap-3 rounded-xl border border-border bg-background p-4 transition has-[:checked]:border-primary has-[:checked]:bg-primary/5">
+                  <div className="flex items-start gap-3">
+                    <input
+                      type="radio"
+                      name="api_preference"
+                      value="custom"
+                      className="peer mt-1 accent-primary"
+                    />
+                    <div className="flex-1">
+                      <div className="text-sm font-medium">Kendi Gemini API Anahtarımı Gireceğim</div>
+                      <p className="text-xs text-muted-foreground">Kendi anahtarınızı girerek sınırsız ve kesintisiz AI deneyimi yaşayın. Ücretsiz alınabilir.</p>
+                    </div>
+                  </div>
+                  {/* CSS ile sadece custom seçiliyken input'u göster */}
+                  <div className="hidden pl-7 group-has-[:checked]:block">
+                    <input
+                      name="gemini_api_key"
+                      type="password"
+                      placeholder="AIzaSy..."
+                      className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm outline-none transition focus:border-primary"
+                    />
+                    <p className="mt-2 text-xs text-muted-foreground">
+                      <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noreferrer" className="text-primary hover:underline">
+                        Buradan ücretsiz anahtar alabilirsiniz.
+                      </a>
+                    </p>
+                  </div>
+                </label>
+              </div>
             </section>
 
             {error && (

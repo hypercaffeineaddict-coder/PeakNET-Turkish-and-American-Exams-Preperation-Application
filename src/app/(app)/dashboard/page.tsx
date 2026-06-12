@@ -31,6 +31,7 @@ import { YKS_DATES, daysUntil } from "@/data/exam-date";
 import { levelForXp, effectiveStreak } from "@/lib/gamification";
 import { getDict, type Locale } from "@/lib/i18n";
 import { getLocaleFromCookies } from "@/lib/i18n-server";
+import { isAdminEmail } from "@/lib/admin";
 
 type DashLabels = ReturnType<typeof getDict>["dashboard"];
 
@@ -152,22 +153,40 @@ export default async function DashboardPage() {
     <div className="mx-auto grid max-w-6xl gap-6 lg:grid-cols-[1fr_320px]">
       <div className="space-y-6">
         <header className="animate-fade-up">
-          <h1 className="font-display text-3xl font-bold tracking-tight">
-            {t.greetingPrefix} {profile?.display_name ?? t.studentFallback}
-          </h1>
-          <p className="mt-1 text-sm text-muted-foreground">
+          <div className="flex items-center gap-3">
+            <h1 className="font-display text-3xl font-bold tracking-tight">
+              {t.greetingPrefix} {profile?.display_name ?? t.studentFallback}
+            </h1>
+            {(profile?.is_creator || isAdminEmail(user?.email)) && (
+              <span className="flex items-center gap-1.5 rounded-full border border-orange-500/30 bg-orange-500/10 px-2.5 py-1 text-xs font-semibold text-orange-500 shadow-[0_0_10px_rgba(249,115,22,0.2)]">
+                <Crown size={14} className="animate-pulse" />
+                Kurucu
+              </span>
+            )}
+          </div>
+          <div className="mt-2 text-sm text-muted-foreground">
             {profile?.target_department && profile?.target_university ? (
-              <>
-                {t.targetLabel}{" "}
-                <span className="font-medium text-foreground">
-                  {profile.target_department}
-                </span>{" "}
-                · {profile.target_university}
-              </>
+              <div className="flex flex-col gap-1.5">
+                <div className="flex flex-wrap items-center gap-1.5">
+                  <Target size={14} className="text-primary" />
+                  {profile.target_department.split(",").map((dept) => (
+                    <span key={dept.trim()} className="rounded-md bg-primary/10 px-2 py-0.5 text-xs font-semibold text-primary border border-primary/20">
+                      {dept.trim()}
+                    </span>
+                  ))}
+                </div>
+                <div className="flex flex-wrap items-center gap-1.5 pl-5">
+                  {profile.target_university.split(",").map((uni) => (
+                    <span key={uni.trim()} className="rounded-md bg-muted px-2 py-0.5 text-[11px] font-medium text-muted-foreground border border-border">
+                      {uni.trim()}
+                    </span>
+                  ))}
+                </div>
+              </div>
             ) : (
               t.noTargetFallback
             )}
-          </p>
+          </div>
         </header>
 
         <div className="animate-fade-up anim-d1">

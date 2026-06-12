@@ -13,6 +13,7 @@ export function ResourceForm({ topicId }: { topicId: string }) {
   const [kind, setKind] = useState<ResourceKind>("link");
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
+  const [fileName, setFileName] = useState<string | null>(null);
   const formRef = useRef<HTMLFormElement>(null);
 
   if (!open) {
@@ -41,6 +42,7 @@ export function ResourceForm({ topicId }: { topicId: string }) {
           onClick={() => {
             setOpen(false);
             setError(null);
+            setFileName(null);
           }}
           className="rounded-lg p-1 text-muted-foreground transition hover:bg-muted hover:text-foreground"
         >
@@ -59,6 +61,7 @@ export function ResourceForm({ topicId }: { topicId: string }) {
               onClick={() => {
                 setKind(k);
                 setError(null);
+                setFileName(null);
               }}
               className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium transition ${
                 isActive
@@ -75,6 +78,7 @@ export function ResourceForm({ topicId }: { topicId: string }) {
 
       <form
         ref={formRef}
+        encType="multipart/form-data"
         action={(fd) =>
           startTransition(async () => {
             setError(null);
@@ -91,6 +95,7 @@ export function ResourceForm({ topicId }: { topicId: string }) {
             toast.success("Kaynak eklendi");
             setOpen(false);
             setKind("link");
+            setFileName(null);
             formRef.current?.reset();
           })
         }
@@ -150,8 +155,14 @@ export function ResourceForm({ topicId }: { topicId: string }) {
           <label className="flex cursor-pointer items-center justify-center gap-2 rounded-lg border border-dashed border-border bg-background px-4 py-6 text-sm text-muted-foreground transition hover:border-primary hover:text-foreground">
             <Upload size={16} />
             <span>
-              <span className="text-foreground font-medium">Dosya seç</span> veya
-              buraya sürükle (PDF, DOCX, PNG, JPG · max 50 MB)
+              {fileName ? (
+                <span className="text-foreground font-medium">{fileName}</span>
+              ) : (
+                <>
+                  <span className="text-foreground font-medium">Dosya seç</span> veya
+                  buraya sürükle (PDF, DOCX, PNG, JPG · max 50 MB)
+                </>
+              )}
             </span>
             <input
               type="file"
@@ -159,6 +170,13 @@ export function ResourceForm({ topicId }: { topicId: string }) {
               required
               accept=".pdf,.png,.jpg,.jpeg,.webp,.doc,.docx,.txt,application/pdf,image/png,image/jpeg,image/webp,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain"
               className="hidden"
+              onChange={(e) => {
+                if (e.target.files && e.target.files[0]) {
+                  setFileName(e.target.files[0].name);
+                } else {
+                  setFileName(null);
+                }
+              }}
             />
           </label>
         )}
@@ -181,6 +199,7 @@ export function ResourceForm({ topicId }: { topicId: string }) {
             onClick={() => {
               setOpen(false);
               setError(null);
+              setFileName(null);
             }}
             className="rounded-lg border border-border bg-background px-4 py-2 text-sm transition hover:bg-muted"
           >

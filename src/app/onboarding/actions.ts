@@ -21,6 +21,9 @@ export async function saveOnboarding(formData: FormData) {
   const track = (TRACKS as readonly string[]).includes(trackRaw) ? trackRaw : null;
   const isExam = formData.get("is_exam_student") === "on";
 
+  const geminiApiKey = String(formData.get("gemini_api_key") || "").trim();
+  const apiKeys = geminiApiKey ? { gemini: geminiApiKey } : {};
+
   const { error } = await supabase
     .from("profiles")
     .update({
@@ -34,6 +37,7 @@ export async function saveOnboarding(formData: FormData) {
       strong_subjects: strong,
       weak_subjects: weak,
       onboarding_completed_at: new Date().toISOString(),
+      api_keys: apiKeys,
     })
     .eq("id", user.id);
 

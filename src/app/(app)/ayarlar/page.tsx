@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { Settings } from "lucide-react";
+import { Settings, Palette } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { ProfileForm } from "./profile-form";
 import { PasswordForm } from "./password-form";
@@ -89,10 +89,13 @@ export default async function AyarlarPage({
 
       <ByokForm initialKeys={(profile?.api_keys as any) || {}} />
       
-      <div className="rounded-2xl border border-border bg-card p-6">
-        <h2 className="text-lg font-semibold mb-4">Appearance</h2>
+      <section className="rounded-2xl border border-border bg-card p-6">
+        <h2 className="mb-4 flex items-center gap-2 text-base font-semibold">
+          <Palette size={18} className="text-primary" />
+          {(t as any).appearance ?? "Görünüm ve Tema"}
+        </h2>
         <ThemeSelector />
-      </div>
+      </section>
 
       <DeleteAccountForm
         email={user.email ?? ""}

@@ -2,14 +2,8 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { Chess, type Move } from "chess.js";
-import {
-  Crown,
-  RotateCcw,
-  Flag,
-  Brain,
-  Circle,
-} from "lucide-react";
-import { pickMove } from "@/lib/chess-ai";
+import { Crown, RotateCcw, Flag, Brain, Circle, Loader2 } from "lucide-react";
+import { useStockfish } from "./use-stockfish";
 
 const START_FEN = new Chess().fen();
 const STORE_KEY = "peaknet-chess-v1";
@@ -125,10 +119,12 @@ export function ChessClient() {
   const [promotion, setPromotion] = useState<{ from: string; to: string } | null>(null);
   const [loaded, setLoaded] = useState(false);
 
+  const { isReady: sfReady, isThinking: sfThinking, evaluatePosition } = useStockfish(elo);
+
   const chess = useMemo(() => new Chess(fen), [fen]);
   const turn = chess.turn();
   const gameOver = resigned || chess.isGameOver();
-  const isHumanTurn = !gameOver && turn === humanColor && !thinking && !promotion;
+  const isHumanTurn = !gameOver && turn === humanColor && !sfThinking && !promotion;
 
   // localStorage'tan yükle (mount sonrası → hidrasyon uyumsuzluğu yok)
   useEffect(() => {
@@ -186,11 +182,10 @@ export function ChessClient() {
 
   // AI sırası gelince oyna
   useEffect(() => {
-    if (!loaded || gameOver) return;
+    if (!loaded || gameOver || !sfReady) return;
     if (turn === humanColor) return;
-    setThinking(true);
-    const t = setTimeout(() => {
-      const mv = pickMove(fen, elo);
+    
+    evaluatePosition(fen, (mv) => {
       if (mv) {
         const c = new Chess(fen);
         try {
@@ -200,14 +195,8 @@ export function ChessClient() {
           /* yok say */
         }
       }
-      setThinking(false);
-    }, 350);
-    return () => {
-      clearTimeout(t);
-      setThinking(false);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fen, humanColor, gameOver, loaded, elo]);
+    });
+  }, [fen, humanColor, gameOver, loaded, elo, sfReady, evaluatePosition]);
 
   // Seçili kareden legal hedefler
   const targets = useMemo(() => {
@@ -257,12 +246,12 @@ export function ChessClient() {
     setLastMove(null);
     setSelected(null);
     setResigned(false);
+    setResigned(false);
     setPromotion(null);
-    setThinking(false);
   }
 
   function undo() {
-    if (thinking) return;
+    if (sfThinking) return;
     const n = history.slice();
     // İnsanın sırası gelene kadar yarım hamleleri geri al
     while (n.length) {
@@ -488,9 +477,13 @@ export function ChessClient() {
         {/* Durum çubuğu */}
         <div className="mx-auto mt-3 flex max-w-[560px] items-center justify-between gap-3 text-sm">
           <div className="flex items-center gap-2">
-            {thinking ? (
+            {!sfReady ? (
               <span className="flex items-center gap-1.5 text-primary">
-                <Brain size={15} className="animate-pulse" /> Yapay zeka düşünüyor…
+                <Loader2 size={15} className="animate-spin" /> Motor yükleniyor...
+              </span>
+            ) : sfThinking ? (
+              <span className="flex items-center gap-1.5 text-primary">
+                <Brain size={15} className="animate-pulse" /> Stockfish düşünüyor…
               </span>
             ) : status ? (
               <span

@@ -2,7 +2,7 @@
 
 import { useTransition, useState } from "react";
 import { updateApiKeys } from "./actions";
-import { Key } from "lucide-react";
+import { Key, ExternalLink } from "lucide-react";
 
 export function ByokForm({
   initialKeys,
@@ -37,76 +37,86 @@ export function ByokForm({
         <div>
           <h2 className="flex items-center gap-2 text-base font-semibold">
             <Key size={18} className="text-primary" />
-            AI API Keys (BYOK)
+            Yapay Zeka API Anahtarları
           </h2>
           <p className="text-sm text-muted-foreground mt-1">
-            Configure your own API keys. If set, they will be used instead of the platform defaults.
+            Kendi API anahtarlarınızı girerek sınırsız AI deneyimi yaşayın. Sistem anahtarları yerine bunlar kullanılır.
           </p>
         </div>
       </div>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="mb-1 block text-sm text-muted-foreground">
-            Gemini API Key
+          <label className="mb-1 flex items-center gap-2 text-sm text-muted-foreground">
+            Gemini API Anahtarı
+            <a
+              href="https://aistudio.google.com/app/apikey"
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-1 text-xs text-primary hover:underline"
+            >
+              <ExternalLink size={10} /> Ücretsiz al
+            </a>
           </label>
           <input
             type="password"
             value={gemini}
             onChange={(e) => setGemini(e.target.value)}
             placeholder="AIzaSy..."
-            className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary"
+            className="w-full rounded-xl border border-border bg-background px-3.5 py-2.5 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/30"
           />
         </div>
         <div>
           <label className="mb-1 block text-sm text-muted-foreground">
-            OpenAI API Key
+            OpenAI API Anahtarı
           </label>
           <input
             type="password"
             value={openai}
             onChange={(e) => setOpenai(e.target.value)}
             placeholder="sk-..."
-            className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary"
+            className="w-full rounded-xl border border-border bg-background px-3.5 py-2.5 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/30"
           />
         </div>
         <div>
           <label className="mb-1 block text-sm text-muted-foreground">
-            Anthropic API Key
+            Anthropic API Anahtarı
           </label>
           <input
             type="password"
             value={anthropic}
             onChange={(e) => setAnthropic(e.target.value)}
             placeholder="sk-ant-..."
-            className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary"
+            className="w-full rounded-xl border border-border bg-background px-3.5 py-2.5 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/30"
           />
         </div>
         <div>
           <label className="mb-1 block text-sm text-muted-foreground">
-            Ollama Base URL
+            Ollama URL
           </label>
           <input
             type="url"
             value={ollamaUrl}
             onChange={(e) => setOllamaUrl(e.target.value)}
             placeholder="http://localhost:11434"
-            className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary"
+            className="w-full rounded-xl border border-border bg-background px-3.5 py-2.5 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/30"
           />
         </div>
 
         {status === "error" && (
-          <p className="text-sm text-rose-500">{errorMsg}</p>
+          <p className="rounded-xl bg-rose-500/10 px-3.5 py-2.5 text-sm text-rose-500">{errorMsg}</p>
         )}
         {status === "success" && (
-          <p className="text-sm text-emerald-500">API keys updated successfully.</p>
+          <p className="rounded-xl bg-emerald-500/10 px-3.5 py-2.5 text-sm text-emerald-500">
+            API anahtarları başarıyla güncellendi.
+          </p>
         )}
 
         <button
           type="submit"
           disabled={isPending}
-          className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition hover:opacity-90 disabled:opacity-50"
+          className="rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-soft transition hover:opacity-90 active:scale-[0.99] disabled:opacity-50"
         >
-          {isPending ? "Saving..." : "Save API Keys"}
+          {isPending ? "Kaydediliyor..." : "Anahtarları Kaydet"}
         </button>
       </form>
     </section>

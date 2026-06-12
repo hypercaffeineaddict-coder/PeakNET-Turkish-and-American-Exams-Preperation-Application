@@ -17,29 +17,6 @@ export function GoogleButton({
   errorPrefix?: string;
 }) {
   const [busy, setBusy] = useState(false);
-  // null = bilinmiyor, true = göster, false = provider etkin değil → gizle
-  const [enabled, setEnabled] = useState<boolean | null>(null);
-
-  // Provider Supabase'de etkin mi? Etkin değilse butonu hiç gösterme.
-  useEffect(() => {
-    if (!SUPABASE_URL) {
-      setEnabled(false);
-      return;
-    }
-    const url = `${SUPABASE_URL}/auth/v1/authorize?provider=google&redirect_to=${encodeURIComponent(
-      `${window.location.origin}/auth/callback`,
-    )}`;
-    fetch(url, { redirect: "manual" })
-      .then(async (r) => {
-        if (r.type === "opaqueredirect" || r.status === 0 || (r.status >= 300 && r.status < 400)) {
-          setEnabled(true); // Google'a yönlendiriyor → etkin
-          return;
-        }
-        const t = await r.text().catch(() => "");
-        setEnabled(!/not enabled|unsupported provider/i.test(t));
-      })
-      .catch(() => setEnabled(true)); // ağ belirsizse göster (çalışan kurulumu gizleme)
-  }, []);
 
   async function signIn() {
     setBusy(true);
@@ -60,14 +37,11 @@ export function GoogleButton({
     }
   }
 
-  // Provider etkin değilse butonu gösterme (bozuk buton kalmasın)
-  if (enabled === false) return null;
-
   return (
     <button
       type="button"
       onClick={signIn}
-      disabled={busy || enabled === null}
+      disabled={busy}
       className="flex w-full items-center justify-center gap-2.5 rounded-xl border border-border bg-background px-4 py-2.5 text-sm font-medium shadow-soft transition hover:border-primary/40 hover:bg-muted disabled:opacity-60"
     >
       {busy ? (

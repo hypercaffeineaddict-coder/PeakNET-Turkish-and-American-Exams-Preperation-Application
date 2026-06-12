@@ -22,6 +22,7 @@ type Mistake = {
   repetitions: number | null;
   next_review_at: string;
   created_at: string;
+  photo_url: string | null;
 };
 
 const qualityChoices = [
@@ -106,7 +107,7 @@ export default async function YanlislarPage({
       {/* Yeni yanlış formu */}
       <section className="rounded-2xl border border-border bg-card p-5">
         <h2 className="text-sm font-semibold">Yeni yanlış ekle</h2>
-        <form action={createMistake} className="mt-4 space-y-3">
+        <form action={createMistake} className="mt-4 space-y-3" encType="multipart/form-data">
           <div className="grid gap-3 sm:grid-cols-2">
             <label className="text-sm">
               <span className="text-muted-foreground">Konu (opsiyonel)</span>
@@ -150,6 +151,15 @@ export default async function YanlislarPage({
               className="rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary"
             />
           </div>
+          <label className="block text-sm">
+            <span className="text-muted-foreground">Soru Fotoğrafı (opsiyonel)</span>
+            <input
+              type="file"
+              name="photo"
+              accept="image/*"
+              className="mt-1 block w-full text-sm text-muted-foreground file:mr-4 file:rounded-full file:border-0 file:bg-primary/10 file:px-4 file:py-2 file:text-sm file:font-medium file:text-primary hover:file:bg-primary/20"
+            />
+          </label>
           {error && (
             <p className="rounded-lg bg-rose-500/10 px-3 py-2 text-sm text-rose-500">
               {error}
@@ -246,6 +256,12 @@ function MistakeReviewCard({
             <span className="text-[10px] uppercase tracking-wider text-primary">
               {topicName}
             </span>
+          )}
+          {m.photo_url && (
+            <div className="mt-2 mb-2">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={m.photo_url} alt="Soru görseli" className="max-h-48 rounded-lg object-contain border border-border" />
+            </div>
           )}
           <p className="mt-1 whitespace-pre-wrap text-sm">{m.question_text}</p>
           {(m.my_answer || m.correct_answer) && (

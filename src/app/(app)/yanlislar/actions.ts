@@ -25,6 +25,29 @@ export async function createMistake(formData: FormData) {
     redirect("/yanlislar?error=Soru+metni+gerekli");
   }
 
+  // Handle Photo Upload
+  let photoUrl: string | null = null;
+  const photoFile = formData.get("photo") as File | null;
+  
+  if (photoFile && photoFile.size > 0) {
+    const ext = photoFile.name.split('.').pop() || 'png';
+    const filename = `${user.id}/${Date.now()}.${ext}`;
+    
+    const { data: uploadData, error: uploadError } = await supabase.storage
+      .from("mistakes_photos")
+      .upload(filename, photoFile, {
+        cacheControl: "3600",
+        upsert: false,
+      });
+
+    if (!uploadError && uploadData) {
+      const { data: urlData } = supabase.storage
+        .from("mistakes_photos")
+        .getPublicUrl(uploadData.path);
+      photoUrl = urlData.publicUrl;
+    }
+  }
+
   const { error } = await supabase.from("mistakes").insert({
     user_id: user.id,
     topic_id: topicId,
@@ -36,6 +59,7 @@ export async function createMistake(formData: FormData) {
     interval_days: 1,
     repetitions: 0,
     next_review_at: localDate(),
+    photo_url: photoUrl,
   });
   if (error) {
     redirect(`/yanlislar?error=${encodeURIComponent(error.message)}`);
