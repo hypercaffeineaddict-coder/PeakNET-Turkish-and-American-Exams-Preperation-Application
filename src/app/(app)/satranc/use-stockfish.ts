@@ -1,7 +1,11 @@
 "use client";
 
 import { useEffect, useRef, useState, useCallback } from "react";
-import { type AIMove } from "./chess-ai"; // We will still use AIMove type
+export type AIMove = {
+  from: string;
+  to: string;
+  promotion?: string;
+};
 
 export function useStockfish(elo: number) {
   const workerRef = useRef<Worker | null>(null);
