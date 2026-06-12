@@ -1,4 +1,5 @@
-import { createClient } from "@/lib/supabase/server";
+// ---- Pure utility functions (no server imports) ----
+// These can be used in both client and server components
 
 // ---- Seviye hesabı ----
 // Her seviye bir öncekinden biraz daha fazla XP ister.
@@ -71,26 +72,6 @@ export const XP = {
   examAdded: 30, // deneme ekleme
   dailyStreak: 20, // streak gününe ekleme
 } as const;
-
-// Server: XP ver (RPC)
-export async function awardXp(amount: number, reason: string): Promise<number> {
-  if (!amount || amount <= 0) return 0;
-  try {
-    const supabase = await createClient();
-    const { data, error } = await supabase.rpc("award_xp", {
-      p_amount: amount,
-      p_reason: reason,
-    });
-    if (error) {
-      console.warn("award_xp hata:", error.message);
-      return 0;
-    }
-    return (data as number) ?? 0;
-  } catch (err) {
-    console.warn("award_xp exception:", err);
-    return 0;
-  }
-}
 
 // ---- Rozet tanımları (statik) ----
 export type BadgeDef = {
@@ -215,3 +196,8 @@ export const BADGES: BadgeDef[] = [
     progress: (s) => Math.min(1, s.totalXp / 1000),
   },
 ];
+
+// Re-export awardXp from server module for backward compatibility
+// This is a server-only function, but keeping the import here allows
+// existing server components to continue importing from '@/lib/gamification'
+export { awardXp } from "./gamification-server";

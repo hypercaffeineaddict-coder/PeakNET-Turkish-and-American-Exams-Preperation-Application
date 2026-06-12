@@ -7,6 +7,7 @@ import { createClient } from "@/lib/supabase/client";
 
 export function StreakNudgeClient({ userId, labels }: { userId: string; labels: ReturnType<typeof import("@/lib/i18n").getDict>["streakNudge"] }) {
   const [show, setShow] = useState(false);
+  const [streakCount, setStreakCount] = useState(0);
 
   useEffect(() => {
     let mounted = true;
@@ -19,6 +20,7 @@ export function StreakNudgeClient({ userId, labels }: { userId: string; labels: 
       .then(({ data }) => {
         if (!mounted || !data) return;
         const count = effectiveStreak(data);
+        setStreakCount(count);
         if (count > 0 && !studiedToday(data)) setShow(true);
       });
     return () => { mounted = false; };
@@ -33,10 +35,10 @@ export function StreakNudgeClient({ userId, labels }: { userId: string; labels: 
           <Flame size={20} className="animate-ember" />
         </div>
         <div className="flex-1">
-          <p className="font-medium text-sm">{labels.title}</p>
-          <p className="text-xs text-muted-foreground">{labels.body}</p>
+          <p className="font-medium text-sm">{labels.titlePrefix} {streakCount} {labels.titleSuffix}</p>
+          <p className="text-xs text-muted-foreground">{labels.description}</p>
         </div>
-        <button onClick={() => setShow(false)} className="text-muted-foreground hover:text-foreground" aria-label={labels.dismiss}>
+        <button onClick={() => setShow(false)} className="text-muted-foreground hover:text-foreground" aria-label={labels.action}>
           <X size={18} />
         </button>
       </div>
