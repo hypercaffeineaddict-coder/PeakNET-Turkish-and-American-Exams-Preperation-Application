@@ -73,6 +73,8 @@ export default async function CozPage() {
       <SolveClient
         subjects={(subjects ?? []) as never}
         aiReady={supportsImages}
+      
+        dict={dict.coz}
       />
     </div>
   );

@@ -76,6 +76,8 @@ export default async function PaylasPage() {
         level={lv.level}
         net={lastNet}
         daysToExam={daysToExam}
+      
+        dict={dict.paylas}
       />
     </div>
   );

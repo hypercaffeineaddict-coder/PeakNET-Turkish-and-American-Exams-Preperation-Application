@@ -1,5 +1,8 @@
 "use client";
 
+import type { getDict } from "@/lib/i18n";
+type Dict = ReturnType<typeof getDict>;
+
 import { useState } from "react";
 import {
   ScanLine,
@@ -30,11 +33,9 @@ type Question = {
   topic: string;
 };
 
-export function TaramaClient({
-  subjects,
+export function TaramaClient({ dict, subjects,
   aiReady,
-}: {
-  subjects: Subject[];
+}: { dict: any, subjects: Subject[];
   aiReady: boolean;
 }) {
   const [subjectId, setSubjectId] = useState("");
@@ -137,13 +138,13 @@ export function TaramaClient({
       <div className="space-y-4">
         <div className="rounded-2xl border border-border bg-card p-6 space-y-4">
           <div>
-            <label className="text-sm text-muted-foreground">Ders</label>
+            <label className="text-sm text-muted-foreground">{dict.subjectLabel}</label>
             <select
               value={subjectId}
               onChange={(e) => setSubjectId(e.target.value)}
               className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary"
             >
-              <option value="">Ders seç...</option>
+              <option value="">{dict.selectSubject}</option>
               {Object.entries(grouped).map(([exam, subs]) => (
                 <optgroup key={exam} label={exam}>
                   {subs.map((s) => (
@@ -157,7 +158,7 @@ export function TaramaClient({
           </div>
 
           <div>
-            <label className="text-sm text-muted-foreground">Soru sayısı</label>
+            <label className="text-sm text-muted-foreground">{dict.questionCountLabel}</label>
             <div className="mt-1 flex gap-2">
               {[5, 10, 15, 20].map((n) => (
                 <button
@@ -193,11 +194,11 @@ export function TaramaClient({
             ) : (
               <ScanLine size={16} />
             )}
-            {loading ? "AI tarama testini hazırlıyor..." : "Tarama testini başlat"}
+            {loading ? dict.loadingText : dict.startTest}
           </button>
           {loading && (
             <p className="text-center text-xs text-muted-foreground">
-              ~30-60 saniye sürebilir.
+              {dict.loadingEstimate}
             </p>
           )}
         </div>
@@ -218,14 +219,14 @@ export function TaramaClient({
                   /{report.total}
                 </span>
               </h3>
-              <p className="text-sm text-muted-foreground">{subjectName} tarama sonucu</p>
+              <p className="text-sm text-muted-foreground">{dict.scanResult}</p>
             </div>
             {savedWrongs && (
               <a
                 href="/yanlislar"
                 className="inline-flex items-center gap-1.5 rounded-lg border border-amber-500/30 bg-amber-500/5 px-3 py-1.5 text-xs text-amber-500"
               >
-                <BookOpen size={12} /> Yanlışlar deftere eklendi
+                <BookOpen size={12} /> {dict.wrongsAdded}
               </a>
             )}
           </div>
@@ -233,7 +234,7 @@ export function TaramaClient({
           {report.weak.length > 0 ? (
             <div className="mt-4">
               <div className="mb-2 flex items-center gap-1.5 text-sm font-medium text-rose-500">
-                <TrendingDown size={14} /> Zayıf konuların
+                <TrendingDown size={14} /> {dict.weakTopics}
               </div>
               <ul className="space-y-1.5">
                 {report.weak.map(([topic, v]) => (
@@ -251,7 +252,7 @@ export function TaramaClient({
             </div>
           ) : (
             <p className="mt-4 text-sm text-emerald-500">
-              Tüm konularda başarılısın! 🎉
+              {dict.allSuccessful}
             </p>
           )}
 
@@ -260,7 +261,7 @@ export function TaramaClient({
             onClick={reset}
             className="mt-4 inline-flex items-center gap-1.5 rounded-lg border border-border bg-background px-3 py-1.5 text-sm transition hover:bg-muted"
           >
-            <RotateCcw size={12} /> Yeni tarama
+            <RotateCcw size={12} /> {dict.newScan}
           </button>
         </div>
       )}
@@ -329,7 +330,7 @@ export function TaramaClient({
               </div>
               {submitted && q.explanation && (
                 <div className="mt-3 ml-9 rounded-lg bg-muted/40 p-3">
-                  <p className="text-xs font-semibold">Çözüm</p>
+                  <p className="text-xs font-semibold">{dict.solution}</p>
                   <p className="mt-1 text-xs text-muted-foreground">
                     {q.explanation}
                   </p>
@@ -352,7 +353,7 @@ export function TaramaClient({
             disabled={Object.keys(answers).length !== questions.length}
             className="inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-2 text-sm font-medium text-primary-foreground transition hover:opacity-90 disabled:opacity-50"
           >
-            <Check size={14} /> Bitir ve sonucu gör
+            <Check size={14} /> {dict.finishAndSeeResults}
           </button>
         </div>
       )}

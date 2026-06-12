@@ -31,7 +31,9 @@ export default async function MuzikPage() {
         </p>
       </header>
 
-      <MuzikClient configured={configured} />
+      <MuzikClient configured={configured} 
+        dict={dict.muzik}
+      />
     </div>
   );
 }

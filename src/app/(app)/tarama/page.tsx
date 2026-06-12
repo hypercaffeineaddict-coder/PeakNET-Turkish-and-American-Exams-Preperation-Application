@@ -68,6 +68,8 @@ export default async function TaramaPage() {
       <TaramaClient
         subjects={(subjects ?? []) as never}
         aiReady={health.ok && health.hasChatModel}
+      
+        dict={dict.tarama}
       />
     </div>
   );

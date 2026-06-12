@@ -1,5 +1,8 @@
 "use client";
 
+import type { getDict } from "@/lib/i18n";
+type Dict = ReturnType<typeof getDict>;
+
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Sparkles, Loader2 } from "lucide-react";
@@ -7,11 +10,9 @@ import { toast } from "sonner";
 
 type Subject = { id: string; name: string; topics: { id: string; name: string }[] };
 
-export function SoruUretClient({
-  subjects,
+export function SoruUretClient({ dict, subjects,
   aiReady,
-}: {
-  subjects: Subject[];
+}: { dict: any, subjects: Subject[];
   aiReady: boolean;
 }) {
   const router = useRouter();
@@ -24,7 +25,7 @@ export function SoruUretClient({
 
   async function generate() {
     if (!topicId) {
-      toast.error("Önce ders ve konu seç.");
+      toast.error(dict.selectSubjectAndTopicError);
       return;
     }
     setBusy(true);
@@ -36,13 +37,13 @@ export function SoruUretClient({
       });
       const text = await res.text();
       if (!res.ok) {
-        toast.error(text.slice(0, 160) || "Üretim başarısız");
+        toast.error(text.slice(0, 160) || dict.generationFailed);
         return;
       }
-      toast.success("Test üretildi! Konuya yönlendiriliyorsun…");
+      toast.success(dict.testGeneratedSuccess);
       router.push(`/konular/${topicId}?kaynak=test`);
     } catch {
-      toast.error("Bağlantı hatası");
+      toast.error(dict.connectionError);
     } finally {
       setBusy(false);
     }
@@ -52,17 +53,17 @@ export function SoruUretClient({
     <section className="rounded-2xl border border-border bg-card p-6">
       <h2 className="flex items-center gap-2 text-sm font-semibold">
         <Sparkles size={16} className="text-violet-500" />
-        Konudan test üret
+        {dict.generateTestFromTopic}
       </h2>
 
       {!aiReady ? (
         <p className="mt-3 rounded-lg bg-amber-500/10 p-3 text-sm text-amber-600 dark:text-amber-400">
-          AI bağlantısı yok — test üretimi için yapılandırma gerekiyor.
+          {dict.aiNotReady}
         </p>
       ) : (
         <div className="mt-4 flex flex-wrap items-end gap-3">
           <label className="text-sm">
-            <span className="text-xs text-muted-foreground">Ders</span>
+            <span className="text-xs text-muted-foreground">{dict.subjectLabel}</span>
             <select
               value={subjectId}
               onChange={(e) => {
@@ -71,28 +72,28 @@ export function SoruUretClient({
               }}
               className="mt-1 block w-44 rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary"
             >
-              <option value="">Seç…</option>
+              <option value="">{dict.selectPlaceholder}</option>
               {subjects.map((s) => (
                 <option key={s.id} value={s.id}>{s.name}</option>
               ))}
             </select>
           </label>
           <label className="text-sm">
-            <span className="text-xs text-muted-foreground">Konu</span>
+            <span className="text-xs text-muted-foreground">{dict.topicLabel}</span>
             <select
               value={topicId}
               onChange={(e) => setTopicId(e.target.value)}
               disabled={!subjectId}
               className="mt-1 block w-56 rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary disabled:opacity-50"
             >
-              <option value="">Seç…</option>
+              <option value="">{dict.selectPlaceholder}</option>
               {topics.map((t) => (
                 <option key={t.id} value={t.id}>{t.name}</option>
               ))}
             </select>
           </label>
           <label className="text-sm">
-            <span className="text-xs text-muted-foreground">Soru</span>
+            <span className="text-xs text-muted-foreground">{dict.questionLabel}</span>
             <select
               value={count}
               onChange={(e) => setCount(Number(e.target.value))}
@@ -110,7 +111,7 @@ export function SoruUretClient({
             className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition hover:opacity-90 disabled:opacity-50"
           >
             {busy ? <Loader2 size={15} className="animate-spin" /> : <Sparkles size={15} />}
-            {busy ? "Üretiliyor… (~30sn)" : "Test üret"}
+            {busy ? dict.generating : dict.generateTest}
           </button>
         </div>
       )}

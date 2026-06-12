@@ -1,5 +1,8 @@
 "use client";
 
+import type { getDict } from "@/lib/i18n";
+type Dict = ReturnType<typeof getDict>;
+
 import { useEffect, useRef, useState } from "react";
 import { Download, Share2, Loader2 } from "lucide-react";
 import { toast } from "sonner";
@@ -14,16 +17,14 @@ function fmtHours(min: number): string {
   return `${m}dk`;
 }
 
-export function PaylasClient({
-  name,
+export function PaylasClient({ dict, name,
   weekMinutes,
   streak,
   longest,
   level,
   net,
   daysToExam,
-}: {
-  name: string;
+}: { dict: any, name: string;
   weekMinutes: number;
   streak: number;
   longest: number;
@@ -70,7 +71,7 @@ export function PaylasClient({
     ctx.textAlign = "right";
     ctx.font = "600 26px ui-sans-serif, system-ui, sans-serif";
     ctx.fillStyle = "#a1a1aa";
-    ctx.fillText("BU HAFTA", W - 80, 105);
+    ctx.fillText(dict.thisWeek, W - 80, 105);
 
     // İsim
     ctx.textAlign = "left";
@@ -88,13 +89,13 @@ export function PaylasClient({
     ctx.fillText(fmtHours(weekMinutes), cx, 420);
     ctx.font = "500 34px ui-sans-serif, system-ui, sans-serif";
     ctx.fillStyle = "#a1a1aa";
-    ctx.fillText("bu hafta çalışma", cx, 480);
+    ctx.fillText(dict.weeklyStudy, cx, 480);
 
     // Stat tiles
     const tiles: { label: string; value: string }[] = [
-      { label: "🔥 Streak", value: `${streak} gün` },
-      { label: "Seviye", value: `Sv.${level}` },
-      { label: "Son net", value: net != null ? net.toFixed(1) : "—" },
+      { label: dict.streakLabel, value: `${streak} gün` },
+      { label: dict.levelLabel, value: `Sv.${level}` },
+      { label: dict.lastNetLabel, value: net != null ? net.toFixed(1) : "—" },
     ];
     const tileW = 290;
     const gap = 30;
@@ -135,7 +136,7 @@ export function PaylasClient({
     ctx.font = "500 32px ui-sans-serif, system-ui, sans-serif";
     ctx.fillStyle = "#d4d4d8";
     ctx.fillText(
-      longest > streak ? `En uzun serin: ${longest} gün` : "Her gün bir adım. 💪",
+      longest > streak ? `En uzun serin: ${longest} gün` : dict.motivationText,
       cx,
       1070,
     );
@@ -143,7 +144,7 @@ export function PaylasClient({
     // Footer
     ctx.font = "600 30px ui-sans-serif, system-ui, sans-serif";
     ctx.fillStyle = "#71717a";
-    ctx.fillText("PeakNET · YKS çalışma platformu", cx, H - 70);
+    ctx.fillText(dict.footerText, cx, H - 70);
   }, [name, weekMinutes, streak, longest, level, net, daysToExam]);
 
   async function getBlob(): Promise<Blob | null> {
@@ -163,7 +164,7 @@ export function PaylasClient({
     a.click();
     a.remove();
     setTimeout(() => URL.revokeObjectURL(url), 1000);
-    toast.success("Kart indirildi.");
+    toast.success(dict.cardDownloaded);
   }
 
   async function share() {
@@ -179,12 +180,12 @@ export function PaylasClient({
       if (navAny.share && navAny.canShare?.({ files: [file] })) {
         await navAny.share({
           files: [file],
-          title: "PeakNET ilerlemem",
-          text: "Bu hafta YKS çalışmam 🔥 #PeakNET",
+          title: dict.shareTitle,
+          text: dict.shareText,
         });
       } else {
         await download();
-        toast.message("Cihazın doğrudan paylaşımı desteklemiyor — kart indirildi.");
+        toast.message(dict.shareNotSupported);
       }
     } catch {
       // kullanıcı iptal etmiş olabilir
@@ -218,7 +219,7 @@ export function PaylasClient({
           onClick={download}
           className="inline-flex items-center justify-center gap-2 rounded-lg border border-border px-4 py-2.5 text-sm font-medium transition hover:bg-muted"
         >
-          <Download size={15} /> İndir
+          <Download size={15} /> {dict.downloadBtn}
         </button>
       </div>
       <p className="text-xs text-muted-foreground">

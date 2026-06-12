@@ -1,5 +1,8 @@
 "use client";
 
+import type { getDict } from "@/lib/i18n";
+type Dict = ReturnType<typeof getDict>;
+
 import { useEffect, useMemo, useState } from "react";
 import { Target, Trophy, TrendingUp, Pencil, Flag } from "lucide-react";
 import {
@@ -46,13 +49,11 @@ function buildSeries(exams: ExamLite[], type: PuanTuru) {
   return out;
 }
 
-export function HedefClient({
-  exams,
+export function HedefClient({ dict, exams,
   defaultType,
   targetDepartment,
   targetUniversity,
-}: {
-  exams: ExamLite[];
+}: { dict: any, exams: ExamLite[];
   defaultType: PuanTuru;
   targetDepartment: string | null;
   targetUniversity: string | null;
@@ -99,7 +100,7 @@ export function HedefClient({
     return (
       <section className="rounded-2xl border border-border bg-card p-6">
         <h2 className="flex items-center gap-2 text-sm font-semibold">
-          <Flag size={15} className="text-primary" /> Hedefini belirle
+          <Flag size={15} className="text-primary" /> {dict.setGoalTitle}
         </h2>
         <p className="mt-1 text-xs text-muted-foreground">
           Hangi puan türünde, kaçıncı sıraya girmek istiyorsun? (Cihazında
@@ -107,7 +108,7 @@ export function HedefClient({
         </p>
         <div className="mt-4 grid gap-3 sm:grid-cols-[1fr_1fr]">
           <label className="text-sm">
-            <span className="text-xs text-muted-foreground">Puan türü</span>
+            <span className="text-xs text-muted-foreground">{dict.scoreTypeLabel}</span>
             <select
               value={type}
               onChange={(e) => setType(e.target.value as PuanTuru)}
@@ -120,14 +121,14 @@ export function HedefClient({
             </select>
           </label>
           <label className="text-sm">
-            <span className="text-xs text-muted-foreground">Hedef sıralama</span>
+            <span className="text-xs text-muted-foreground">{dict.targetRankLabel}</span>
             <input
               type="number"
               min={1}
               step={1000}
               value={rankInput || ""}
               onChange={(e) => setRankInput(Math.max(0, Number(e.target.value) || 0))}
-              placeholder="örn. 50000"
+              placeholder={dict.rankPlaceholder}
               className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary"
             />
           </label>
@@ -139,7 +140,7 @@ export function HedefClient({
               onClick={() => setEditing(false)}
               className="rounded-lg border border-border px-4 py-2 text-sm transition hover:bg-muted"
             >
-              Vazgeç
+              {dict.cancelButton}
             </button>
           )}
           <button
@@ -148,7 +149,7 @@ export function HedefClient({
             disabled={!rankInput}
             className="rounded-lg bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground shadow-soft transition hover:opacity-90 disabled:opacity-50"
           >
-            Kaydet
+            {dict.saveButton}
           </button>
         </div>
       </section>
@@ -220,7 +221,7 @@ export function HedefClient({
               onClick={() => setEditing(true)}
               className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-card/70 px-3 py-1.5 text-xs font-medium backdrop-blur transition hover:bg-card"
             >
-              <Pencil size={12} /> Değiştir
+              <Pencil size={12} /> {dict.changeButton}
             </button>
           </div>
 
@@ -243,7 +244,7 @@ export function HedefClient({
             <div className="mt-2 text-sm">
               {reached ? (
                 <span className="font-medium text-emerald-500">
-                  🎯 Hedef sıralamana ulaştın! Daha iyi bir hedef belirleyebilirsin.
+                  {dict.goalReachedText}
                 </span>
               ) : bestRank == null ? (
                 <span className="text-muted-foreground">
@@ -263,19 +264,19 @@ export function HedefClient({
       <div className="grid gap-3 sm:grid-cols-3">
         <MiniStat
           icon={Trophy}
-          label="En iyi sıra"
+          label={dict.bestRankLabel}
           value={bestRank != null ? formatRank(bestRank) : "—"}
           color="text-amber-500"
         />
         <MiniStat
           icon={TrendingUp}
-          label="Son deneme"
+          label={dict.latestExamLabel}
           value={latestRank != null ? formatRank(latestRank) : "—"}
           color="text-primary"
         />
         <MiniStat
           icon={Target}
-          label="Hedef"
+          label={dict.targetLabel}
           value={formatRank(goal.rank)}
           color="text-emerald-500"
         />
@@ -290,8 +291,8 @@ export function HedefClient({
           <p className="mt-3 text-sm text-muted-foreground">
             Bu puan türünde tahmini sıralama hesaplanabilir denemen yok.{" "}
             {goal.type === "TYT"
-              ? "TYT denemesi ekleyince burada görünür."
-              : "AYT denemesi ekleyince burada görünür (varsa son TYT netinle eşlenir)."}
+              ? dict.addTytExamText
+              : dict.addAytExamText}
           </p>
         ) : (
           <div className="relative mt-6 flex items-end gap-1.5">

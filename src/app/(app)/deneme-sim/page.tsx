@@ -44,7 +44,9 @@ export default async function DenemeSimPage() {
         </div>
       )}
 
-      <DenemeSimClient aiReady={health.ok && health.hasChatModel} />
+      <DenemeSimClient aiReady={health.ok && health.hasChatModel} 
+        dict={dict['deneme-sim']}
+      />
     </div>
   );
 }

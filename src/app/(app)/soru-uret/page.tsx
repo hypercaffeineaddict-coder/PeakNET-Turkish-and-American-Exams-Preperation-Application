@@ -65,6 +65,8 @@ export default async function SoruUretPage() {
       <SoruUretClient
         subjects={subjects}
         aiReady={health.ok && health.hasChatModel}
+      
+        dict={dict['soru-uret']}
       />
 
       {/* Diğer üretim araçları */}

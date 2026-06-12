@@ -45,7 +45,9 @@ export default async function NotlarPage() {
         </div>
       )}
 
-      <NotlarClient aiReady={aiReady} />
+      <NotlarClient aiReady={aiReady} 
+        dict={dict.notlar}
+      />
     </div>
   );
 }

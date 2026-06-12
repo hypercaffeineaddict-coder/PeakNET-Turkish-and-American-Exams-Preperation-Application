@@ -73,6 +73,8 @@ export default async function HedefPage() {
         targetUniversity={
           (profile as { target_university?: string | null } | null)?.target_university ?? null
         }
+      
+        dict={dict.hedef}
       />
     </div>
   );

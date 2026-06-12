@@ -86,6 +86,7 @@ export default async function KartlarPage() {
       </header>
 
       <KartlarClient
+        dict={dict.kartlar}
         due={due}
         totalCards={allCards.length}
         decks={decks}

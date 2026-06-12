@@ -1,6 +1,9 @@
 "use client";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import type { getDict } from "@/lib/i18n";
+type Dict = ReturnType<typeof getDict>;
+
 import { useEffect, useRef, useState } from "react";
 import { Search, Loader2, Play, Pause, ExternalLink, LogOut, Music2 } from "lucide-react";
 import { toast } from "sonner";
@@ -22,7 +25,7 @@ declare global {
   }
 }
 
-export function MuzikClient({ configured }: { configured: boolean }) {
+export function MuzikClient({ dict, configured }: { dict: any, configured: boolean }) {
   const [connected, setConnected] = useState(false);
   const [premium, setPremium] = useState<boolean | null>(null); // null=bilinmiyor
   const [deviceId, setDeviceId] = useState<string | null>(null);
@@ -48,7 +51,7 @@ export function MuzikClient({ configured }: { configured: boolean }) {
         };
         if (!consumeState(state)) {
           cleanUrl();
-          toast.error("Güvenlik doğrulaması başarısız (state). Tekrar dene.");
+          toast.error(dict.securityVerificationFailed);
           setConnected(isConnected());
           return;
         }
@@ -56,9 +59,9 @@ export function MuzikClient({ configured }: { configured: boolean }) {
         cleanUrl();
         if (ok) {
           setConnected(true);
-          toast.success("Spotify bağlandı!");
+          toast.success(dict.spotifyConnected);
         } else {
-          toast.error("Spotify bağlanamadı, tekrar dene.");
+          toast.error(dict.spotifyConnectionFailed);
         }
       } else {
         setConnected(isConnected());
@@ -90,7 +93,7 @@ export function MuzikClient({ configured }: { configured: boolean }) {
       });
       player.addListener("account_error", () => {
         setPremium(false);
-        toast.message("Tam çalma Spotify Premium gerektirir — önizleme moduna geçildi.");
+        toast.message(dict.premiumRequiredPreviewMode);
       });
       player.addListener("initialization_error", () => setPremium(false));
       player.addListener("authentication_error", () => {
@@ -119,7 +122,7 @@ export function MuzikClient({ configured }: { configured: boolean }) {
         `/search?q=${encodeURIComponent(query)}&type=track&limit=20`,
       );
       setResults(data?.tracks?.items ?? []);
-      if (!data) toast.error("Arama başarısız — bağlantını kontrol et.");
+      if (!data) toast.error(dict.searchFailed);
     } finally {
       setSearching(false);
     }
@@ -147,7 +150,7 @@ export function MuzikClient({ configured }: { configured: boolean }) {
         setIsPaused(false);
       }
     } else {
-      toast.message("Bu şarkının önizlemesi yok — Spotify'da açabilirsin.");
+      toast.message(dict.noPreviewAvailable);
     }
   }
 
@@ -171,7 +174,7 @@ export function MuzikClient({ configured }: { configured: boolean }) {
     return (
       <div className="rounded-2xl border border-amber-500/30 bg-amber-500/5 p-5 text-sm">
         <div className="font-medium text-amber-600 dark:text-amber-400">
-          Spotify yapılandırılmadı
+          {dict.spotifyNotConfigured}
         </div>
         <p className="mt-1 text-muted-foreground">
           Bu özelliğin çalışması için <code>NEXT_PUBLIC_SPOTIFY_CLIENT_ID</code>{" "}
@@ -197,7 +200,7 @@ export function MuzikClient({ configured }: { configured: boolean }) {
           onClick={() => beginSpotifyAuth()}
           className="mt-5 inline-flex items-center gap-2 rounded-lg bg-[#1DB954] px-5 py-2.5 text-sm font-semibold text-white transition hover:opacity-90"
         >
-          <Music2 size={16} /> Spotify ile bağlan
+          <Music2 size={16} /> {dict.connectWithSpotify}
         </button>
       </div>
     );
@@ -208,7 +211,7 @@ export function MuzikClient({ configured }: { configured: boolean }) {
       <div className="flex items-center justify-between">
         <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
           <span className="h-2 w-2 rounded-full bg-[#1DB954]" />
-          Spotify bağlı{premium === false ? " · önizleme modu (Premium değil)" : premium ? " · Premium" : ""}
+          Spotify bağlı{premium === false ? dict.previewModeNotPremium : premium ? dict.premiumStatus : ""}
         </span>
         <button
           type="button"
@@ -220,7 +223,7 @@ export function MuzikClient({ configured }: { configured: boolean }) {
           }}
           className="inline-flex items-center gap-1.5 text-xs text-muted-foreground transition hover:text-foreground"
         >
-          <LogOut size={13} /> Bağlantıyı kes
+          <LogOut size={13} /> {dict.disconnect}
         </button>
       </div>
 
@@ -232,7 +235,7 @@ export function MuzikClient({ configured }: { configured: boolean }) {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && search()}
-            placeholder="Şarkı, sanatçı ara…"
+            placeholder={dict.searchPlaceholder}
             className="w-full rounded-lg border border-border bg-background py-2 pl-9 pr-3 text-sm outline-none focus:border-primary"
           />
         </div>
@@ -273,7 +276,7 @@ export function MuzikClient({ configured }: { configured: boolean }) {
             <button
               type="button"
               onClick={() => playTrack(t)}
-              title="Çal"
+              title={dict.play}
               className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary transition hover:bg-primary/20"
             >
               <Play size={15} />
@@ -282,7 +285,7 @@ export function MuzikClient({ configured }: { configured: boolean }) {
               href={t.external_urls.spotify}
               target="_blank"
               rel="noopener noreferrer"
-              title="Spotify'da aç"
+              title={dict.openInSpotify}
               className="inline-flex h-8 w-8 items-center justify-center rounded-full text-muted-foreground transition hover:bg-muted hover:text-foreground"
             >
               <ExternalLink size={14} />
@@ -302,7 +305,7 @@ export function MuzikClient({ configured }: { configured: boolean }) {
             <div className="truncate text-sm font-medium">{nowPlaying.name}</div>
             <div className="truncate text-xs text-muted-foreground">
               {nowPlaying.artists.map((a) => a.name).join(", ")}
-              {!deviceId && nowPlaying.preview_url ? " · önizleme (30 sn)" : ""}
+              {!deviceId && nowPlaying.preview_url ? dict.preview30s : ""}
             </div>
           </div>
           <button

@@ -1,19 +1,24 @@
 "use client";
 
+import type { getDict } from "@/lib/i18n";
+type Dict = ReturnType<typeof getDict>;
+
 import { useState } from "react";
 import { Sparkles, Loader2, FileDown, NotebookPen } from "lucide-react";
 import { toast } from "sonner";
 import { Markdown } from "@/components/markdown";
 
+
+
 const EXAMPLES = [
-  "TYT Türev temel kuralları ve örnek sorular",
-  "AYT Kimya — Asit Baz: anahtar formüller",
-  "Polinomlar konusu — sınav öncesi özeti",
-  "Paragraf çözümünde 5 altın kural",
-  "Trigonometri özdeşlikleri tek sayfa formül kağıdı",
+  "Türev Alma Kuralları",
+  "Organik Kimya - Alkanlar",
+  "Polinomlar - Bölme İşlemi",
+  "Paragrafta Ana Düşünce",
+  "Trigonometrik Özdeşlikler",
 ];
 
-export function NotlarClient({ aiReady }: { aiReady: boolean }) {
+export function NotlarClient({ dict, aiReady }: { dict: any, aiReady: boolean }) {
   const [topic, setTopic] = useState("");
   const [length, setLength] = useState<"kisa" | "detayli">("kisa");
   const [loading, setLoading] = useState(false);
@@ -24,7 +29,7 @@ export function NotlarClient({ aiReady }: { aiReady: boolean }) {
     const t = (text ?? topic).trim();
     if (!t) return;
     if (!aiReady) {
-      toast.error("AI bağlantısı yok. GEMINI_API_KEY gerekli.");
+      toast.error(dict.noAiConnection);
       return;
     }
     setLoading(true);
@@ -63,7 +68,7 @@ export function NotlarClient({ aiReady }: { aiReady: boolean }) {
     <div className="space-y-5">
       <section className="rounded-2xl border border-border bg-card p-5 no-print">
         <label className="text-sm">
-          <span className="text-xs text-muted-foreground">Hangi konunun notunu istersin?</span>
+          <span className="text-xs text-muted-foreground">{dict.inputLabel}</span>
           <input
             value={topic}
             onChange={(e) => setTopic(e.target.value)}
@@ -73,7 +78,7 @@ export function NotlarClient({ aiReady }: { aiReady: boolean }) {
                 void generate();
               }
             }}
-            placeholder="örn. AYT Matematik — Limit ve süreklilik"
+            placeholder={dict.inputPlaceholder}
             className="mt-1 w-full rounded-xl border border-border bg-background px-3.5 py-2.5 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/30"
           />
         </label>
@@ -86,7 +91,7 @@ export function NotlarClient({ aiReady }: { aiReady: boolean }) {
                 length === "kisa" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"
               }`}
             >
-              Kısa özet
+              {dict.shortSummary}
             </button>
             <button
               type="button"
@@ -95,7 +100,7 @@ export function NotlarClient({ aiReady }: { aiReady: boolean }) {
                 length === "detayli" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"
               }`}
             >
-              Detaylı
+              {dict.detailed}
             </button>
           </div>
           <button
@@ -128,14 +133,14 @@ export function NotlarClient({ aiReady }: { aiReady: boolean }) {
 
       {loading && (
         <div className="flex items-center justify-center gap-2 rounded-2xl border border-dashed border-border bg-card p-10 text-sm text-muted-foreground no-print">
-          <Loader2 size={16} className="animate-spin" /> Not hazırlanıyor...
+          <Loader2 size={16} className="animate-spin" /> {dict.preparing}
         </div>
       )}
 
       {!notes && !loading && (
         <div className="rounded-2xl border border-dashed border-border bg-card p-12 text-center no-print">
           <NotebookPen size={36} className="mx-auto text-muted-foreground" />
-          <h2 className="mt-4 text-lg font-semibold">Not bekleniyor</h2>
+          <h2 className="mt-4 text-lg font-semibold">{dict.waitingTitle}</h2>
           <p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground">
             Konuyu yaz; AI sınava odaklı, başlıklı/maddeli bir çalışma notu
             hazırlasın. Hazırlandığında PDF olarak indirebilirsin.
@@ -154,7 +159,7 @@ export function NotlarClient({ aiReady }: { aiReady: boolean }) {
               onClick={downloadPdf}
               className="inline-flex items-center gap-1.5 rounded-xl border border-border bg-card px-4 py-2 text-sm font-medium transition hover:border-primary/40 hover:bg-muted"
             >
-              <FileDown size={14} /> PDF olarak indir
+              <FileDown size={14} /> {dict.downloadPdf}
             </button>
           </div>
 

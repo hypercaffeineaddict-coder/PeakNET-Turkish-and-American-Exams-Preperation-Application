@@ -1,5 +1,8 @@
 "use client";
 
+import type { getDict } from "@/lib/i18n";
+type Dict = ReturnType<typeof getDict>;
+
 import { useRef, useState } from "react";
 import {
   Upload,
@@ -19,11 +22,9 @@ type Subject = {
   topics: { id: string; name: string; display_order: number }[];
 };
 
-export function SolveClient({
-  subjects,
+export function SolveClient({ dict, subjects,
   aiReady,
-}: {
-  subjects: Subject[];
+}: { dict: any, subjects: Subject[];
   aiReady: boolean;
 }) {
   const [file, setFile] = useState<File | null>(null);
@@ -97,8 +98,8 @@ export function SolveClient({
       if (topicId) fd.set("topic_id", topicId);
       // Soru metni: kullanıcı notu + "Görsel soru" işareti
       const qText = userNote
-        ? `${userNote}\n\n[Görsel soru — ${file?.name ?? "yüklenen"}]`
-        : `[Görsel soru — ${file?.name ?? "yüklenen"}]`;
+        ? `${userNote}\n\n[Görsel soru — ${file?.name ?? dict.uploaded}]`
+        : `[Görsel soru — ${file?.name ?? dict.uploaded}]`;
       fd.set("question_text", qText);
       fd.set("reason", solution.slice(0, 2000));
       const result = await saveSolutionAsMistake(fd);
@@ -107,7 +108,7 @@ export function SolveClient({
         toast.error(result.error);
       } else {
         setSavedMistake(true);
-        toast.success("Yanlış defterine eklendi");
+        toast.success(dict.addedToMistakes);
       }
     } finally {
       setSaving(false);
@@ -141,9 +142,9 @@ export function SolveClient({
               <Camera size={26} className="text-primary" />
             </div>
             <div>
-              <h2 className="text-base font-semibold">Soru fotoğrafı yükle</h2>
+              <h2 className="text-base font-semibold">{dict.uploadQuestionPhoto}</h2>
               <p className="mt-1 text-sm text-muted-foreground">
-                Sürükle bırak, dosya seç, veya telefondan çek.
+                {dict.uploadInstructions}
               </p>
             </div>
             <div className="flex flex-wrap items-center justify-center gap-2">
@@ -154,7 +155,7 @@ export function SolveClient({
                 className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition hover:opacity-90 disabled:opacity-50"
               >
                 <Upload size={14} />
-                Dosya seç
+                {dict.selectFile}
               </button>
               <button
                 type="button"
@@ -163,11 +164,11 @@ export function SolveClient({
                 className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-card px-4 py-2 text-sm transition hover:bg-muted disabled:opacity-50"
               >
                 <Camera size={14} />
-                Kameradan çek
+                {dict.takePhoto}
               </button>
             </div>
             <p className="text-[11px] text-muted-foreground">
-              PNG / JPG / WebP · max 8 MB
+              {dict.fileRequirements}
             </p>
           </div>
           <input
@@ -195,7 +196,7 @@ export function SolveClient({
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
                   src={previewUrl}
-                  alt="Soru"
+                  alt={dict.questionAlt}
                   className="max-h-[480px] w-full object-contain bg-black/10"
                 />
               )}
@@ -207,7 +208,7 @@ export function SolveClient({
                 className="inline-flex items-center gap-1 rounded-lg border border-border bg-card px-3 py-1.5 text-xs transition hover:bg-muted"
               >
                 <X size={12} />
-                Başka soru
+                {dict.anotherQuestion}
               </button>
               <span className="text-xs text-muted-foreground">
                 {file.name} · {(file.size / 1024).toFixed(0)} KB
@@ -219,7 +220,7 @@ export function SolveClient({
           <div className="space-y-3">
             <div className="grid gap-3 sm:grid-cols-2">
               <label className="text-sm">
-                <span className="text-muted-foreground">Ders (opsiyonel)</span>
+                <span className="text-muted-foreground">{dict.subjectOptional}</span>
                 <select
                   value={subjectId}
                   onChange={(e) => {
@@ -228,7 +229,7 @@ export function SolveClient({
                   }}
                   className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary"
                 >
-                  <option value="">— Seçme</option>
+                  <option value="">{dict.doNotSelect}</option>
                   {subjects.map((s) => (
                     <option key={s.id} value={s.id}>
                       {s.name}
@@ -237,14 +238,14 @@ export function SolveClient({
                 </select>
               </label>
               <label className="text-sm">
-                <span className="text-muted-foreground">Konu (opsiyonel)</span>
+                <span className="text-muted-foreground">{dict.topicOptional}</span>
                 <select
                   value={topicId}
                   onChange={(e) => setTopicId(e.target.value)}
                   disabled={!subjectId}
                   className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary disabled:opacity-50"
                 >
-                  <option value="">— Seçme</option>
+                  <option value="">{dict.doNotSelect}</option>
                   {topics
                     .slice()
                     .sort((a, b) => a.display_order - b.display_order)
@@ -259,13 +260,13 @@ export function SolveClient({
 
             <label className="block text-sm">
               <span className="text-muted-foreground">
-                Notun (opsiyonel) — nerede takıldın?
+                {dict.noteOptional}
               </span>
               <textarea
                 value={userNote}
                 onChange={(e) => setUserNote(e.target.value)}
                 rows={3}
-                placeholder="Örn. İkinci adımda neden π/4 kullanıyoruz anlayamadım..."
+                placeholder={dict.notePlaceholder}
                 className="mt-1 w-full resize-y rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary"
               />
             </label>
@@ -281,7 +282,7 @@ export function SolveClient({
               ) : (
                 <Sparkles size={16} />
               )}
-              {solving ? "AI çözüyor..." : "Soruyu çöz"}
+              {solving ? dict.aiSolving : dict.solveQuestion}
             </button>
           </div>
         </div>
@@ -299,13 +300,13 @@ export function SolveClient({
           <header className="mb-3 flex items-center justify-between gap-3">
             <h2 className="flex items-center gap-2 text-base font-semibold">
               <Sparkles size={16} className="text-primary" />
-              Çözüm
+              {dict.solution}
             </h2>
             <div className="flex items-center gap-2">
               {savedMistake ? (
                 <span className="inline-flex items-center gap-1 rounded-lg bg-emerald-500/10 px-3 py-1.5 text-xs font-medium text-emerald-500">
                   <Check size={12} />
-                  Yanlış defterine eklendi
+                  {dict.addedToMistakes}
                 </span>
               ) : (
                 <button
