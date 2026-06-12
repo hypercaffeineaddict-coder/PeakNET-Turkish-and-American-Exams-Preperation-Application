@@ -15,6 +15,9 @@ import {
   hedefIcinPuan,
   formatRank,
 } from "@/data/yks-scoring";
+import type { getDict } from "@/lib/i18n";
+
+type Dict = ReturnType<typeof getDict>;
 
 type DY = { d: string; y: string };
 type ValMap = Record<string, DY>;
@@ -27,7 +30,7 @@ function emptyMap(fields: NetField[]): ValMap {
   return m;
 }
 
-export function AraclarClient() {
+export function AraclarClient({ dict }: { dict: Dict["araclar"] }) {
   const [tur, setTur] = useState<PuanTuru>("SAY");
   const [tytVals, setTytVals] = useState<ValMap>(() => emptyMap(TYT_FIELDS));
   const [aytVals, setAytVals] = useState<ValMap>(() =>
@@ -104,15 +107,14 @@ export function AraclarClient() {
       <header>
         <h1 className="flex items-center gap-2 text-3xl font-semibold tracking-tight">
           <Calculator className="text-primary" size={26} />
-          YKS Araçları
+          {dict.title}
         </h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          Net hesapla, tahmini puanını ve sıralamanı gör, hedefin için gereken
-          neti öğren.
+          {dict.description}
         </p>
       </header>
 
-      <QuickNet />
+      <QuickNet dict={dict} />
 
       {/* Puan türü seçici */}
       <div className="flex flex-wrap gap-2">
@@ -137,23 +139,25 @@ export function AraclarClient() {
         <div className="space-y-6">
           <NetTable
             title="TYT"
-            subtitle={`Toplam net: ${tytNet.toFixed(2)} / ${maxTyt}`}
+            subtitle={dict.totalNet.replace("{net}", tytNet.toFixed(2)).replace("{max}", String(maxTyt))}
             fields={TYT_FIELDS}
             vals={tytVals}
             onChange={(key, field, raw, count) =>
               setVal("tyt", key, field, raw, count)
             }
+            dict={dict}
           />
 
           {tur !== "TYT" && (
             <NetTable
               title={`AYT — ${PUAN_TURU_LABEL[tur]}`}
-              subtitle={`Toplam net: ${aytNet.toFixed(2)} / ${maxAyt}`}
+              subtitle={dict.totalNet.replace("{net}", aytNet.toFixed(2)).replace("{max}", String(maxAyt))}
               fields={aytFields}
               vals={aytVals}
               onChange={(key, field, raw, count) =>
                 setVal("ayt", key, field, raw, count)
               }
+              dict={dict}
             />
           )}
         </div>
@@ -163,17 +167,17 @@ export function AraclarClient() {
           <section className="rounded-2xl border border-border bg-card p-6">
             <h2 className="flex items-center gap-2 text-sm font-semibold">
               <TrendingUp size={16} className="text-emerald-500" />
-              Tahmini sonuç
+              {dict.estimatedResult}
             </h2>
             <dl className="mt-4 space-y-3">
-              <ResultRow label="Toplam net" value={(tytNet + aytNet).toFixed(2)} />
+              <ResultRow label={dict.totalNetLabel} value={(tytNet + aytNet).toFixed(2)} />
               <ResultRow
-                label="Tahmini puan"
+                label={dict.estimatedScore}
                 value={puan.toFixed(1)}
                 big
               />
               <ResultRow
-                label="Tahmini sıralama"
+                label={dict.estimatedRank}
                 value={siralama != null ? `~${formatRank(siralama)}` : "—"}
                 big
               />
@@ -184,39 +188,39 @@ export function AraclarClient() {
           <section className="rounded-2xl border border-border bg-card p-6">
             <h2 className="flex items-center gap-2 text-sm font-semibold">
               <Target size={16} className="text-rose-500" />
-              Hedef analizi
+              {dict.targetAnalysis}
             </h2>
             <label className="mt-3 block text-xs text-muted-foreground">
-              Hedef sıralaman
+              {dict.targetRank}
             </label>
             <input
               inputMode="numeric"
               value={hedefRank}
               onChange={(e) => setHedefRank(e.target.value)}
-              placeholder="örn. 5000"
+              placeholder={dict.placeholderRank}
               className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary"
             />
             {gerekenPuan != null && (
               <div className="mt-4 space-y-2 text-sm">
                 <div className="flex items-center justify-between">
-                  <span className="text-muted-foreground">Gereken puan</span>
+                  <span className="text-muted-foreground">{dict.requiredScore}</span>
                   <span className="font-semibold">~{gerekenPuan.toFixed(1)}</span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-muted-foreground">Fark</span>
+                  <span className="text-muted-foreground">{dict.difference}</span>
                   <span
                     className={`font-semibold ${
                       (puanFarki ?? 0) <= 0 ? "text-emerald-500" : "text-rose-500"
                     }`}
                   >
                     {puanFarki != null && puanFarki <= 0
-                      ? `Hedefin üstündesin (+${Math.abs(puanFarki).toFixed(1)})`
-                      : `+${puanFarki?.toFixed(1)} puan gerek`}
+                      ? dict.aboveTarget.replace("{diff}", Math.abs(puanFarki).toFixed(1))
+                      : dict.pointsNeeded.replace("{diff}", puanFarki?.toFixed(1) ?? "0")}
                   </span>
                 </div>
                 {puanFarki != null && puanFarki <= 0 && (
                   <p className="flex items-center gap-1.5 rounded-lg bg-emerald-500/10 px-3 py-2 text-xs text-emerald-600 dark:text-emerald-400">
-                    <Trophy size={13} /> Bu tempoyla hedefe ulaşıyorsun!
+                    <Trophy size={13} /> {dict.onTrackMessage}
                   </p>
                 )}
               </div>
@@ -227,19 +231,13 @@ export function AraclarClient() {
 
       <p className="flex items-start gap-2 rounded-xl border border-border bg-muted/40 p-4 text-xs text-muted-foreground">
         <Info size={15} className="mt-0.5 shrink-0" />
-        <span>
-          Puan ve sıralama değerleri geçmiş yıl eğilimlerine dayalı{" "}
-          <strong>kaba tahminlerdir</strong>; ÖSYM&apos;nin gerçek standart
-          puan hesabı dışarıdan birebir yapılamaz. Kesin tercih kararı için
-          güncel YÖK Atlas ve ÖSYM verilerini kullan. OBP/diploma katkısı bu
-          hesaba dahil değildir.
-        </span>
+        <span>{dict.disclaimer}</span>
       </p>
     </div>
   );
 }
 
-function QuickNet() {
+function QuickNet({ dict }: { dict: Dict["araclar"] }) {
   const [d, setD] = useState("");
   const [y, setY] = useState("");
   const [total, setTotal] = useState("");
@@ -253,15 +251,14 @@ function QuickNet() {
     <section className="rounded-2xl border border-border bg-card p-5">
       <h2 className="flex items-center gap-2 text-sm font-semibold">
         <Calculator size={15} className="text-primary" />
-        Hızlı net hesabı (tek test / branda)
+        {dict.quickNetTitle}
       </h2>
       <p className="mt-1 text-xs text-muted-foreground">
-        Standart YKS dışı bir testin (GİS, branda, mini sınav) netini anında
-        hesapla. <strong>Net = D − Y/4</strong>. Soru sayısı opsiyonel.
+        {dict.quickNetDesc}
       </p>
       <div className="mt-3 grid items-end gap-3 sm:grid-cols-[1fr_1fr_1fr_auto]">
         <label className="text-xs">
-          <span className="text-muted-foreground">Soru sayısı (ops.)</span>
+          <span className="text-muted-foreground">{dict.questionCountOptional}</span>
           <input
             type="text"
             inputMode="numeric"
@@ -272,7 +269,7 @@ function QuickNet() {
           />
         </label>
         <label className="text-xs">
-          <span className="text-emerald-500">Doğru</span>
+          <span className="text-emerald-500">{dict.correct}</span>
           <input
             type="text"
             inputMode="numeric"
@@ -283,7 +280,7 @@ function QuickNet() {
           />
         </label>
         <label className="text-xs">
-          <span className="text-rose-500">Yanlış</span>
+          <span className="text-rose-500">{dict.incorrect}</span>
           <input
             type="text"
             inputMode="numeric"
@@ -294,19 +291,19 @@ function QuickNet() {
           />
         </label>
         <div className="text-right">
-          <div className="text-xs text-muted-foreground">Net</div>
+          <div className="text-xs text-muted-foreground">{dict.net}</div>
           <div
             className={`font-display text-2xl font-bold tabular-nums ${
               valid ? "text-primary" : "text-rose-500"
             }`}
           >
-            {valid ? net.toFixed(2) : "geçersiz"}
+            {valid ? net.toFixed(2) : dict.invalid}
           </div>
         </div>
       </div>
       {bos !== null && valid && (
         <div className="mt-2 text-xs text-muted-foreground">
-          Boş: <span className="tabular-nums">{bos}</span> · İsabet:{" "}
+          {dict.empty}: <span className="tabular-nums">{bos}</span> · {dict.accuracy}:{" "}
           <span className="tabular-nums">
             {dn + yn > 0 ? `%${Math.round((dn / (dn + yn)) * 100)}` : "—"}
           </span>
@@ -322,12 +319,14 @@ function NetTable({
   fields,
   vals,
   onChange,
+  dict,
 }: {
   title: string;
   subtitle: string;
   fields: NetField[];
   vals: ValMap;
   onChange: (key: string, field: "d" | "y", raw: string, count: number) => void;
+  dict: Dict["araclar"];
 }) {
   return (
     <section className="rounded-2xl border border-border bg-card p-6">
@@ -337,10 +336,10 @@ function NetTable({
       </div>
       <div className="space-y-2">
         <div className="grid grid-cols-[1fr_auto_auto_auto] items-center gap-2 px-1 text-[10px] uppercase tracking-wider text-muted-foreground">
-          <span>Ders</span>
-          <span className="w-16 text-center">Doğru</span>
-          <span className="w-16 text-center">Yanlış</span>
-          <span className="w-14 text-right">Net</span>
+          <span>{dict.subject}</span>
+          <span className="w-16 text-center">{dict.correct}</span>
+          <span className="w-16 text-center">{dict.incorrect}</span>
+          <span className="w-14 text-right">{dict.net}</span>
         </div>
         {fields.map((f) => {
           const v = vals[f.key] ?? { d: "", y: "" };

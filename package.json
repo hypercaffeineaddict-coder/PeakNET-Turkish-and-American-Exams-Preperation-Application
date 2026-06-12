@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
+    "translate": "node scripts/auto-translate.js",
     "cap:add": "cap add android",
     "cap:sync": "cap sync",
     "cap:open": "cap open android"

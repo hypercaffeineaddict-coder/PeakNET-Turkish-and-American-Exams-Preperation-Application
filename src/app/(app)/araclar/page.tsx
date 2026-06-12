@@ -17,5 +17,5 @@ export default async function AraclarPage() {
   } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  return <AraclarClient />;
+  return <AraclarClient dict={dict.araclar} />;
 }
