@@ -200,7 +200,7 @@ export function HedefClient({ dict, exams,
                 <div className="mb-3 space-y-1.5">
                   {targetDepartment && (
                     <div className="flex flex-wrap items-center gap-1.5">
-                      {targetDepartment.split(",").map((dept) => (
+                      {String(targetDepartment).split(",").map((dept: string) => (
                         <span key={dept.trim()} className="rounded-md bg-primary/10 px-2 py-0.5 text-xs font-semibold text-primary border border-primary/20">
                           {dept.trim()}
                         </span>
@@ -209,7 +209,7 @@ export function HedefClient({ dict, exams,
                   )}
                   {targetUniversity && (
                     <div className="flex flex-wrap items-center gap-1.5">
-                      {targetUniversity.split(",").map((uni) => (
+                      {String(targetUniversity).split(",").map((uni: string) => (
                         <span key={uni.trim()} className="rounded-md bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground border border-border">
                           {uni.trim()}
                         </span>

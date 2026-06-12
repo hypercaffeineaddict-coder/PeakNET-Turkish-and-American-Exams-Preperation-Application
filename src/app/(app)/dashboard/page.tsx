@@ -169,14 +169,14 @@ export default async function DashboardPage() {
               <div className="flex flex-col gap-1.5">
                 <div className="flex flex-wrap items-center gap-1.5">
                   <Target size={14} className="text-primary" />
-                  {profile.target_department.split(",").map((dept) => (
+                  {String(profile.target_department).split(",").map((dept: string) => (
                     <span key={dept.trim()} className="rounded-md bg-primary/10 px-2 py-0.5 text-xs font-semibold text-primary border border-primary/20">
                       {dept.trim()}
                     </span>
                   ))}
                 </div>
                 <div className="flex flex-wrap items-center gap-1.5 pl-5">
-                  {profile.target_university.split(",").map((uni) => (
+                  {String(profile.target_university).split(",").map((uni: string) => (
                     <span key={uni.trim()} className="rounded-md bg-muted px-2 py-0.5 text-[11px] font-medium text-muted-foreground border border-border">
                       {uni.trim()}
                     </span>
