@@ -1,7 +1,7 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
-const PUBLIC_PATHS = ["/", "/login", "/signup"];
+const PUBLIC_PATHS = ["/", "/login", "/signup", "/auth/callback"];
 
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request });
@@ -15,9 +15,7 @@ export async function updateSession(request: NextRequest) {
           return request.cookies.getAll();
         },
         setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value }) =>
-            request.cookies.set(name, value),
-          );
+          cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value));
           supabaseResponse = NextResponse.next({ request });
           cookiesToSet.forEach(({ name, value, options }) =>
             supabaseResponse.cookies.set(name, value, options),
@@ -34,35 +32,23 @@ export async function updateSession(request: NextRequest) {
   const path = request.nextUrl.pathname;
   const url = request.nextUrl.clone();
   const isPublic = PUBLIC_PATHS.includes(path);
-  const isOnboarding = path.startsWith("/onboarding");
-  const isAuthCallback = path.startsWith("/auth"); // OAuth dönüş yolu (oturum henüz yok)
+  const isAuthCallback = path.startsWith("/auth"); // OAuth callback path
 
-  // Oturum yok ve public değil → login'e
+  // No session and trying to access protected route → redirect to login
   if (!user && !isPublic && !isAuthCallback) {
     url.pathname = "/login";
     return NextResponse.redirect(url);
   }
 
-  // Oturum var → onboarding kontrolü
-  if (user) {
-    if (path === "/login" || path === "/signup") {
-      url.pathname = "/dashboard";
-      return NextResponse.redirect(url);
-    }
-
-    if (!isOnboarding && path !== "/") {
-      const { data: profile } = await supabase
-        .from("profiles")
-        .select("onboarding_completed_at")
-        .eq("id", user.id)
-        .single();
-
-      if (!profile?.onboarding_completed_at) {
-        url.pathname = "/onboarding";
-        return NextResponse.redirect(url);
-      }
-    }
+  // Has session and on auth pages → redirect to dashboard
+  if (user && (path === "/login" || path === "/signup")) {
+    url.pathname = "/dashboard";
+    return NextResponse.redirect(url);
   }
+
+  // Middleware should be fast - skip onboarding check here.
+  // Onboarding redirect is handled by individual protected pages (layout.tsx or page.tsx)
+  // This avoids a DB query on EVERY request, significantly speeding up navigation.
 
   return supabaseResponse;
 }

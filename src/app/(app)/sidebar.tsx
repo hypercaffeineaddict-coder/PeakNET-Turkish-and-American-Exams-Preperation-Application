@@ -107,9 +107,13 @@ function navGroups(labels: ShellLabels): { title: string | null; items: NavItem[
 export function Sidebar({
   logoutAction,
   labels,
+  userId,
+  locale,
 }: {
   logoutAction: (formData: FormData) => Promise<void>;
   labels: ShellLabels;
+  userId: string;
+  locale: string;
 }) {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();

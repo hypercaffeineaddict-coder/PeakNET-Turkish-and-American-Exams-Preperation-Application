@@ -7,6 +7,7 @@ import { DeleteAccountForm } from "./delete-form";
 import { OfflineSettings } from "./offline-settings";
 import { ProfileMedia } from "./profile-media";
 import { NotificationSettings } from "@/components/notification-settings";
+import { ThemeSelector } from "@/components/theme-selector";
 import { getDict } from "@/lib/i18n";
 import { getLocaleFromCookies } from "@/lib/i18n-server";
 
@@ -84,6 +85,11 @@ export default async function AyarlarPage({
       <NotificationSettings labels={dict.notifications} />
 
       <OfflineSettings labels={dict.offlineSettings} />
+      
+      <div className="rounded-2xl border border-border bg-card p-6">
+        <h2 className="text-lg font-semibold mb-4">Appearance</h2>
+        <ThemeSelector />
+      </div>
 
       <DeleteAccountForm
         email={user.email ?? ""}

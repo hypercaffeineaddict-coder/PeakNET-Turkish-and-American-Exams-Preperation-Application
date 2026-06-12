@@ -20,6 +20,15 @@ export async function GET(req: NextRequest) {
       const {
         data: { user },
       } = await supabase.auth.getUser();
+      
+      // Check if email is verified
+      const isEmailVerified = user?.email_confirmed_at !== null;
+      
+      if (user && !isEmailVerified) {
+        // Email not verified - redirect to verification page
+        return NextResponse.redirect(`${origin}/verify-email?redirect=${encodeURIComponent("/onboarding")}`);
+      }
+      
       let dest = "/dashboard";
       if (user) {
         const { data: profile } = await supabase

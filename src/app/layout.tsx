@@ -4,6 +4,8 @@ import { GeistMono } from "geist/font/mono";
 import { Space_Grotesk } from "next/font/google";
 import { Toaster } from "sonner";
 import { ThemeProvider } from "@/components/theme-provider";
+import { ThemeWrapper } from "@/components/theme-wrapper";
+import { Providers } from "@/components/providers";
 import { SwRegister } from "@/components/sw-register";
 import { OnlineStatus } from "@/components/online-status";
 import { localeDir } from "@/lib/i18n";
@@ -55,15 +57,19 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     >
       <body className="min-h-full flex flex-col bg-background text-foreground">
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
-          {children}
-          <OnlineStatus />
-          <SwRegister />
-          <Toaster
-            position="top-center"
-            theme="system"
-            richColors
-            closeButton
-          />
+          <ThemeWrapper>
+            <Providers>
+              {children}
+              <OnlineStatus />
+              <SwRegister />
+              <Toaster
+                position="top-center"
+                theme="system"
+                richColors
+                closeButton
+              />
+            </Providers>
+          </ThemeWrapper>
         </ThemeProvider>
       </body>
     </html>
