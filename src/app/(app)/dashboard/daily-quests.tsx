@@ -82,7 +82,7 @@ export async function DailyQuests() {
   const allDone = doneCount === quests.length;
 
   return (
-    <section className="rounded-2xl border border-border bg-card p-6">
+    <section className="section rounded-2xl border border-border bg-card p-6">
       <div className="flex items-center justify-between">
         <h2 className="flex items-center gap-2 text-sm font-semibold">
           <CheckCircle2 size={16} className="text-emerald-500" />

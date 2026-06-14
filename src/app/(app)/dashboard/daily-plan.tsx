@@ -48,7 +48,7 @@ export function DailyPlanCard({
   }
 
   return (
-    <section className="rounded-2xl border border-border bg-gradient-to-br from-primary/5 via-card to-card p-6">
+    <section className="section rounded-2xl border border-border bg-gradient-to-br from-primary/5 via-card to-card p-6">
       <div className="flex items-start justify-between gap-3">
         <h2 className="flex items-center gap-2 text-sm font-semibold">
           <Sparkles size={16} className="text-primary" />
@@ -58,7 +58,7 @@ export function DailyPlanCard({
           type="button"
           onClick={generate}
           disabled={pending || !aiReady}
-          className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-card px-3 py-1.5 text-xs transition hover:bg-muted disabled:opacity-50"
+          className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-card px-4 py-2 text-xs transition hover:bg-muted disabled:opacity-50 min-h-[44px]"
         >
           {pending ? (
             <Loader2 size={12} className="animate-spin" />

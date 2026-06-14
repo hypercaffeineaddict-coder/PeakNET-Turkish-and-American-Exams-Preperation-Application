@@ -152,7 +152,7 @@ export default async function DashboardPage() {
   return (
     <div className="mx-auto grid max-w-6xl gap-6 lg:grid-cols-[1fr_320px]">
       <div className="space-y-6">
-        <header className="animate-fade-up">
+        <header className="section-title animate-fade-up">
           <div className="flex items-center gap-3">
             <h1 className="font-display text-3xl font-bold tracking-tight">
               {t.greetingPrefix} {profile?.display_name ?? t.studentFallback}
@@ -189,11 +189,11 @@ export default async function DashboardPage() {
           </div>
         </header>
 
-        <div className="animate-fade-up anim-d1">
+        <div className="animate-fade-up anim-d1 section-sm">
           <SummitStrip totalXp={profile?.total_xp ?? 0} labels={t} />
         </div>
 
-        <div className="animate-fade-up anim-d2 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="animate-fade-up anim-d2 section-grid">
           <div className="relative overflow-hidden rounded-2xl border border-orange-500/25 bg-gradient-to-br from-orange-500/15 to-card p-5 shadow-soft sm:col-span-2 lg:col-span-1">
             <div className="flex items-center justify-between">
               <span className="text-sm font-medium text-muted-foreground">
@@ -231,11 +231,11 @@ export default async function DashboardPage() {
           ))}
         </div>
 
-        <section className="animate-fade-up anim-d3">
-          <h2 className="mb-2.5 text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground">
+        <section className="animate-fade-up anim-d3 section">
+          <h2 className="section-title mb-2.5 text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground">
             {t.quickAccess}
           </h2>
-          <div className="grid grid-cols-3 gap-2.5 sm:grid-cols-4 md:grid-cols-6">
+          <div className="section-grid grid-cols-2 gap-2.5 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
             <QuickLink href="/hedef" icon={Flag} label={nav.goal} />
             <QuickLink href="/panel" icon={CalendarDays} label={nav.panel} />
             <QuickLink href="/konular" icon={ListChecks} label={nav.topics} />
@@ -258,12 +258,12 @@ export default async function DashboardPage() {
           </div>
         </section>
 
-        <section className="animate-fade-up anim-d4 rounded-2xl border border-border bg-card p-6">
+        <section className="animate-fade-up anim-d4 section">
           <div className="flex items-center gap-2 text-sm font-semibold">
             <GraduationCap size={16} className="text-primary" />
             {t.profileTitle}
           </div>
-          <dl className="mt-4 grid gap-4 text-sm sm:grid-cols-2">
+          <dl className="mt-4 grid gap-4 text-sm sm:grid-cols-2 section-grid">
             <div>
               <dt className="text-xs text-muted-foreground">{t.profileGrade}</dt>
               <dd className="mt-0.5 font-medium">{formatGrade(profile?.grade, t)}</dd>
@@ -301,7 +301,7 @@ export default async function DashboardPage() {
         <MotivationCard />
         <Link
           href="/diller"
-          className="group flex items-center gap-3 rounded-2xl border border-border bg-card p-4 transition hover:border-primary/40 hover:shadow-soft"
+          className="group flex items-center gap-3 rounded-2xl border border-border bg-card p-4 transition hover:border-primary/40 hover:shadow-soft min-h-[44px]"
         >
           <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 text-primary">
             <LanguagesIcon size={18} />
@@ -332,7 +332,7 @@ function QuickLink({
   return (
     <Link
       href={href}
-      className="group flex flex-col items-center gap-2 rounded-2xl border border-border bg-card px-3 py-3.5 text-xs transition hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-soft"
+      className="group flex flex-col items-center gap-2 rounded-2xl border border-border bg-card px-3 py-4 text-xs transition hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-soft min-h-[44px]"
     >
       <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-muted text-primary transition group-hover:bg-primary/10 group-hover:scale-110">
         <Icon size={17} />
