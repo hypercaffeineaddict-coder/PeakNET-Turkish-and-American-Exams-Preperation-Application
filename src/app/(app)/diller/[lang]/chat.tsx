@@ -63,7 +63,10 @@ export function LanguageChat({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           messages: [
-            { role: "system", content: lang.aiSystemHint },
+            { 
+              role: "system", 
+              content: `${lang.aiSystemHint}\n\nCOACH MODE: Sen aynı zamanda titiz bir dil koçusun. Kullanıcı bu dili öğreniyor. Eğer kullanıcı mesajında dilbilgisi (gramer), kelime seçimi veya zaman kipi hatası yaparsa, normal cevabına ek olarak mutlaka nazikçe hatasını düzelt. (Örn: "Şunu dedin: ..., Doğrusu: ... çünkü ...")`
+            },
             ...next.map((m) => ({ role: m.role, content: m.content })),
           ],
         }),

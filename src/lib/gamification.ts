@@ -71,6 +71,7 @@ export const XP = {
   mistakeReview: 5, // yanlış tekrarı
   examAdded: 30, // deneme ekleme
   dailyStreak: 20, // streak gününe ekleme
+  flashcardReview: 2, // flashcard review başına (az çünkü çok kart olabilir)
 } as const;
 
 // ---- Rozet tanımları (statik) ----

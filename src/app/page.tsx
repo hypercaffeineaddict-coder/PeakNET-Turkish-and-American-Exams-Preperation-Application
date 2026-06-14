@@ -282,7 +282,7 @@ export default async function LandingPage() {
     <div className="relative flex min-h-screen flex-col overflow-hidden">
       <AnimatedBackground />
 
-      <header className="sticky top-0 z-20 flex items-center justify-between border-b border-transparent px-6 py-4 backdrop-blur-xl sm:px-10 lg:px-20">
+      <header className="sticky top-0 z-20 flex items-center justify-between border-b border-transparent px-4 sm:px-6 lg:px-8 xl:px-10 py-4 backdrop-blur-xl">
         <Link href="/" className="flex items-center gap-2.5" aria-label="PeakNET Ana Sayfa">
           <Logo className="h-9 w-9 rounded-xl shadow-soft" />
           <span className="font-display text-xl font-bold tracking-tight">
@@ -300,16 +300,16 @@ export default async function LandingPage() {
           </Link>
           <Link
             href="/signup"
-            className="inline-flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-primary via-primary to-primary/80 px-5 py-2 text-sm font-semibold text-primary-foreground shadow-[0_4px_14px_-2px_rgba(106,79,214,0.4)] transition hover:opacity-90 hover:shadow-[0_6px_20px_-2px_rgba(106,79,214,0.5)] active:scale-[0.99]"
+            className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-primary via-primary to-primary/80 px-6 py-3 text-base font-bold text-primary-foreground shadow-[0_8px_25px_-4px_rgba(106,79,214,0.4)] transition hover:opacity-90 hover:shadow-[0_12px_30px_-4px_rgba(106,79,214,0.5)] active:scale-[0.98] min-h-[44px]"
           >
-            <Sparkles size={14} />
+            <Sparkles size={16} />
             {t.landing.start}
           </Link>
         </div>
       </header>
 
-      <main className="flex flex-1 flex-col items-center px-6 sm:px-10 lg:px-20">
-        <section className="mx-auto grid w-full max-w-7xl items-center gap-10 py-14 lg:grid-cols-[1.15fr_1fr] lg:py-24">
+      <main className="flex flex-1 flex-col items-center px-4 sm:px-6 lg:px-8 xl:px-10">
+        <section className="section mx-auto grid w-full max-w-7xl items-start gap-8 lg:gap-12 lg:grid-cols-[1.15fr_1fr]">
           <div className="space-y-8">
             <span className="inline-flex animate-fade-up items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-4 py-1.5 text-xs font-medium text-primary">
               <Flame size={12} className="animate-ember" />
@@ -331,14 +331,14 @@ export default async function LandingPage() {
             <div className="animate-fade-up anim-d3 flex flex-wrap items-center gap-4 pt-2">
               <Link
                 href="/signup"
-                className="group inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-primary via-primary to-primary/80 px-7 py-3.5 text-sm font-semibold text-primary-foreground shadow-[0_8px_25px_-4px_rgba(106,79,214,0.35)] transition hover:opacity-90 hover:shadow-[0_12px_30px_-4px_rgba(106,79,214,0.45)] active:scale-[0.98]"
+                className="group inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-primary via-primary to-primary/80 px-8 py-4 text-base font-bold text-primary-foreground shadow-[0_8px_25px_-4px_rgba(106,79,214,0.35)] transition hover:opacity-90 hover:shadow-[0_12px_30px_-4px_rgba(106,79,214,0.45)] active:scale-[0.98] min-h-[48px]"
               >
                 {t.landing.freeStart}
-                <ArrowRight size={18} className="transition-transform group-hover:translate-x-1" />
+                <ArrowRight size={20} className="transition-transform group-hover:translate-x-1" />
               </Link>
               <Link
                 href="/login"
-                className="inline-flex items-center gap-2 rounded-xl border border-border bg-card/80 px-7 py-3.5 text-sm font-medium backdrop-blur-sm transition hover:border-primary/40 hover:bg-card hover:shadow-soft"
+                className="inline-flex items-center gap-2 rounded-2xl border border-border bg-card/80 px-8 py-4 text-base font-medium backdrop-blur-sm transition hover:border-primary/40 hover:bg-card hover:shadow-soft min-h-[48px]"
               >
                 {t.landing.signIn}
               </Link>
@@ -357,8 +357,8 @@ export default async function LandingPage() {
           <AppPreview copy={t.landing} daysToYks={daysToYks} />
         </section>
 
-        <section className="w-full max-w-7xl py-16 lg:py-24">
-          <div className="text-center max-w-3xl mx-auto mb-16 animate-fade-up">
+        <section className="section">
+          <div className="text-center max-w-3xl mx-auto section-title animate-fade-up">
             <span className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-4 py-1.5 text-xs font-medium text-primary mb-6">
               <Sparkles size={12} /> Sınava Giden Her Şey, Tek Uygulamada
             </span>
@@ -371,7 +371,7 @@ export default async function LandingPage() {
           <div className="relative mx-auto max-w-7xl">
             <div className="bg-summit/50 relative overflow-hidden rounded-3xl border border-primary/10 p-1 sm:p-2 lg:p-3">
               <div className="bg-grid/30 pointer-events-none absolute inset-0" />
-              <div className="relative grid gap-4 lg:grid-cols-2 xl:grid-cols-4">
+              <div className="section-grid relative grid gap-4 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4">
                 {t.features.map(([title, desc], index) => (
                   <FeatureCard
                     key={title}
@@ -394,8 +394,8 @@ export default async function LandingPage() {
           </div>
         </section>
 
-        <section className="w-full max-w-7xl py-16 lg:py-24">
-          <div className="text-center max-w-3xl mx-auto mb-16 animate-fade-up">
+        <section className="section">
+          <div className="text-center max-w-3xl mx-auto section-title animate-fade-up">
             <span className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-4 py-1.5 text-xs font-medium text-primary mb-6">
               <Wand2 size={12} /> 3 Adımda Başla
             </span>
@@ -407,7 +407,7 @@ export default async function LandingPage() {
           <div className="relative mx-auto max-w-7xl">
             <div className="absolute top-1/2 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent lg:top-[38%] hidden lg:block" />
 
-            <div className="relative grid gap-6 lg:grid-cols-3">
+            <div className="section-grid relative grid grid-cols-1 gap-6 lg:grid-cols-3">
               {t.steps.map(([n, title, body], index) => (
                 <div
                   key={n}
@@ -428,8 +428,8 @@ export default async function LandingPage() {
           </div>
         </section>
 
-        <section className="w-full max-w-7xl py-16 lg:py-24">
-          <div className="text-center max-w-3xl mx-auto mb-16 animate-fade-up">
+        <section className="section">
+          <div className="text-center max-w-3xl mx-auto section-title animate-fade-up">
             <span className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-4 py-1.5 text-xs font-medium text-primary mb-6">
               <Shield size={12} /> Neden PeakNET?
             </span>
@@ -441,15 +441,15 @@ export default async function LandingPage() {
             </p>
           </div>
 
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+          <div className="section-grid grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
             {trustIndicators.map((item, index) => (
               <TrustBadge key={item.label} icon={item.icon} label={item.label} desc={item.desc} />
             ))}
           </div>
         </section>
 
-        <section className="w-full max-w-7xl py-16 lg:py-24">
-          <div className="text-center max-w-3xl mx-auto mb-16 animate-fade-up">
+        <section className="section">
+          <div className="text-center max-w-3xl mx-auto section-title animate-fade-up">
             <span className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-4 py-1.5 text-xs font-medium text-primary mb-6">
               <BarChart2 size={12} /> Gerçek Sonuçlar
             </span>
@@ -461,7 +461,7 @@ export default async function LandingPage() {
             </p>
           </div>
 
-          <div className="grid gap-4 lg:grid-cols-4">
+          <div className="section-grid grid grid-cols-2 gap-4 lg:grid-cols-4">
             <StatItem icon={BookOpen} value="150+" label="Müfredat Konusu" color="bg-sky-500/10 text-sky-500" index={0} />
             <StatItem icon={Sparkles} value="100K+" label="AI Sohbeti" color="bg-primary/10 text-primary" index={1} />
             <StatItem icon={Calculator} value="500K+" label="Soru Çözümü" color="bg-emerald-500/10 text-emerald-500" index={2} />
@@ -473,7 +473,7 @@ export default async function LandingPage() {
           </div>
         </section>
 
-        <section className="w-full max-w-7xl py-16 lg:py-24">
+        <section className="section">
           <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-primary/20 via-primary/10 to-accent/10 p-1">
             <div className="bg-grid/30 pointer-events-none absolute inset-0" />
             <div className="relative rounded-2xl bg-card/80 p-10 sm:p-14 lg:p-20 text-center backdrop-blur-xl">
@@ -489,10 +489,10 @@ export default async function LandingPage() {
                 </p>
                 <Link
                   href="/signup"
-                  className="mt-8 inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-primary via-primary to-primary/80 px-8 py-3.5 text-sm font-semibold text-primary-foreground shadow-[0_8px_25px_-4px_rgba(106,79,214,0.35)] transition hover:opacity-90 hover:shadow-[0_12px_30px_-4px_rgba(106,79,214,0.45)] active:scale-[0.98]"
+                  className="mt-8 inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-primary via-primary to-primary/80 px-8 py-4 text-base font-bold text-primary-foreground shadow-[0_8px_25px_-4px_rgba(106,79,214,0.35)] transition hover:opacity-90 hover:shadow-[0_12px_30px_-4px_rgba(106,79,214,0.45)] active:scale-[0.98] min-h-[48px]"
                 >
                   {t.landing.createAccount}
-                  <ArrowRight size={18} />
+                  <ArrowRight size={20} />
                 </Link>
                 <p className="mt-6 text-sm text-muted-foreground">
                   Kredi kartı gerekmez · İstediğin an çıkabilirsin · Verilerin senin
@@ -503,7 +503,7 @@ export default async function LandingPage() {
         </section>
       </main>
 
-      <footer className="border-t border-border/50 px-6 py-10 sm:px-10 lg:px-20">
+      <footer className="border-t border-border/50 px-4 sm:px-6 lg:px-8 xl:px-10 py-10">
         <div className="mx-auto max-w-7xl">
           <div className="grid gap-8 lg:grid-cols-[2fr_1fr_1fr_1fr]">
             <div className="space-y-4">

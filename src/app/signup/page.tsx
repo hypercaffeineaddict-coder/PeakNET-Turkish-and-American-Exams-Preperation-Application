@@ -4,6 +4,7 @@ import { GoogleButton } from "@/components/google-button";
 import { AuthShell } from "@/components/auth-shell";
 import { getDict } from "@/lib/i18n";
 import { getLocaleFromCookies } from "@/lib/i18n-server";
+import { getAuthErrorMessage } from "@/lib/auth-errors";
 
 const inputClass =
   "mt-1.5 w-full rounded-xl border border-border bg-background px-3.5 py-2.5 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/30";
@@ -62,8 +63,8 @@ export default async function SignupPage({
         </label>
 
         {error && (
-          <p className="rounded-xl bg-rose-500/10 px-3.5 py-2.5 text-sm text-rose-500">
-            {error}
+          <p className="rounded-xl bg-rose-500/10 px-3.5 py-2.5 text-sm text-rose-500" role="alert">
+            {getAuthErrorMessage(error, t.errors)}
           </p>
         )}
 

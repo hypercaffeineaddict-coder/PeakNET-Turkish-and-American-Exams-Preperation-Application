@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/server";
 import { languageById, languageResources } from "@/data/languages";
 import { aiHealth } from "@/lib/ai";
 import { LanguageChat } from "./chat";
+import { BrainCircuit } from "lucide-react";
 
 export default async function LanguagePage({
   params,
@@ -22,6 +23,15 @@ export default async function LanguagePage({
   if (!user) redirect("/login");
 
   const health = await aiHealth();
+
+  // Fetch due flashcards count
+  const today = new Date().toISOString().split("T")[0];
+  const { count: dueCardsCount } = await supabase
+    .from("flashcards")
+    .select("id", { count: "exact", head: true })
+    .eq("user_id", user.id)
+    .eq("subject_name", lang)
+    .lte("next_review_at", today);
 
   return (
     <div className="mx-auto max-w-5xl space-y-6">
@@ -59,6 +69,35 @@ export default async function LanguagePage({
 
       <div className="grid gap-6 lg:grid-cols-[1fr_280px]">
         <div className="space-y-4">
+          {/* Flashcards Entry */}
+          <section className="rounded-2xl border border-primary/20 bg-primary/5 p-6 relative overflow-hidden">
+            <div className="absolute right-0 top-0 opacity-10">
+              <BrainCircuit size={120} className="-mr-6 -mt-6" />
+            </div>
+            <h2 className="flex items-center gap-2 text-lg font-bold text-primary">
+              <BrainCircuit size={20} />
+              Günlük Kelime Tekrarı
+            </h2>
+            <p className="mt-2 text-sm text-muted-foreground max-w-[80%]">
+              Yapay zeka veya kendi eklediğiniz kelimeleri aralıklı tekrar (SM-2) ile öğrenin.
+            </p>
+            <div className="mt-4 flex items-center justify-between">
+              <div className="text-sm font-medium">
+                {dueCardsCount && dueCardsCount > 0 ? (
+                  <span className="text-orange-500 font-bold">Tekrar bekleyen {dueCardsCount} kelime var!</span>
+                ) : (
+                  <span className="text-emerald-500 font-bold">Bugün tekrar edecek kelimeniz yok.</span>
+                )}
+              </div>
+              <Link
+                href={`/diller/${lang}/kartlar`}
+                className="rounded-xl bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground shadow-sm transition hover:opacity-90 active:scale-95"
+              >
+                Çalışmaya Başla
+              </Link>
+            </div>
+          </section>
+
           {/* Alfabe / yazı sistemi */}
           <section className="rounded-2xl border border-border bg-card p-6">
             <h2 className="flex items-center gap-2 text-sm font-semibold">

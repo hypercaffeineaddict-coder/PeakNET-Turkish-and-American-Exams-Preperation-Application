@@ -10,7 +10,7 @@
   --background: oklch(0.985 0.004 285);
   --foreground: oklch(0.21 0.02 285);
   --muted: oklch(0.955 0.006 285);
-  --muted-foreground: oklch(0.505 0.02 285);
+  --muted-foreground: oklch(0.42 0.02 285);
   --card: oklch(0.997 0.002 285);
   --border: oklch(0.905 0.008 285);
   --primary: oklch(0.545 0.205 283);
@@ -38,7 +38,7 @@
   --background: oklch(0.16 0.013 285);
   --foreground: oklch(0.96 0.005 285);
   --muted: oklch(0.225 0.014 285);
-  --muted-foreground: oklch(0.68 0.018 285);
+  --muted-foreground: oklch(0.75 0.018 285);
   --card: oklch(0.197 0.014 285);
   --border: oklch(0.29 0.015 285);
   --primary: oklch(0.72 0.16 285);
@@ -137,6 +137,34 @@ h1, h2 {
 .gap-4 { gap: calc(1rem * var(--density)); }
 .gap-6 { gap: calc(1.5rem * var(--density)); }
 .gap-8 { gap: calc(2rem * var(--density)); }
+
+/* ============================================================
+   Section spacing system — consistent vertical rhythm
+   ============================================================ */
+.section {
+  @apply py-16 lg:py-24;
+}
+.section-sm {
+  @apply py-10 lg:py-16;
+}
+.section-lg {
+  @apply py-24 lg:py-32;
+}
+.section-title {
+  @apply mb-16;
+}
+.section-title-sm {
+  @apply mb-10 lg:mb-12;
+}
+.section-grid {
+  @apply grid gap-6 lg:gap-8;
+}
+.section-grid-sm {
+  @apply grid gap-4 lg:gap-6;
+}
+.section-grid-lg {
+  @apply grid gap-8 lg:gap-10;
+}
 
 /* ============================================================
    Utilities
@@ -262,4 +290,16 @@ h1, h2 {
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
   }
+}@utility perspective-1000 {
+  perspective: 1000px;
+}
+@utility preserve-3d {
+  transform-style: preserve-3d;
+}
+@utility backface-hidden {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+@utility rotate-y-180 {
+  transform: rotateY(180deg);
 }
