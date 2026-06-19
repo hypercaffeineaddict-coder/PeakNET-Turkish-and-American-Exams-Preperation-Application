@@ -1,0 +1,95 @@
+import Link from "next/link";
+import { redirect } from "next/navigation";
+import { Flame, Zap } from "lucide-react";
+import { createClient } from "@/lib/supabase/server";
+import { logoutAction } from "../login/actions";
+import { ThemeToggle } from "@/components/theme-toggle";
+import { Sidebar } from "./sidebar";
+import { MobileNav } from "./mobile-nav";
+import { InstallPrompt } from "@/components/install-prompt";
+import { levelForXp, effectiveStreak, studiedToday } from "@/lib/gamification";
+import { StreakNudge } from "@/components/streak-nudge";
+import { LanguageSwitcher } from "@/components/language-switcher";
+import { getDict } from "@/lib/i18n";
+import { getLocaleFromCookies } from "@/lib/i18n-server";
+
+export default async function AppLayout({ children }: { children: React.ReactNode }) {
+  const locale = await getLocaleFromCookies();
+  const dict = getDict(locale);
+  const t = dict.shell;
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) redirect("/login");
+
+  const [{ data: streak }, { data: profile }] = await Promise.all([
+    supabase.from("streaks").select("current_streak, last_study_date").eq("user_id", user.id).single(),
+    supabase.from("profiles").select("total_xp, avatar_url, display_name").eq("id", user.id).single(),
+  ]);
+
+  const lv = levelForXp(profile?.total_xp ?? 0);
+  const streakCount = effectiveStreak(streak);
+  // Streak canlı ama bugün çalışılmamışsa uygulama-içi hatırlatma göster.
+  const streakAtRisk = streakCount > 0 && !studiedToday(streak);
+
+  return (
+    <div className="flex min-h-screen">
+      <Sidebar logoutAction={logoutAction} labels={t} />
+
+      <div className="flex flex-1 flex-col min-w-0">
+        <header className="sticky top-0 z-20 flex h-14 items-center justify-between border-b border-border bg-background/70 px-4 pl-14 backdrop-blur-xl lg:pl-6">
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <span className="hidden truncate sm:inline">{user.email}</span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <Link
+              href="/basarimlar"
+              className="group flex items-center gap-1.5 rounded-full bg-primary/10 py-1 pl-2 pr-3 text-sm font-semibold text-primary transition hover:bg-primary/20"
+              title={`${t.level} ${lv.level} · ${(profile?.total_xp ?? 0).toLocaleString(locale)} XP`}
+            >
+              <Zap size={14} className="fill-primary transition group-hover:scale-110" />
+              <span className="font-display tabular-nums">Sv.{lv.level}</span>
+            </Link>
+            <Link
+              href="/basarimlar"
+              className="group flex items-center gap-1.5 rounded-full bg-orange-500/10 py-1 pl-2 pr-3 text-sm font-semibold text-orange-500 transition hover:bg-orange-500/20"
+              title={t.streakTitle}
+            >
+              <Flame
+                size={14}
+                className={streakCount > 0 ? "animate-ember" : ""}
+              />
+              <span className="font-display tabular-nums">
+                {streakCount}
+              </span>
+            </Link>
+            <LanguageSwitcher locale={locale} />
+            <ThemeToggle />
+            <Link
+              href="/ayarlar"
+              title={t.profile}
+              className="ml-0.5 inline-flex h-8 w-8 items-center justify-center overflow-hidden rounded-full border border-border bg-muted text-xs font-semibold text-muted-foreground ring-2 ring-transparent transition hover:ring-primary/40"
+            >
+              {profile?.avatar_url ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={profile.avatar_url}
+                  alt={t.profile}
+                  className="h-full w-full object-cover"
+                />
+              ) : (
+                (profile?.display_name ?? user.email ?? "?").slice(0, 1).toUpperCase()
+              )}
+            </Link>
+          </div>
+        </header>
+
+        <main className="flex-1 p-4 pb-24 sm:p-6 sm:pb-24 lg:p-8 lg:pb-8">{children}</main>
+      </div>
+      <MobileNav labels={t.nav} bottomNavLabel={t.bottomNav} />
+      <InstallPrompt labels={dict.installPrompt} />
+      <StreakNudge atRisk={streakAtRisk} streakCount={streakCount} labels={dict.streakNudge} />
+    </div>
+  );
+}

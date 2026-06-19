@@ -1,0 +1,108 @@
+{
+  "exam": "AYT",
+  "track": "MF",
+  "version": "2026",
+  "source": "OSYM AYT mufredati (Matematik, Fizik, Kimya, Biyoloji)",
+  "subjects": [
+    {
+      "id": "matematik",
+      "name": "Matematik",
+      "color": "#3b82f6",
+      "question_count": 40,
+      "topics": [
+        { "id": "mat_polinomlar", "name": "Polinomlar", "grade": 11, "priority": "high" },
+        { "id": "mat_2dereceden_denklemler", "name": "2. Dereceden Denklemler", "grade": 11, "priority": "high" },
+        { "id": "mat_2dereceden_esitsizlikler", "name": "2. Dereceden Eşitsizlikler", "grade": 11, "priority": "high" },
+        { "id": "mat_esitsizlik_sistemleri", "name": "Eşitsizlik Sistemleri", "grade": 11, "priority": "medium" },
+        { "id": "mat_karmasik_sayilar", "name": "Karmaşık Sayılar", "grade": 11, "priority": "medium" },
+        { "id": "mat_fonksiyonlar", "name": "Fonksiyonlar (İleri)", "grade": 11, "priority": "high" },
+        { "id": "mat_fonksiyonlarla_islemler", "name": "Fonksiyonlarla İşlemler ve Uygulamaları", "grade": 11, "priority": "high" },
+        { "id": "mat_trigonometri", "name": "Trigonometri", "grade": 11, "priority": "high" },
+        { "id": "mat_logaritma", "name": "Logaritma", "grade": 12, "priority": "high" },
+        { "id": "mat_diziler", "name": "Diziler", "grade": 12, "priority": "medium" },
+        { "id": "mat_limit", "name": "Limit ve Süreklilik", "grade": 12, "priority": "high" },
+        { "id": "mat_turev", "name": "Türev", "grade": 12, "priority": "high" },
+        { "id": "mat_integral", "name": "İntegral", "grade": 12, "priority": "high" },
+        { "id": "mat_analitik_dogru", "name": "Analitik Geometri - Doğru", "grade": 11, "priority": "medium" },
+        { "id": "mat_analitik_cember", "name": "Analitik Geometri - Çember", "grade": 12, "priority": "medium" },
+        { "id": "mat_dogruda_aci", "name": "Doğruda Açılar", "grade": 9, "priority": "low" },
+        { "id": "mat_ucgende_aci", "name": "Üçgende Açılar", "grade": 9, "priority": "low" },
+        { "id": "mat_ucgende_alan", "name": "Üçgende Alan", "grade": 9, "priority": "medium" },
+        { "id": "mat_ucgende_benzerlik", "name": "Üçgende Benzerlik", "grade": 9, "priority": "medium" },
+        { "id": "mat_dik_ucgen", "name": "Dik Üçgen ve Trigonometri", "grade": 9, "priority": "medium" },
+        { "id": "mat_dortgenler", "name": "Dörtgenler ve Çokgenler", "grade": 10, "priority": "medium" },
+        { "id": "mat_cember_daire", "name": "Çember ve Daire", "grade": 11, "priority": "medium" },
+        { "id": "mat_katı_cisimler", "name": "Katı Cisimler", "grade": 10, "priority": "medium" }
+      ]
+    },
+    {
+      "id": "fizik",
+      "name": "Fizik",
+      "color": "#ef4444",
+      "question_count": 14,
+      "topics": [
+        { "id": "fiz_vektorler", "name": "Vektörler", "grade": 11, "priority": "medium" },
+        { "id": "fiz_kuvvet_tork", "name": "Kuvvet, Tork ve Denge", "grade": 11, "priority": "high" },
+        { "id": "fiz_kutle_merkezi", "name": "Kütle Merkezi", "grade": 11, "priority": "medium" },
+        { "id": "fiz_basit_makineler", "name": "Basit Makineler", "grade": 11, "priority": "low" },
+        { "id": "fiz_hareket_2boyut", "name": "İki Boyutta Hareket", "grade": 11, "priority": "high" },
+        { "id": "fiz_atislar", "name": "Atışlar (Yatay/Eğik)", "grade": 11, "priority": "high" },
+        { "id": "fiz_dairesel_hareket", "name": "Düzgün Çembersel Hareket", "grade": 11, "priority": "high" },
+        { "id": "fiz_donme_yuvarlanma", "name": "Dönme, Yuvarlanma ve Açısal Momentum", "grade": 11, "priority": "medium" },
+        { "id": "fiz_kepler", "name": "Kütle Çekimi ve Kepler Yasaları", "grade": 11, "priority": "medium" },
+        { "id": "fiz_basit_harmonik", "name": "Basit Harmonik Hareket", "grade": 11, "priority": "medium" },
+        { "id": "fiz_dalga_mekanigi", "name": "Dalga Mekaniği", "grade": 11, "priority": "high" },
+        { "id": "fiz_elektrik_alani", "name": "Elektrik Alan ve Potansiyel", "grade": 11, "priority": "high" },
+        { "id": "fiz_paralel_levha_sigac", "name": "Paralel Levhalar ve Sığa", "grade": 11, "priority": "medium" },
+        { "id": "fiz_manyetizma_indukleme", "name": "Manyetizma ve Elektromanyetik İndükleme", "grade": 12, "priority": "high" },
+        { "id": "fiz_alternatif_akim", "name": "Alternatif Akım ve Transformatör", "grade": 12, "priority": "medium" },
+        { "id": "fiz_dalga_optigi", "name": "Dalga - Optik (Girişim, Kırınım, Doppler)", "grade": 12, "priority": "high" },
+        { "id": "fiz_atom_fizigi", "name": "Atom Fiziği ve Radyoaktivite", "grade": 12, "priority": "medium" },
+        { "id": "fiz_modern_fizik", "name": "Modern Fizik (Görelilik, Fotoelektrik)", "grade": 12, "priority": "high" },
+        { "id": "fiz_modern_uygulamalar", "name": "Modern Fiziğin Teknolojideki Uygulamaları", "grade": 12, "priority": "low" }
+      ]
+    },
+    {
+      "id": "kimya",
+      "name": "Kimya",
+      "color": "#10b981",
+      "question_count": 13,
+      "topics": [
+        { "id": "kim_modern_atom", "name": "Modern Atom Teorisi", "grade": 11, "priority": "high" },
+        { "id": "kim_gazlar", "name": "Gazlar", "grade": 11, "priority": "high" },
+        { "id": "kim_sivi_cozeltiler", "name": "Sıvı Çözeltiler ve Çözünürlük", "grade": 11, "priority": "high" },
+        { "id": "kim_kim_tepkimeler_enerji", "name": "Kimyasal Tepkimelerde Enerji", "grade": 11, "priority": "high" },
+        { "id": "kim_tepkime_hizi", "name": "Kimyasal Tepkimelerde Hız", "grade": 11, "priority": "high" },
+        { "id": "kim_kim_denge", "name": "Kimyasal Tepkimelerde Denge", "grade": 11, "priority": "high" },
+        { "id": "kim_asit_baz", "name": "Asit-Baz Dengesi", "grade": 11, "priority": "high" },
+        { "id": "kim_cozunurluk_dengesi", "name": "Çözünürlük Dengesi", "grade": 11, "priority": "medium" },
+        { "id": "kim_elektrokimya", "name": "Kimya ve Elektrik (Elektrokimya)", "grade": 12, "priority": "high" },
+        { "id": "kim_karbon_kimyasi", "name": "Karbon Kimyasına Giriş", "grade": 12, "priority": "medium" },
+        { "id": "kim_organik_bilesikler", "name": "Organik Bileşikler (Hidrokarbonlar, Fonksiyonel Gruplar)", "grade": 12, "priority": "high" },
+        { "id": "kim_enerji_kaynaklari", "name": "Enerji Kaynakları ve Bilimsel Gelişmeler", "grade": 12, "priority": "low" }
+      ]
+    },
+    {
+      "id": "biyoloji",
+      "name": "Biyoloji",
+      "color": "#a855f7",
+      "question_count": 13,
+      "topics": [
+        { "id": "biy_insan_sinir", "name": "İnsan Fizyolojisi - Sinir Sistemi", "grade": 11, "priority": "high" },
+        { "id": "biy_insan_endokrin", "name": "İnsan Fizyolojisi - Endokrin Sistem", "grade": 11, "priority": "high" },
+        { "id": "biy_insan_duyu", "name": "İnsan Fizyolojisi - Duyu Organları", "grade": 11, "priority": "medium" },
+        { "id": "biy_insan_destek_hareket", "name": "Destek ve Hareket Sistemi", "grade": 11, "priority": "medium" },
+        { "id": "biy_insan_sindirim", "name": "Sindirim Sistemi", "grade": 11, "priority": "medium" },
+        { "id": "biy_insan_dolasim", "name": "Dolaşım ve Bağışıklık Sistemi", "grade": 11, "priority": "high" },
+        { "id": "biy_insan_solunum", "name": "Solunum Sistemi", "grade": 11, "priority": "medium" },
+        { "id": "biy_insan_uriner", "name": "Üriner Sistem (Boşaltım)", "grade": 11, "priority": "medium" },
+        { "id": "biy_insan_ureme_gelisme", "name": "Üreme Sistemi ve Embriyonik Gelişim", "grade": 11, "priority": "high" },
+        { "id": "biy_komunite_populasyon", "name": "Komünite ve Popülasyon Ekolojisi", "grade": 11, "priority": "medium" },
+        { "id": "biy_genden_proteine", "name": "Genden Proteine (DNA, RNA, Protein Sentezi)", "grade": 12, "priority": "high" },
+        { "id": "biy_canlilarda_enerji", "name": "Canlılarda Enerji Dönüşümleri (Fotosentez, Solunum, Kemosentez)", "grade": 12, "priority": "high" },
+        { "id": "biy_bitki_biyolojisi", "name": "Bitki Biyolojisi", "grade": 12, "priority": "medium" },
+        { "id": "biy_canlilar_cevre", "name": "Canlılar ve Çevre", "grade": 12, "priority": "low" }
+      ]
+    }
+  ]
+}

@@ -14,7 +14,7 @@ type QLog = { subject: string; correct: number; wrong: number; blank: number; lo
 
 const netOf = (c: number, w: number) => Math.max(0, c - w / 4);
 
-export async function POST(req: NextRequest) {
+export async function POST(_req: NextRequest) {
   const supabase = await createClient();
   const {
     data: { user },

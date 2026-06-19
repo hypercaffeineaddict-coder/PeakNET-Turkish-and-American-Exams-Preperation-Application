@@ -117,11 +117,13 @@ export function Sidebar({
 }) {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
+  const [prevPathname, setPrevPathname] = useState(pathname);
 
   // Sayfa değişince mobile menüyü kapat
-  useEffect(() => {
+  if (pathname !== prevPathname) {
+    setPrevPathname(pathname);
     setOpen(false);
-  }, [pathname]);
+  }
 
   // ESC ile kapat
   useEffect(() => {

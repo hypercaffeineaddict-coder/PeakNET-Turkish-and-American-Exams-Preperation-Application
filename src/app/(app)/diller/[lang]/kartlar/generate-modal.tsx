@@ -40,7 +40,7 @@ export function GenerateCardsModal({ lang }: { lang: string }) {
     <>
       <button
         onClick={() => setIsOpen(true)}
-        className="flex items-center gap-2 rounded-xl border border-primary/20 bg-primary/10 px-4 py-2 text-sm font-semibold text-primary transition hover:bg-primary/20"
+        className="flex items-center gap-2 rounded-xl border border-primary/20 bg-primary/10 px-4 py-2 text-sm font-semibold text-primary transition hover:bg-primary/20 active:scale-95"
       >
         <Sparkles size={16} /> AI ile Kelime Üret
       </button>
@@ -70,7 +70,7 @@ export function GenerateCardsModal({ lang }: { lang: string }) {
             <div className="flex items-center justify-end gap-3 border-t border-border bg-muted/50 px-6 py-4">
               <button
                 onClick={() => setIsOpen(false)}
-                className="rounded-xl px-4 py-2 text-sm font-medium text-muted-foreground hover:bg-background"
+                className="rounded-xl px-4 py-2 text-sm font-medium text-muted-foreground transition hover:bg-background active:scale-95"
                 disabled={isGenerating}
               >
                 İptal
@@ -78,7 +78,7 @@ export function GenerateCardsModal({ lang }: { lang: string }) {
               <button
                 onClick={handleGenerate}
                 disabled={isGenerating || !prompt.trim()}
-                className="flex items-center gap-2 rounded-xl bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground transition hover:opacity-90 disabled:opacity-50"
+                className="flex items-center gap-2 rounded-xl bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground transition hover:opacity-90 active:scale-95 disabled:opacity-50"
               >
                 {isGenerating ? (
                   <><Loader2 size={16} className="animate-spin" /> Üretiliyor...</>

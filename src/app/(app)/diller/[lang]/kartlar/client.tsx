@@ -37,7 +37,7 @@ export function FlashcardDeck({ cards, lang }: FlashcardDeckProps) {
         </p>
         <button 
           onClick={() => router.push(`/diller/${lang}`)}
-          className="mt-6 rounded-xl bg-primary px-6 py-2.5 text-sm font-semibold text-primary-foreground transition hover:opacity-90 active:scale-[0.99]"
+          className="mt-6 rounded-xl bg-primary px-6 py-2.5 text-sm font-semibold text-primary-foreground transition hover:opacity-90 active:scale-95"
         >
           Ana Ekrana Dön
         </button>

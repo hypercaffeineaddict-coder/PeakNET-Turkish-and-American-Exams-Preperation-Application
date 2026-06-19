@@ -48,7 +48,8 @@ const str = (v: unknown, max = 80): string | undefined =>
 const range = (v: unknown, fb: Pt): Pt => {
   const p = pt(v);
   if (!p) return fb;
-  let [a, b] = p;
+  const a = p[0];
+  let b = p[1];
   if (a === b) b = a + 1;
   return a < b ? [a, b] : [b, a];
 };
